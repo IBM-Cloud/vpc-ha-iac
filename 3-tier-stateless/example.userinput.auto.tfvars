@@ -1,0 +1,5 @@
+# api_key        = "Enter your IBM Cloud Api Key"
+# prefix         = "Enter the prefix for all resources"
+# region         = "Enter your region (ie, us-south, us-east)"
+# resource_group = "Enter your resource_group id"
+# ssh_key        = "Enter your IBM cloud ssh key name"

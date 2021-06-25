@@ -1,0 +1,4 @@
+.history
+.terraform.lock.hcl
+.terraform
+.vscode
