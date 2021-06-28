@@ -12,9 +12,9 @@ application load balancer. Each tier has 3 static VSIs distributed across 3 zone
 the VSIs security groups, and bastion server is created as part of the automation code.
 
 ## Use 2: 3 Tier application with autoscale
-This use case builds off the Use 1 case. This use case incorporates auto-scale for the web and app
-tier VSIs. Autoscale dynamically scales horizontally up and down based on the desired load of the
-compute resources.
+This use case is similar to Use 1 case which incorporates a compute feature, auto-scale for the web
+and app tier VSIs. Autoscale dynamically scales horizontally up and down based on the desired load of
+the compute resources.
 
 # Suggestion/Issues
 While there are no warranties of any kind, and there is no service or technical support available
