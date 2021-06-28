@@ -1,8 +1,10 @@
 # Overview
-This repository is dedicated in providing sample infrastructure as code (IAC) for setting up
-resilient infrastructure on IBM Cloud VPC. While there is no one size fit all, the intent behind the
-codes to provide sample codes for different use cases. You can modify the code to adapt to your
-business/application requirements.
+This repository is dedicated in providing sample infrastructure as code (IAC) int the form of
+terraform scripts for setting up resilient infrastructure on IBM Cloud VPC. The terraform scripts
+provide an automated way for developers, DevOps, or system administrators to set up a resilient 3-tier
+application on IBM Cloud Virtual Private Cloud (VPC). While there is no one size fit all, the intent
+behind the codes to provide sample codes for different use cases. You can modify the code to adapt to
+your business/application requirements.
  
 ## Use 1: 3 Tier application (stateless)
 3-tier application (web, app, and db) created in a single MZR. Each tier is front-end with an
