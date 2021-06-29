@@ -4,7 +4,7 @@ and for each tier, totally 9 VSIs, and in their respective subnets and security 
 another VSI, bastion server, is created for VSIs access and management.  Load balancers are created for
 each tier to help distribute incoming requests.
 
-**Note: You change the VSI count to increase the number of total VSIs for the application which also may
+**Note:** You change the VSI count to increase the number of total VSIs for the application which also may
 mean increasing the subnet count. Pluse you will also need to modify the security groups and load balancers
 policies to match your application requirements.
 
@@ -16,7 +16,6 @@ policies to match your application requirements.
 * Load Balancers        = 3
 
 <img src="./images/3-tier-app-MZR_v3.jpg"/>
-
 
 ## Requirements
 
