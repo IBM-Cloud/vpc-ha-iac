@@ -15,7 +15,7 @@ policies to match your application requirements.
 * Security Group Rule   = 5
 * Load Balancers        = 3
 
-<img src="./images/3-tier-app-MZR.jpg"/>
+<img src="./images/3-tier-app-MZR_v2.jpg"/>
 
 
 ## Requirements
