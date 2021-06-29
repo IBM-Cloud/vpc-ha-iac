@@ -1,6 +1,8 @@
 # Overview
-This builds off of the 3-tier application which includes autoscale for the first and second tier VSIs.
+This 3-tier application use cases incorporates a compute feature, autoscale for the first and second tier VSIs.
 Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resources demands.
+
+<img_src="./images/3-tier-app-with-autoscale-MZR.jpg"/>
 
 ## Requirements
 
