@@ -1,11 +1,21 @@
-Resource Count for this project:
-VPC Count             = 1
-Subnet Count          = 10
-Security Group Count  = 3
-Security Group Rule   = 5
-Load Balancers        = 3
+# Overview
+This use case builds the following in a single MZR.  A single VSI is created across 3 diffferent zones
+and for each tier, totally 9 VSIs, and in their respective subnets and security groups. In addition,
+another VSI, bastion server, is created for VSIs access and management.  Load balancers are created for
+each tier to help distribute incoming requests.
 
-**/
+**Note:** You change the VSI count to increase the number of total VSIs for the application which also may
+mean increasing the subnet count. Pluse you will also need to modify the security groups and load balancers
+policies to match your application requirements.
+
+* Resource Count for this project:
+* VPC Count             = 1
+* Subnet Count          = 10
+* Security Group Count  = 3
+* Security Group Rule   = 5
+* Load Balancers        = 3
+
+<img src="./images/3-tier-app-MZR_v3.jpg"/>
 
 ## Requirements
 
