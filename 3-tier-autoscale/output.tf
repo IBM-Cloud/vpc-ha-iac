@@ -24,7 +24,9 @@ output "VSI" {
   value = merge(
     {
       "PRIVATE_IP" = merge(
-        { "DB" = module.instance.db_target }
+        { "DB" = module.instance.db_target },
+        { "App" = module.instance_group.app_instances_ip },
+        { "Web" = module.instance_group.web_instances_ip }
       )
     },
     {

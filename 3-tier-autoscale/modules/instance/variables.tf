@@ -119,23 +119,18 @@ variable "bandwidth" {
 variable "tiered_profiles" {
   description = "Tiered profiles for Input/Output per seconds in GBs"
   type        = map(any)
-  default = {
-    "3"  = "general-purpose"
-    "5"  = "5iops-tier"
-    "10" = "10iops-tier"
-  }
 }
 
 /**
-* Name: size
+* Name: data_vol_size
 * Desc: Storage size in GB
 * Type: number
 **/
-variable "size" {
+variable "data_vol_size" {
   description = "Storage size in GB. The value should be between 10 and 2000"
   type        = number
   validation {
-    condition     = var.size >= 10 && var.size <= 2000
+    condition     = var.data_vol_size >= 10 && var.data_vol_size <= 2000
     error_message = "Error: Incorrect value for size. Allowed size should be between 10 and 2000 GB."
   }
 }
@@ -159,7 +154,6 @@ variable "total_instance" {
   description = "Please enter the total number of instances you want to create in each zones."
   type        = any
 }
-
 
 /**
 #################################################################################################################

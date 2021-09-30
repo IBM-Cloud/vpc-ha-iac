@@ -4,6 +4,64 @@
 #################################################################################################################
 */
 
+# Using the datasource to get the tokens object 
+data "ibm_iam_auth_token" "auth_token" {}
+
+/**
+* This local block is used to declare the local variables for linux and windows Bastion server userdata.
+* In these Bastion server userdata, we are creating the bastion ssh keys on IBM cloud. This ssh key will then be attached 
+* to the app/web/db servers. Thus only bastion server will have access to these servers.
+**/
+
+locals {
+  win_userdata = <<-EOUD
+        Content-Type: text/x-shellscript; charset="us-ascii"
+        MIME-Version: 1.0
+        #ps1_sysnative
+        mkdir C:\Users\Administrator\.ssh
+        cd C:\Users\Administrator\.ssh
+        ssh-keygen -t rsa -C "user_ID" -f "id_rsa" -P """"
+        $date = Get-Date
+        $cur_date = $date.ToString("yyyy-MM-dd")
+        $oauth_token = "${data.ibm_iam_auth_token.auth_token.iam_access_token}"
+        $contentType = "application/json"
+        $pub_key = Get-Content "C:\Users\Administrator\.ssh\id_rsa.pub"
+        $vpc_api_endpoint = "https://${var.region}.iaas.cloud.ibm.com"
+        $url = "$vpc_api_endpoint/v1/keys?version=$cur_date&generation=2"
+        $headers = @{"Authorization" = "$oauth_token"}
+        $body = ConvertTo-Json @{
+          name = "${var.prefix}${var.bastion_ssh_key}";
+          resource_group = @{id = "${var.resource_group_id}"};
+          public_key = "$pub_key";
+          type = "rsa"
+        }
+        Invoke-WebRequest $url -Headers $headers -ContentType $contentType -Body $body -Method POST
+        mkdir C:\Users\cloudbase-init\IBM_Cloud_CLI
+        cd C:\Users\cloudbase-init
+        Invoke-WebRequest https://download.clis.cloud.ibm.com/ibm-cloud-cli/2.0.2/binaries/IBM_Cloud_CLI_2.0.2_windows_amd64.zip -OutFile "C:\Users\cloudbase-init\IBM_Cloud_CLI_2.0.2_windows_amd64.zip"
+        Expand-Archive -Path "C:\Users\cloudbase-init\IBM_Cloud_CLI_2.0.2_windows_amd64.zip" -DestinationPath "C:\Users\cloudbase-init"
+        C:\Users\cloudbase-init\IBM_Cloud_CLI\ibmcloud.exe config --check-version=false
+        C:\Users\cloudbase-init\IBM_Cloud_CLI\ibmcloud.exe plugin install vpc-infrastructure
+      EOUD
+
+  lin_userdata = <<-EOUD
+        #!/bin/bash
+        ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa  2>&1 >/dev/null
+        cur_date=$(date "+%Y-%m-%d")
+        pub_key=`cat ~/.ssh/id_rsa.pub`
+        export oauth_token="${data.ibm_iam_auth_token.auth_token.iam_access_token}"
+        vpc_api_endpoint="https://${var.region}.iaas.cloud.ibm.com"
+        curl -X POST "$vpc_api_endpoint/v1/keys?version=$cur_date&generation=2" -H "Authorization: $oauth_token" -d '{
+            "name":"${var.prefix}${var.bastion_ssh_key}",
+            "resource_group":{"id":"${var.resource_group_id}"},
+            "public_key":"'"$pub_key"'",
+            "type":"rsa"
+        }'
+        curl -sL https://raw.githubusercontent.com/IBM-Cloud/ibm-cloud-developer-tools/master/linux-installer/idt-installer | bash
+        ibmcloud plugin install vpc-infrastructure     
+        EOUD    
+}
+
 /**
 * Virtual Server Instance for Bastion Server or Jump Server
 * Element : VSI
@@ -17,6 +75,7 @@
 * deletion of this server we are adding a lifecycle block with prevent_destroy=true flag to 
 * protect this. If you want to delete this server then before executing terraform destroy, please update prevent_destroy=false.
 **/
+
 resource "ibm_is_instance" "bastion" {
   name           = "${var.prefix}bastion-vsi"
   keys           = var.user_ssh_key
@@ -25,19 +84,18 @@ resource "ibm_is_instance" "bastion" {
   resource_group = var.resource_group_id
   vpc            = var.vpc_id
   zone           = var.zones[0]
-  user_data      = <<-EOUD
-    #!/bin/bash
-        ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa 2>&1 >/dev/null
-    EOUD
+  user_data      = lower(var.bastion_os_type) == "windows" ? local.win_userdata : local.lin_userdata
 
   primary_network_interface {
-    subnet          = var.subnet
-    security_groups = [var.security_group_id]
+    subnet          = ibm_is_subnet.bastion_sub.id
+    security_groups = [ibm_is_security_group.bastion.id]
   }
   lifecycle {
     prevent_destroy = true
+    ignore_changes = [
+      user_data,
+    ]
   }
-  depends_on = [var.security_group_id]
 }
 
 /**
@@ -55,55 +113,78 @@ resource "ibm_is_floating_ip" "bastion_floating_ip" {
 
 /**
 * This block is for time sleep once bastion server is ready. 
-* Element : Wait for 60 seconds
-* Before scp command to copy the public file from bastion to our local machine, we need to wait for sometime so that bastion server can come in ready state.
+* Element : Wait for few seconds
 **/
-resource "time_sleep" "wait_60_seconds" {
+
+resource "time_sleep" "wait_240_seconds" {
   depends_on      = [ibm_is_floating_ip.bastion_floating_ip]
-  create_duration = "60s"
+  create_duration = "240s"
 }
 
+
 /**
-* Element : Local Executioner
-* This local-exec block will be used to copy id_rsa.pub key file from bastion server to our local machine in key folder.
+* This null resource block is for deleting the dynamic ssh key generated via bastion server. This will execute on terraform destroy. 
+* Element : delete_dynamic_ssh_key
+* This block is for those users who has Linux/Mac as their local machines.
 **/
-resource "null_resource" "copy_ssh_key" {
-  provisioner "local-exec" {
-    command = <<EOT
-      mkdir -p key
-      scp -o StrictHostKeyChecking=no root@${ibm_is_floating_ip.bastion_floating_ip.address}:/root/.ssh/id_rsa.pub key/
-    EOT
+
+resource "null_resource" "delete_dynamic_ssh_key" {
+  count = lower(var.local_machine_os_type) == "windows" ? 0 : 1
+
+  triggers = {
+    region          = var.region
+    api_key         = var.api_key
+    prefix          = var.prefix
+    bastion_ssh_key = var.bastion_ssh_key
+    floating_ip     = ibm_is_floating_ip.bastion_floating_ip.address
   }
-  depends_on = [ibm_is_floating_ip.bastion_floating_ip, time_sleep.wait_60_seconds]
-}
-
-/**
-* This data block will read the contents of id_rsa.pub key file which we copied from bastion server to local. And will pass to the ibm_is_ssh_key.iac_shared_ssh_key resource.
-* This public file contents will be uploaded to IBM cloud on creation of the bastion-ssh-key. This bastion-ssh-key will be attached to App/Web/DB servers and will then be used 
-* to login from Bastion server to the other App/Web/DB servers.
-**/
-
-data "local_file" "input" {
-  filename = "key/id_rsa.pub"
+  provisioner "local-exec" {
+    when    = destroy
+    command = <<EOT
+      echo 'connection success'
+      ibmcloud config --check-version=false
+      ibmcloud login -r ${self.triggers.region} --apikey ${self.triggers.api_key}
+      key_id=$(ibmcloud is keys | grep ${self.triggers.prefix}${self.triggers.bastion_ssh_key} | awk '{print $1}')
+      if [ ! -z "$key_id" ]; then
+          ibmcloud is key-delete $key_id -f
+      fi     
+      ibmcloud logout
+    EOT    
+  }
   depends_on = [
-    null_resource.copy_ssh_key,
+    ibm_is_floating_ip.bastion_floating_ip,
   ]
 }
 
 /**
-* SSH-Key for app/web/db servers
-* Element : SSH-Key
-* This bastion-ssh-key will be attached to the app/web/db servers. Since the private key file of this key pair is only in the bastion server.
-* This will ensure that we can ssh connect to these app/web/db servers from Bastion server only.
+* This null resource block is for deleting the dynamic ssh key generated via bastion server. This will execute on terraform destroy. 
+* Element : delete_dynamic_ssh_key_windows
+* This block is for those users who has Windows as their local machines.
 **/
 
-resource "ibm_is_ssh_key" "iac_shared_ssh_key" {
-  name           = "${var.prefix}${var.bastion_ssh_key}"
-  resource_group = var.resource_group_id
-  public_key     = data.local_file.input.content
-  lifecycle {
-    ignore_changes = [
-      public_key,
-    ]
+resource "null_resource" "delete_dynamic_ssh_key_windows" {
+  count = lower(var.local_machine_os_type) == "windows" ? 1 : 0
+
+  triggers = {
+    region          = var.region
+    api_key         = var.api_key
+    prefix          = var.prefix
+    bastion_ssh_key = var.bastion_ssh_key
+    floating_ip     = ibm_is_floating_ip.bastion_floating_ip.address
   }
+  provisioner "local-exec" {
+    when        = destroy
+    interpreter = ["PowerShell", "-Command"]
+    command     = <<EOT
+      Write-Host "Script starts"
+      ibmcloud config --check-version=false
+      ibmcloud login -r ${self.triggers.region} --apikey ${self.triggers.api_key}
+      $key_id = (ibmcloud is keys | findstr ${self.triggers.prefix}${self.triggers.bastion_ssh_key})
+      ibmcloud is key-delete $key_id.split(" ")[0] -f
+      ibmcloud logout
+    EOT
+  }
+  depends_on = [
+    ibm_is_floating_ip.bastion_floating_ip,
+  ]
 }
