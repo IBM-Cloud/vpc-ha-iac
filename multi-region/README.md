@@ -1,3 +1,8 @@
+## Overview
+The terraform code creates resilient infrastructure in 2 separate regions with a global load balancer.  MZRs need to be in the same geographic location (Americas, Europe, or Asia Pacific).  And the global load balancer directs traffic to the region closest to the user.  The transit gateway provides backend connection between the VPC/MZR.
+
+<img src="./images/3-tier-app-with-autoscale-multi-MZR.jpg" width="650" />
+
 ## Requirements
 
 | Name | Version |
