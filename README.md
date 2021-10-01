@@ -44,7 +44,7 @@ Note: It is recommended to build a golden image that autoscale can fork from.  O
 using the base image, user-data or post-install scripts are required to build the VSI.
 
 ## Use 3: Multi-region
-<img src="./multi-region/images/multi-region-3-tier-autoscale-mzr.png" width="400" />
+<img src="./multi-region/images/3-tier-app-with-autoscale-multi-MZR.jpg" width="400" />
 
 For multi-region, it takes the Use Case 2 and replicates the same infrastructure setup for a
 2nd MZR for active-active.  Resiliency is typically within an MZR, but the second region does
