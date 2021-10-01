@@ -1,7 +1,0 @@
-*.tfstate
-*.backup
-*.json
-.terraform*
-.history
-api_key.tf
-userinput.auto.tfvars

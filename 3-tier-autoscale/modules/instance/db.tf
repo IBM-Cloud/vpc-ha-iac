@@ -12,11 +12,11 @@
 **/
 resource "ibm_is_volume" "data_volume" {
   count          = length(var.total_instance) * length(var.zones)
-  name           = "${var.prefix}volume-${var.zones[count.index % length(var.zones)]}"
+  name           = "${var.prefix}volume-${floor(count.index / length(var.zones)) + 1}-${var.zones[count.index % length(var.zones)]}"
   resource_group = var.resource_group_id
   profile        = var.tiered_profiles[var.bandwidth]
   zone           = var.zones[count.index % length(var.zones)]
-  capacity       = var.size
+  capacity       = var.data_vol_size
 }
 
 /**
@@ -35,11 +35,6 @@ resource "ibm_is_instance" "db" {
   zone           = var.zones[count.index % length(var.zones)]
   depends_on     = [var.db_sg]
   volumes        = [ibm_is_volume.data_volume.*.id[count.index]]
-  user_data      = <<-EOUD
-    #!/bin/bash
-    ip_add=`hostname -I`
-    sed -i "s/nginx/nginx App Server-IP: $ip_add/" /var/www/html/index.nginx-debian.html
-    EOUD
 
   primary_network_interface {
     subnet          = var.subnets[count.index % length(var.zones)]
