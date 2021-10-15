@@ -1,11 +1,11 @@
 # Overview
-The purpose of this repository is to provide various samples of infrastructure as code (IAC) in the
+The goal of this repository is to provide various samples of infrastructure as code (IAC) in the
 form of terraform scripts for setting up resilient infrastructure on IBM Cloud VPC. The terraform
 scripts provide an automated way for developers, DevOps, or system administrators to set up a
-resilient 3-tier application on IBM Cloud Virtual Private Cloud (VPC). While there is no one size
-fit, the intent is to provide example codes for different use cases that can be used either as a
-learning tool or framework to build the resilient infrastructure. It is expected that you will need
-to modify the code to adapt to your business or application requirements.
+resilient 3-tier application with Intel Xeon processors on IBM Cloud Virtual Private Cloud (VPC).
+While there is no one size fit, the intent is to provide example codes for different use cases that
+can be used either as a education tool or framework to build the resilient infrastructure. It is
+expected that you will need to modify the code to adapt to your business or application requirements.
 
 Pre-Requisite:
 - IBM Cloud account
