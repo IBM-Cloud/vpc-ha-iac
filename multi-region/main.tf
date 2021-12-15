@@ -81,7 +81,7 @@ module "cos" {
 
 /**
 * Calling the VPC module for region1 with the following required parameters
-* source: Path of the Source Code of the Public Gateway Module
+* source: Path of the Source Code of the VPC Module
 * prefix: This is the prefix text that will be pre-pended in every resource name created by this module.
 * resource_group_id: The resource group ID
 * providers: Name of the alias from the Providers. It will help to create a vpc for that region.
@@ -99,7 +99,7 @@ module "vpc_region1" {
 
 /**
 * Calling the VPC module for region2 with the following required parameters
-* source: Path of the Source Code of the Public Gateway Module
+* source: Path of the Source Code of the VPC Module
 * prefix: This is the prefix text that will be pre-pended in every resource name created by this module.
 * resource_group_id: The resource group ID
 * providers: Name of the alias from the Providers. It will help to create a vpc for that region.

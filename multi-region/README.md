@@ -3,6 +3,8 @@ The terraform code creates resilient infrastructure in 2 separate regions with a
 
 <img src="./images/3-tier-app-with-autoscale-multi-MZR.jpg" width="650" />
 
+**Note:** Replication between dbs is a post-install and needs to be configured by the db software.
+
 ## Requirements
 
 | Name | Version |
