@@ -56,6 +56,16 @@ variable "db_sg" {
 }
 
 /**
+ * Name: db_vsi_count
+ * Type: number
+ * Desc: Total Database instances that will be created in the user specified zone.
+ **/
+variable "db_vsi_count" {
+  description = "Total Database instances that will be created in the user specified zone."
+  type        = number
+}
+
+/**
 * Name: ssh_key
 * Type: string
 * Description: ssh key to be attached with DB servers
@@ -162,6 +172,26 @@ variable "db_user" {
 **/
 variable "db_pwd" {
   description = "Database user will be created with the specified password"
+  type        = string
+}
+
+/**
+* Name: db_placement_group_id
+* Type: string
+* Desc: Placement group ID to be used for Database servers.
+**/
+variable "db_placement_group_id" {
+  description = "Placement group ID to be used for Database servers."
+  type        = string
+}
+
+/**
+* Name: reregister_rhel
+* Type: string
+* Description: Reregister script for rhel 7.9 for mirror yum repos
+**/
+variable "reregister_rhel" {
+  description = "Reregister script for rhel 7.9 for mirror yum repos"
   type        = string
 }
 

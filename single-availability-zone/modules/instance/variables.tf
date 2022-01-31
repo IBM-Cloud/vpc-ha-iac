@@ -56,13 +56,13 @@ variable "db_sg" {
 }
 
 /**
-* Name: dlb_id
-* Type: string
-* Description: DB load balancer id to be attached with DB servers
-**/
-variable "dlb_id" {
-  description = "DB Load Balancer ID"
-  type        = string
+ * Name: db_vsi_count
+ * Type: number
+ * Desc: Total Database instances that will be created in the user specified zone.
+ **/
+variable "db_vsi_count" {
+  description = "Total Database instances that will be created in the user specified zone."
+  type        = number
 }
 
 /**
@@ -146,13 +146,13 @@ variable "zone" {
 }
 
 /**
-* Name: total_instance
-* Type: number
-* Description: Total instances that will be created in the user specified zone.
+* Name: db_placement_group_id
+* Type: string
+* Desc: Placement group ID to be used for Database servers.
 **/
-variable "total_instance" {
-  description = "Total instances that will be created in the user specified zone."
-  type        = number
+variable "db_placement_group_id" {
+  description = "Placement group ID to be used for Database servers."
+  type        = string
 }
 
 /**

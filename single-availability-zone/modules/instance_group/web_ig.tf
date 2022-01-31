@@ -13,14 +13,14 @@
 
 resource "ibm_is_instance_template" "web_template" {
 
-  name           = "${var.prefix}web-template"
-  vpc            = var.vpc_id
-  zone           = var.zone
-  keys           = var.ssh_key
-  resource_group = var.resource_group_id
-  image          = var.web_image
-  profile        = var.web_config["instance_profile"]
-
+  name            = "${var.prefix}web-template"
+  vpc             = var.vpc_id
+  zone            = var.zone
+  keys            = var.ssh_key
+  resource_group  = var.resource_group_id
+  image           = var.web_image
+  profile         = var.web_config["instance_profile"]
+  placement_group = var.web_placement_group_id
   primary_network_interface {
     subnet          = var.subnets["web"].id
     security_groups = [var.sg_objects["web"].id]

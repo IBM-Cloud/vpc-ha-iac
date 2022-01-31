@@ -324,3 +324,27 @@
 #* Desc:  Literal string value to use as an object content, which will be uploaded as UTF-8 encoded text. Conflicts with content_base64 and content_file. 
 #**/
 #obj_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+/**
+#
+#*   Enter admin_user value. It is username of the admin.
+#*   Here we have   admin_user = "admin"
+#**/
+#wp_admin_user = "admin"
+#
+#/**
+#*   Enter admin_password value. It is the password for the admin.
+#*   Here we have   admin_password = "pass1234"
+#**/
+#wp_admin_password = "pass1234"
+#
+#/**
+#*   Enter blog_title value. It is the title for the website or blog.
+#*   Here we have   blog_title = "Blog Title"
+#**/
+#wp_blog_title = "Blog Title"
+#
+#/**
+#*   Enter admin_email value. It is the email of the admin.
+#*   Here we have   admin_email = "admin@ibm.com"
+#**/
+#wp_admin_email = "admin@ibm.com"

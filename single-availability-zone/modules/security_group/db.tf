@@ -56,21 +56,37 @@ resource "ibm_is_security_group_rule" "db_rule_80" {
   }
 }
 
-/**
-* Security Group Rule for DB Server
-* This inbound rule will allow the Load Balancer to access the DB servers on the DB load balancer listener port.
-**/
-
-resource "ibm_is_security_group_rule" "db_rule_lb_listener" {
+# /**
+# * TODO, Need to remove it, this is for the testing purpose
+# * Security Group for DB Server
+# * This is the sg rule added to check the connection from App to DB server where the mariadb service running on 3306.
+# **/
+resource "ibm_is_security_group_rule" "db_rule_app_3306" {
   group     = ibm_is_security_group.db.id
   direction = "inbound"
-  remote    = ibm_is_security_group.lb_sg.id
-
+  remote    = ibm_is_security_group.app.id
   tcp {
-    port_min = var.dlb_port
-    port_max = var.dlb_port
+    port_min = "3306"
+    port_max = "3306"
   }
 }
+
+
+/**
+* TODO, Need to remove it, this is for the testing purpose
+* Security Group for DB Server
+* This is the sg rule added to check the connection from Web to DB server where the mariadb service running on 3306.
+**/
+resource "ibm_is_security_group_rule" "db_rule_web_3306" {
+  group     = ibm_is_security_group.db.id
+  direction = "inbound"
+  remote    = ibm_is_security_group.web.id
+  tcp {
+    port_min = "3306"
+    port_max = "3306"
+  }
+}
+
 
 /**
 * Security Group Rule for DB Server

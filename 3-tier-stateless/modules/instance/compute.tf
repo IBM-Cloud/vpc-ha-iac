@@ -56,7 +56,7 @@ resource "ibm_is_instance" "app" {
 * This resource will be used to create a DB VSI as per the user input.
 **/
 resource "ibm_is_instance" "db" {
-  count          = length(var.total_instance) * length(var.zones)
+  count          = var.db_vsi_count
   name           = "${var.prefix}db-vsi-${floor(count.index / length(var.zones)) + 1}-${var.zones[count.index % length(var.zones)]}"
   keys           = var.ssh_key
   image          = var.db_image

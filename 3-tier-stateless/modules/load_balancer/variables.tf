@@ -56,16 +56,6 @@ variable "app_subnet" {
 }
 
 /**
-* Name: db_subnet
-* Type: any
-* Desc: This variable will return the objects for the db subnets of all zones.
-**/
-variable "db_subnet" {
-  description = "DB subnets Ids. This is required parameter"
-  type        = any
-}
-
-/**
 * Name: total_instance
 * Type: any
 * Desc: Total instances that will be created per zones per tier.
@@ -96,16 +86,6 @@ variable "app_target" {
 }
 
 /**
-* Name: db_target
-* Type: any
-* Desc: Target interface address of the DB server 
-**/
-variable "db_target" {
-  type        = any
-  description = "Target interface address of the DB server "
-}
-
-/**
 * Name: web_vsi
 * Type: any
 * Desc: VSI reference for web from the instance module 
@@ -123,16 +103,6 @@ variable "web_vsi" {
 variable "app_vsi" {
   type        = any
   description = "VSI reference for app from the instance module"
-}
-
-/**
-* Name: db_vsi
-* Type: any
-* Desc: VSI reference for db from the instance module 
-**/
-variable "db_vsi" {
-  type        = any
-  description = "VSI reference for db from the instance module"
 }
 
 /**
@@ -195,15 +165,6 @@ variable "alb_port" {
   type        = number
 }
 
-/**
-* Name: dlb_port
-* Type: number
-* Desc: This is the DB load balancer listener port
-**/
-variable "dlb_port" {
-  description = "This is the DB load balancer listener port"
-  type        = number
-}
 
 /**               
 #################################################################################################################

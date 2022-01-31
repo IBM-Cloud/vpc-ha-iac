@@ -106,16 +106,6 @@ variable "wlb_id" {
 }
 
 /**
-* Name: dlb_id
-* Type: any
-* Desc: This variable will return the DB Load Balancer ID.
-**/
-variable "dlb_id" {
-  description = "DB Load Balancer ID"
-  type        = any
-}
-
-/**
 * Name: alb_id
 * Type: any
 * Desc: This variable will return the App Load Balancer ID.
@@ -219,6 +209,16 @@ variable "total_instance" {
 variable "bastion_sg" {
   type        = any
   description = "Bastion Security Group "
+}
+
+/**
+* Name: db_vsi_count
+* Type: number
+* Desc: Total Database instances that will be created in the user specified region.
+**/
+variable "db_vsi_count" {
+  description = "Total Database instances that will be created in the user specified region."
+  type        = number
 }
 
 /**

@@ -5,7 +5,7 @@
 ----------------------------------------------------------------------|
 RESOURCE NAME                   REGION1  |  REGION2  |   TOTAL        |
 ----------------------------------------------------------------------|
-* COS Instannce                    01    +     -         =  01
+* COS Instance                     01    +     -         =  01
 * COS Bucket                       01    +     -         =  01
 * COS Object                       01    +     -         =  01
 * VPC                              01    +     01        =  02
@@ -14,28 +14,24 @@ RESOURCE NAME                   REGION1  |  REGION2  |   TOTAL        |
 * Public Gateway                   03    +     03        =  06
 * Subnet                           10    +     10        =  20
 * Security Group                   05    +     05        =  10
-* Security Group Rules             27    +     27        =  54
-* Load Balancers                   03    +     03        =  06
-* Load Balancer Listener           03    +     03        =  06
-* Load Balancer Pool               03    +     03        =  06
-* Load Balancer Pool Member        03    +     03        =  06
+* Security Group Rules             24    +     24        =  48
+* Load Balancers                   02    +     02        =  04
+* Load Balancer Listener           02    +     02        =  04
+* Load Balancer Pool               02    +     02        =  04
 * Bastion VSI                      01    +     01        =  02
 * Instance Template                02    +     02        =  04
 * Instance Group                   02    +     02        =  04
 * Instance Group Manager           02    +     02        =  04
 * Instance Group Policy            08    +     08        =  16
-* Database VSI                     06    +     06        =  12
+* Database VSI                     02    +     02        =  04
 * Time Sleep                       01    +     01        =  02
-* Data Volume                      03    +     03        =  06
+* Data Volume                      02    +     02        =  04
 * Floating IP                      01    +     01        =  02
 * Null Resource                    01    +     01        =  02
-* Data Source ssh_key              04    +     04        =  08
-* Data Source Auth Token           01    +     01        =  02
-* Data Source IG Member            02    +     02        =  04
 
 *---------------------------------------------------------------------|
 *---------------------------------------------------------------------|
-* Total Resources                  97    +     93        = 190        |
+* Total Resources                  76    +     72        = 148        |
 *---------------------------------------------------------------------|
 *---------------------------------------------------------------------|
 **/
@@ -354,7 +350,7 @@ locals {
   min_zones       = min(length(var.zones[local.region1]), length(var.zones[local.region2])) # takes both regions and give min number of zones and it is used to calculate the dynamic IP_count
   web_ip_count    = ceil(var.web_max_servers_count / local.min_zones) + 5 + 2               # 5:reservedIP, 2:load_balancer  
   app_ip_count    = ceil(var.app_max_servers_count / local.min_zones) + 5 + 2               # 5:reservedIP, 2:load_balancer      
-  db_ip_count     = var.db_vsi_count + 5 + 2                                                # 5:reservedIP, 2:load_balancer  
+  db_ip_count     = var.db_vsi_count + 5                                                    # 2:total_db_count 5:reservedIP  
 
   ip_count = {
     "web" = [for valid_web_ip_count in local.valid_ip_counts : valid_web_ip_count if valid_web_ip_count > local.web_ip_count][0]
@@ -372,6 +368,7 @@ locals {
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
 * public_gateway_ids: List of ids of all the public gateways of region 1 where subnets will get attached
 * ip_count: Total number of IP Address for each subnet
+* db_vsi_count: Total Database instances that will be created in the user specified region
 * depends_on: This ensures that the vpc and public gateway objects will be created before the Subnet Module
 * providers: Name of the alias from the Providers. It will help to create a vpc for that region.
 * Here the provider name is ibm and value is jp-tok
@@ -384,6 +381,7 @@ module "subnet_region1" {
   zones              = var.zones[local.region1]
   public_gateway_ids = module.pg_region1.pg_ids
   ip_count           = local.ip_count
+  db_vsi_count       = var.db_vsi_count
   depends_on         = [module.vpc_region1, module.pg_region1]
   providers = {
     ibm = ibm.jp-tok
@@ -399,6 +397,7 @@ module "subnet_region1" {
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
 * public_gateway_ids: List of ids of all the public gateways of region 2 where subnets will get attached
 * ip_count: Total number of IP Address for each subnet
+* db_vsi_count: Total Database instances that will be created in the user specified region
 * depends_on: This ensures that the vpc and public gateway objects will be created before the Subnet Module
 * providers: Name of the alias from the Providers. It will help to create a vpc for that region.
 * Here the provider name is ibm and value is us-east
@@ -411,6 +410,7 @@ module "subnet_region2" {
   zones              = var.zones[local.region2]
   public_gateway_ids = module.pg_region2.pg_ids
   ip_count           = local.ip_count
+  db_vsi_count       = var.db_vsi_count
   depends_on         = [module.vpc_region2, module.pg_region2]
   providers = {
     ibm = ibm.us-east
@@ -424,7 +424,6 @@ module "subnet_region2" {
 * prefix: This is the prefix text that will be pre-pended in every resource name created by this module.
 * resource_group_id: The resource group id
 * alb_port: This is the Application load balancer listener port
-* dlb_port: This is the DB load balancer listener port
 * bastion1_subnet: This is the Bastion-1 subnet CIDR Range
 * bastion2_subnet: This is the Bastion-2 subnet CIDR Range
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
@@ -444,7 +443,6 @@ module "sg_region1" {
   prefix             = "${var.prefix}region-${local.region1}-"
   resource_group_id  = var.resource_group_id
   alb_port           = var.alb_port
-  dlb_port           = var.dlb_port
   bastion1_subnet    = module.bastion_region1.bastion_subnet_cidr
   bastion2_subnet    = module.bastion_region2.bastion_subnet_cidr
   zones              = var.zones[local.region1]
@@ -466,7 +464,6 @@ module "sg_region1" {
 * prefix: This is the prefix text that will be pre-pended in every resource name created by this module.
 * resource_group_id: The resource group id
 * alb_port: This is the Application load balancer listener port
-* dlb_port: This is the DB load balancer listener port
 * bastion1_subnet: This is the Bastion-1 subnet CIDR Range
 * bastion2_subnet: This is the Bastion-2 subnet CIDR Range
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
@@ -486,7 +483,6 @@ module "sg_region2" {
   prefix             = "${var.prefix}region-${local.region2}-"
   resource_group_id  = var.resource_group_id
   alb_port           = var.alb_port
-  dlb_port           = var.dlb_port
   bastion1_subnet    = module.bastion_region1.bastion_subnet_cidr
   bastion2_subnet    = module.bastion_region2.bastion_subnet_cidr
   zones              = var.zones[local.region2]
@@ -511,10 +507,6 @@ module "sg_region2" {
 * lb_sg: load balancer security group to be attached with all the load balancers.
 * subnets: We are passing the Map of subnet objects. It includes all the subnet IDs
 * alb_port: This is the Application load balancer listener port
-* dlb_port: This is the DB load balancer listener port
-* db_target: DB target id
-* db_vsi: DB VSI id
-* db_vsi_count: Total instances that will be created per zones per tier.
 * lb_type_private: This variable will hold the Load Balancer type as private
 * lb_type_public: This variable will hold the Load Balancer type as public
 * lb_protocol: lbaas Protocols
@@ -533,10 +525,6 @@ module "load_balancer_region1" {
   lb_sg             = module.sg_region1.sg_objects["lb"].id
   subnets           = module.subnet_region1.sub_objects
   alb_port          = var.alb_port
-  dlb_port          = var.dlb_port
-  db_target         = module.instance_region1.db_target
-  db_vsi            = module.instance_region1.db_vsi
-  db_vsi_count      = range(var.db_vsi_count)
   lb_type_private   = var.lb_type_private
   lb_type_public    = var.lb_type_public
   lb_protocol       = var.lb_protocol
@@ -558,10 +546,6 @@ module "load_balancer_region1" {
 * lb_sg: load balancer security group to be attached with all the load balancers.
 * subnets: We are passing the Map of subnet objects. It includes all the subnet IDs
 * alb_port: This is the Application load balancer listener port
-* dlb_port: This is the DB load balancer listener port
-* db_target: DB target id
-* db_vsi: DB VSI id
-* db_vsi_count: Total instances that will be created per zones per tier.
 * lb_type_private: This variable will hold the Load Balancer type as private
 * lb_type_public: This variable will hold the Load Balancer type as public
 * lb_protocol: lbaas Protocols
@@ -580,10 +564,6 @@ module "load_balancer_region2" {
   lb_sg             = module.sg_region2.sg_objects["lb"].id
   subnets           = module.subnet_region2.sub_objects
   alb_port          = var.alb_port
-  dlb_port          = var.dlb_port
-  db_target         = module.instance_region2.db_target
-  db_vsi            = module.instance_region2.db_vsi
-  db_vsi_count      = range(var.db_vsi_count)
   lb_type_private   = var.lb_type_private
   lb_type_public    = var.lb_type_public
   lb_protocol       = var.lb_protocol
@@ -609,7 +589,6 @@ module "load_balancer_region2" {
 * db_profile: Hardware configuration profile for the DB VSI
 * subnets: Subnet ID for the Database VSI
 * db_sg: Security group id to be attached with DB VSI
-* dlb_id: DB Load balancer ID to be integrated with DB instances
 * db_vsi_count: Total instances that will be created per zones per tier.
 * tiered_profiles: Tiered profiles for Input/Output per seconds in GBs
 * depends_on: This ensures that the subnets, security group and bastion object will be created before the instance
@@ -629,8 +608,7 @@ module "instance_region1" {
   db_profile        = var.db_profile
   subnets           = module.subnet_region1.sub_objects["db"].*.id
   db_sg             = module.sg_region1.sg_objects["db"].id
-  dlb_id            = tostring(module.load_balancer_region1.objects["lb"]["db"].id)
-  db_vsi_count      = range(var.db_vsi_count)
+  db_vsi_count      = var.db_vsi_count
   tiered_profiles   = var.tiered_profiles
   depends_on        = [module.subnet_region1.ibm_is_subnet, module.sg_region1, module.bastion_region1, module.bastion_region2]
   providers = {
@@ -652,7 +630,6 @@ module "instance_region1" {
 * db_profile: Hardware configuration profile for the DB VSI
 * subnets: Subnet ID for the Database VSI
 * db_sg: Security group id to be attached with DB VSI
-* dlb_id: DB Load balancer ID to be integrated with DB instances
 * db_vsi_count: Total instances that will be created per zones per tier.
 * tiered_profiles: Tiered profiles for Input/Output per seconds in GBs
 * depends_on: This ensures that the subnets, security group and bastion object will be created before the instance
@@ -673,8 +650,7 @@ module "instance_region2" {
   db_profile        = var.db_profile
   subnets           = module.subnet_region2.sub_objects["db"].*.id
   db_sg             = module.sg_region2.sg_objects["db"].id
-  dlb_id            = tostring(module.load_balancer_region2.objects["lb"]["db"].id)
-  db_vsi_count      = range(var.db_vsi_count)
+  db_vsi_count      = var.db_vsi_count
   tiered_profiles   = var.tiered_profiles
   depends_on        = [module.subnet_region2.ibm_is_subnet, module.sg_region2, module.bastion_region1, module.bastion_region2]
   providers = {

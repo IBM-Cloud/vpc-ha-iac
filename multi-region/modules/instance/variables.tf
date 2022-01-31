@@ -56,17 +56,6 @@ variable "db_sg" {
 }
 
 /**
-* Name: dlb_id
-* Type: string
-* Description: DB load balancer id to be attached with DB servers
-**/
-
-variable "dlb_id" {
-  description = "DB Load Balancer ID"
-  type        = string
-}
-
-/**
 * Name: ssh_key
 * Type: string
 * Description: ssh key to be attached with DB servers

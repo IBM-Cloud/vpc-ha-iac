@@ -16,7 +16,7 @@
 * Instance Group Manager        = 2
 * Instance Group Policy         = 8
 * Database VSI                  = 2
-* Time Sleep                    = 1
+* Time Sleep                    = 2
 * Data Volume                   = 2
 * Null Resource                 = 1
 * Data Source Auth Token        = 1
@@ -30,7 +30,7 @@
 * VPC Routing Table Route       = 1
 *--------------------------------------|
 *--------------------------------------|
-* Total Resources               = 72   |
+* Total Resources               = 73   |
 *--------------------------------------|
 *--------------------------------------|
 **/
@@ -148,7 +148,7 @@ locals {
   valid_ip_counts = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
   web_ip_count    = ceil(var.web_max_servers_count / length(var.zones[var.region])) + 5 + 2 # 5:reservedIP, 2:load_balancer  
   app_ip_count    = ceil(var.app_max_servers_count / length(var.zones[var.region])) + 5 + 2 # 5:reservedIP, 2:load_balancer      
-  db_ip_count     = 2 + 5                                                                   # 2:total_db_count # 5:reservedIP 
+  db_ip_count     = var.db_vsi_count + 5                                                    # db_vsi_count:total_db_count, 5:reservedIP
 
   ip_count = {
     "web" = [for valid_web_ip_count in local.valid_ip_counts : valid_web_ip_count if valid_web_ip_count > local.web_ip_count][0]
@@ -165,6 +165,7 @@ locals {
 * resource_group_id: The resource group ID
 * zones: List of zones for the provided region. If region is us-south then zones would be ["us-south-1","us-south-2","us-south-3"]
 * ip_count: Total number of IP Address for each subnet
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * public_gateway_ids: List of ids of all the public gateways of region 1 where subnets will get attached
 * depends_on: This ensures that the vpc object will be created before the Subnet Module
 **/
@@ -175,6 +176,7 @@ module "subnet" {
   resource_group_id  = var.resource_group_id
   zones              = var.zones[var.region]
   ip_count           = local.ip_count
+  db_vsi_count       = var.db_vsi_count
   public_gateway_ids = module.public_gateway.pg_ids
   depends_on         = [module.vpc]
 }
@@ -254,6 +256,7 @@ module "load_balancer" {
 * data_vol_size: Storage size in GB. The value should be between 10 and 2000
 * db_image: Image id to be used with DB VSI
 * db_profile: Hardware configuration profile for the DB VSI
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * tiered_profiles: Tiered profiles for Input/Output per seconds in GBs
 * subnets: Subnet ID for the Database VSI
 * db_sg: Security group id to be attached with DB VSI
@@ -271,6 +274,7 @@ module "instance" {
   data_vol_size     = var.data_vol_size
   db_image          = var.db_image
   db_profile        = var.db_profile
+  db_vsi_count      = var.db_vsi_count
   tiered_profiles   = var.tiered_profiles
   subnets           = module.subnet.sub_objects["db"].*.id
   db_sg             = module.security_group.sg_objects["db"].id
@@ -338,6 +342,11 @@ module "instance_group" {
   db_pwd                 = var.db_pwd
   db_user                = var.db_user
   db_name                = var.db_name
+  web_lb_hostname        = module.load_balancer.lb_dns.WEB_SERVER
+  wp_blog_title          = var.wp_blog_title
+  wp_admin_user          = var.wp_admin_user
+  wp_admin_password      = var.wp_admin_password
+  wp_admin_email         = var.wp_admin_email
   depends_on             = [module.bastion, module.load_balancer]
 }
 

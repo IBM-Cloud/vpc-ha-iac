@@ -111,7 +111,7 @@ resource "ibm_is_security_group_rule" "db_outbound" {
 **/
 
 resource "ibm_is_security_group_rule" "db_rule_80_region1" {
-  count     = 2
+  count     = var.db_vsi_count
   group     = ibm_is_security_group.db.id
   direction = "inbound"
   remote    = var.db_region1_subnets[count.index]
@@ -122,7 +122,7 @@ resource "ibm_is_security_group_rule" "db_rule_80_region1" {
 }
 
 resource "ibm_is_security_group_rule" "db_rule_80_region2" {
-  count     = 2
+  count     = var.db_vsi_count
   group     = ibm_is_security_group.db.id
   direction = "inbound"
   remote    = var.db_region2_subnets[count.index]

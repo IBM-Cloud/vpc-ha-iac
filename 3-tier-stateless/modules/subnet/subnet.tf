@@ -40,7 +40,7 @@ resource "ibm_is_subnet" "app_subnet" {
 * This resource will be used to create a subnet for DB Servers.
 **/
 resource "ibm_is_subnet" "db_subnet" {
-  count                    = length(var.zones)
+  count                    = var.db_vsi_count
   name                     = "${var.prefix}zone-${count.index + 1}-db"
   vpc                      = var.vpc_id
   resource_group           = var.resource_group_id

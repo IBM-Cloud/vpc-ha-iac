@@ -234,3 +234,27 @@
 # *   Here we have   db_pwd = "start123"
 # **/
 # db_pwd = "start123"
+
+# /**
+# *   Enter admin_user value. It is username of the admin.
+# *   Here we have   wp_admin_user = "admin"
+# **/
+#wp_admin_user = "admin"
+
+# /**
+# *   Enter admin_password value. It is the password for the admin.
+# *   Here we have   wp_admin_password = "pass1234"
+# **/
+#wp_admin_password = "pass1234"
+
+# /**
+# *   Enter blog_title value. It is the title for the website or blog.
+# *   Here we have   wp_blog_title = "Blog Title"
+# **/
+#wp_blog_title = "Blog Title"
+
+# /**
+# *   Enter admin_email value. It is the email of the admin.
+# *   Here we have   wp_admin_email = "admin@ibm.com"
+# **/
+#wp_admin_email = "admin@ibm.com"

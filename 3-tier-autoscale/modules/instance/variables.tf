@@ -56,16 +56,6 @@ variable "db_sg" {
 }
 
 /**
-* Name: dlb_id
-* Type: string
-* Description: DB load balancer id to be attached with DB servers
-**/
-variable "dlb_id" {
-  description = "DB Load Balancer ID"
-  type        = string
-}
-
-/**
 * Name: ssh_key
 * Type: string
 * Description: ssh key to be attached with DB servers
@@ -146,11 +136,11 @@ variable "zones" {
 }
 
 /**
-* Name: total_instance
+* Name: db_vsi_count
 * Type: any
 * Description: Total instances that will be created per zones per tier.
 **/
-variable "total_instance" {
+variable "db_vsi_count" {
   description = "Please enter the total number of instances you want to create in each zones."
   type        = any
 }

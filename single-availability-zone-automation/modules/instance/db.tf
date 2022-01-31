@@ -33,6 +33,12 @@ locals {
 
   lin_userdata_db_rhel = <<-EOUD
       #!/bin/bash
+      if cat /etc/redhat-release |grep -i "release 7"
+      then
+      ###############################################
+      ${var.reregister_rhel}
+      ###############################################
+      fi
       db_name=${var.db_name}
       db_user=${var.db_user}
       db_pwd=${var.db_pwd}      
@@ -65,7 +71,7 @@ locals {
 * This extra storage volume will be attached to the DB servers as per the user specified size and bandwidth
 **/
 resource "ibm_is_volume" "data_volume" {
-  count          = 2
+  count          = var.db_vsi_count
   name           = "${var.prefix}volume-${count.index + 1}-${var.zone}"
   resource_group = var.resource_group_id
   profile        = var.tiered_profiles[var.bandwidth]
@@ -79,17 +85,18 @@ resource "ibm_is_volume" "data_volume" {
 * This resource will be used to create a DB VSI as per the user input.
 **/
 resource "ibm_is_instance" "db" {
-  count          = 2
-  name           = "${var.prefix}db-vsi-${count.index + 1}-${var.zone}"
-  keys           = var.ssh_key
-  image          = var.db_image
-  profile        = var.db_profile
-  resource_group = var.resource_group_id
-  vpc            = var.vpc_id
-  zone           = var.zone
-  depends_on     = [var.db_sg]
-  user_data      = split("-", data.ibm_is_image.db_os.os)[0] == "ubuntu" ? local.lin_userdata_db_ubuntu : local.lin_userdata_db_rhel
-  volumes        = [ibm_is_volume.data_volume.*.id[count.index]]
+  count           = var.db_vsi_count
+  name            = "${var.prefix}db-vsi-${count.index + 1}-${var.zone}"
+  keys            = var.ssh_key
+  image           = var.db_image
+  profile         = var.db_profile
+  resource_group  = var.resource_group_id
+  vpc             = var.vpc_id
+  zone            = var.zone
+  placement_group = var.db_placement_group_id
+  depends_on      = [var.db_sg]
+  user_data       = split("-", data.ibm_is_image.db_os.os)[0] == "ubuntu" ? local.lin_userdata_db_ubuntu : local.lin_userdata_db_rhel
+  volumes         = [ibm_is_volume.data_volume.*.id[count.index]]
 
   primary_network_interface {
     subnet          = var.subnet

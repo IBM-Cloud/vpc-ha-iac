@@ -19,10 +19,16 @@ EOUD
 
   lin_userdata_app_rhel = <<-EOUD
   #!/bin/bash
+  if cat /etc/redhat-release |grep -i "release 7"
+  then
+  ###############################################
+  ${var.reregister_rhel}
+  ###############################################
+  fi
   yum update -y
   yum install -y httpd php git
   yum install -y php-devel
-  yum install -y php-pear php-json php-gd php-mysqlnd
+  yum install -y php-pear php-json php-gd
   yum install -y wget
   systemctl start httpd && systemctl enable httpd
   echo "Welcome to the IBM" > /var/www/html/index.html
@@ -47,14 +53,15 @@ EOUD
 **/
 resource "ibm_is_instance_template" "app_template" {
 
-  name           = "${var.prefix}app-template"
-  vpc            = var.vpc_id
-  zone           = var.zone
-  keys           = var.ssh_key
-  resource_group = var.resource_group_id
-  image          = var.app_image
-  profile        = var.app_config["instance_profile"]
-  user_data      = split("-", data.ibm_is_image.app_os.os)[0] == "ubuntu" ? local.lin_userdata_app_ubuntu : local.lin_userdata_app_rhel
+  name            = "${var.prefix}app-template"
+  vpc             = var.vpc_id
+  zone            = var.zone
+  keys            = var.ssh_key
+  resource_group  = var.resource_group_id
+  image           = var.app_image
+  profile         = var.app_config["instance_profile"]
+  placement_group = var.app_placement_group_id
+  user_data       = split("-", data.ibm_is_image.app_os.os)[0] == "ubuntu" ? local.lin_userdata_app_ubuntu : local.lin_userdata_app_rhel
   primary_network_interface {
     subnet          = var.subnets["app"].id
     security_groups = [var.sg_objects["app"].id]

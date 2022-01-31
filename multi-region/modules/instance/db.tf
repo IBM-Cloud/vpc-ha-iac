@@ -11,7 +11,7 @@
 * This extra storage volume will be attached to the DB servers as per the user specified size and bandwidth
 **/
 resource "ibm_is_volume" "data_volume" {
-  count          = length(var.db_vsi_count) * length(var.zones)
+  count          = var.db_vsi_count
   name           = "${var.prefix}volume-${floor(count.index / length(var.zones)) + 1}-${var.zones[count.index % length(var.zones)]}"
   resource_group = var.resource_group_id
   profile        = var.tiered_profiles[var.bandwidth]
@@ -25,7 +25,7 @@ resource "ibm_is_volume" "data_volume" {
 * This resource will be used to create a DB VSI as per the user input.
 **/
 resource "ibm_is_instance" "db" {
-  count          = length(var.db_vsi_count) * length(var.zones)
+  count          = var.db_vsi_count
   name           = "${var.prefix}db-vsi-${floor(count.index / length(var.zones)) + 1}-${var.zones[count.index % length(var.zones)]}"
   keys           = var.ssh_key
   image          = var.db_image

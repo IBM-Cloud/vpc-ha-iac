@@ -360,7 +360,7 @@ locals {
   min_zones       = min(length(var.zones[local.region1]), length(var.zones[local.region2])) # takes both regions and give min number of zones and it is used to calculate the dynamic IP_count
   web_ip_count    = ceil(var.web_max_servers_count / local.min_zones) + 5 + 2               # 5:reservedIP, 2:load_balancer  
   app_ip_count    = ceil(var.app_max_servers_count / local.min_zones) + 5 + 2               # 5:reservedIP, 2:load_balancer      
-  db_ip_count     = 2 + 5                                                                   # 2:total_db_count # 5:reservedIP
+  db_ip_count     = var.db_vsi_count + 5                                                    # db_vsi_count:total_db_count, 5:reservedIP
 
   ip_count = {
     "web" = [for valid_web_ip_count in local.valid_ip_counts : valid_web_ip_count if valid_web_ip_count > local.web_ip_count][0]
@@ -378,6 +378,7 @@ locals {
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
 * public_gateway_ids: List of ids of all the public gateways of region 1 where subnets will get attached
 * ip_count: Total number of IP Address for each subnet
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * depends_on: This ensures that the vpc and public gateway objects will be created before the Subnet Module
 * providers: Name of the alias from the Providers. It will help to create a vpc for that region.
 * Here the provider name is ibm and value is jp-tok
@@ -390,6 +391,7 @@ module "subnet_region1" {
   zones              = var.zones[local.region1]
   public_gateway_ids = module.pg_region1.pg_ids
   ip_count           = local.ip_count
+  db_vsi_count       = var.db_vsi_count
   depends_on         = [module.vpc_region1, module.pg_region1]
   providers = {
     ibm = ibm.jp-tok
@@ -405,6 +407,7 @@ module "subnet_region1" {
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
 * public_gateway_ids: List of ids of all the public gateways of region 2 where subnets will get attached
 * ip_count: Total number of IP Address for each subnet
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * depends_on: This ensures that the vpc and public gateway objects will be created before the Subnet Module
 * providers: Name of the alias from the Providers. It will help to create a vpc for that region.
 * Here the provider name is ibm and value is jp-osa
@@ -417,6 +420,7 @@ module "subnet_region2" {
   zones              = var.zones[local.region2]
   public_gateway_ids = module.pg_region2.pg_ids
   ip_count           = local.ip_count
+  db_vsi_count       = var.db_vsi_count
   depends_on         = [module.vpc_region2, module.pg_region2]
   providers = {
     ibm = ibm.jp-osa
@@ -435,6 +439,7 @@ module "subnet_region2" {
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
 * db_region1_subnets: Region1 DB subnet CIDR range list
 * db_region2_subnets: Region2 DB subnet CIDR range list
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * app_os_type: OS image to be used [Windows | Linux] for App Server
 * web_os_type: OS image to be used [Windows | Linux] for Web Server
 * db_os_type: OS image to be used [Windows | Linux] for DB Server
@@ -454,6 +459,7 @@ module "sg_region1" {
   zones              = var.zones[local.region1]
   db_region1_subnets = module.subnet_region1.sub_objects["db"].*.ipv4_cidr_block
   db_region2_subnets = module.subnet_region2.sub_objects["db"].*.ipv4_cidr_block
+  db_vsi_count       = var.db_vsi_count
   app_os_type        = var.app_os_type
   web_os_type        = var.web_os_type
   db_os_type         = var.db_os_type
@@ -475,6 +481,7 @@ module "sg_region1" {
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
 * db_region1_subnets: Region1 DB subnet CIDR range list
 * db_region2_subnets: Region2 DB subnet CIDR range list
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * app_os_type: OS image to be used [Windows | Linux] for App Server
 * web_os_type: OS image to be used [Windows | Linux] for Web Server
 * db_os_type: OS image to be used [Windows | Linux] for DB Server
@@ -494,6 +501,7 @@ module "sg_region2" {
   zones              = var.zones[local.region2]
   db_region1_subnets = module.subnet_region1.sub_objects["db"].*.ipv4_cidr_block
   db_region2_subnets = module.subnet_region2.sub_objects["db"].*.ipv4_cidr_block
+  db_vsi_count       = var.db_vsi_count
   app_os_type        = var.app_os_type
   web_os_type        = var.web_os_type
   db_os_type         = var.db_os_type
@@ -593,6 +601,7 @@ module "load_balancer_region2" {
 * data_vol_size: Storage size in GB. The value should be between 10 and 2000
 * db_image: Image id to be used with DB VSI
 * db_profile: Hardware configuration profile for the DB VSI
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * subnets: Subnet ID for the Database VSI
 * db_sg: Security group id to be attached with DB VSI
 * tiered_profiles: Tiered profiles for Input/Output per seconds in GBs
@@ -611,6 +620,7 @@ module "instance_region1" {
   data_vol_size     = var.data_vol_size
   db_image          = var.db_image_region1
   db_profile        = var.db_profile
+  db_vsi_count      = var.db_vsi_count
   subnets           = module.subnet_region1.sub_objects["db"].*.id
   db_sg             = module.sg_region1.sg_objects["db"].id
   tiered_profiles   = var.tiered_profiles
@@ -635,6 +645,7 @@ module "instance_region1" {
 * data_vol_size: Storage size in GB. The value should be between 10 and 2000
 * db_image: Image id to be used with DB VSI
 * db_profile: Hardware configuration profile for the DB VSI
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * subnets: Subnet ID for the Database VSI
 * db_sg: Security group id to be attached with DB VSI
 * tiered_profiles: Tiered profiles for Input/Output per seconds in GBs
@@ -654,6 +665,7 @@ module "instance_region2" {
   data_vol_size     = var.data_vol_size
   db_image          = var.db_image_region2
   db_profile        = var.db_profile
+  db_vsi_count      = var.db_vsi_count
   subnets           = module.subnet_region2.sub_objects["db"].*.id
   db_sg             = module.sg_region2.sg_objects["db"].id
   tiered_profiles   = var.tiered_profiles
@@ -724,6 +736,11 @@ module "instance_group_region1" {
   db_pwd                 = var.db_pwd
   db_user                = var.db_user
   db_name                = var.db_name
+  web_lb_hostname        = module.load_balancer_region1.lb_dns.WEB_SERVER
+  wp_blog_title          = var.wp_blog_title
+  wp_admin_user          = var.wp_admin_user
+  wp_admin_password      = var.wp_admin_password
+  wp_admin_email         = var.wp_admin_email
   depends_on             = [module.bastion_region1, module.bastion_region2, module.load_balancer_region1]
   providers = {
     ibm = ibm.jp-tok
@@ -788,6 +805,11 @@ module "instance_group_region2" {
   db_pwd                 = var.db_pwd
   db_user                = var.db_user
   db_name                = var.db_name
+  web_lb_hostname        = module.load_balancer_region2.lb_dns.WEB_SERVER
+  wp_blog_title          = var.wp_blog_title
+  wp_admin_user          = var.wp_admin_user
+  wp_admin_password      = var.wp_admin_password
+  wp_admin_email         = var.wp_admin_email
   depends_on             = [module.bastion_region1, module.bastion_region2, module.load_balancer_region2]
   providers = {
     ibm = ibm.jp-osa

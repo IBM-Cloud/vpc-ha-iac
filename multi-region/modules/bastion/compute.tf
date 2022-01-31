@@ -1,6 +1,6 @@
 /**
 #################################################################################################################
-*                           Resources Section for the Bastion Module.
+*                              Resources Section for the Bastion Module.
 #################################################################################################################
 */
 
@@ -90,7 +90,7 @@ locals {
 * cloud resources within the same VPC. It is used to secure other servers to only allow access from bastion server. 
 * For this, we will generate a ssh_key on the bastion server dynamically as part of its user data. And will use the public key contents of this 
 * same generated key to create the bastion-ssh-key on IBM Cloud. And this bastion-ssh-key will be attached to all other VSI. 
-* This is will ensure the server access only from the Bastion.
+* This will ensure the server access only from the Bastion.
 
 * As this bastion server is very important to access other VSI. So to prevent the accidental 
 * deletion of this server we are adding a lifecycle block with prevent_destroy=true flag to 
@@ -157,28 +157,47 @@ resource "null_resource" "delete_dynamic_ssh_key" {
     api_key         = var.api_key
     prefix          = var.prefix
     bastion_ssh_key = local.bastion_ssh_key
-    floating_ip     = ibm_is_floating_ip.bastion_floating_ip.address
   }
   provisioner "local-exec" {
     when    = destroy
-    command = <<EOT
+    command = <<-EOT
       echo 'connection success'
       ibmcloud config --check-version=false
+      i=3
       ibmcloud login -r ${self.triggers.region1} --apikey ${self.triggers.api_key}
+      while [ $? -ne 0 ] && [ $i -gt 0 ]; do
+          i=$(( i - 1 ))
+          ibmcloud login -r ${self.triggers.region1} --apikey ${self.triggers.api_key}
+      done
       key_id=$(ibmcloud is keys | grep ${self.triggers.prefix}${self.triggers.bastion_ssh_key} | awk '{print $1}')
       if [ ! -z "$key_id" ]; then
+          i=3
           ibmcloud is key-delete $key_id -f
+          while [ $? -ne 0 ] && [ $i -gt 0 ]; do
+              i=$(( i - 1 ))
+              ibmcloud is key-delete $key_id -f
+          done          
       fi
       ibmcloud config --check-version=false
-      ibmcloud login -r ${self.triggers.region2} --apikey ${self.triggers.api_key}
+      i=3
+      ibmcloud target -r ${self.triggers.region2}
+      while [ $? -ne 0 ] && [ $i -gt 0 ]; do
+          i=$(( i - 1 ))
+          ibmcloud target -r ${self.triggers.region2}
+      done
       key_id=$(ibmcloud is keys | grep ${self.triggers.prefix}${self.triggers.bastion_ssh_key} | awk '{print $1}')
       if [ ! -z "$key_id" ]; then
+          i=3
           ibmcloud is key-delete $key_id -f
+          while [ $? -ne 0 ] && [ $i -gt 0 ]; do
+              i=$(( i - 1 ))
+              ibmcloud is key-delete $key_id -f
+          done           
       fi  
     EOT    
   }
   depends_on = [
-    ibm_is_floating_ip.bastion_floating_ip,
+    ibm_is_instance.bastion,
   ]
 }
 
@@ -197,24 +216,43 @@ resource "null_resource" "delete_dynamic_ssh_key_windows" {
     api_key         = var.api_key
     prefix          = var.prefix
     bastion_ssh_key = local.bastion_ssh_key
-    floating_ip     = ibm_is_floating_ip.bastion_floating_ip.address
   }
   provisioner "local-exec" {
     when        = destroy
     interpreter = ["PowerShell", "-Command"]
-    command     = <<EOT
+    command     = <<-EOT
       Write-Host "Script starts"
       ibmcloud config --check-version=false
+      $i=3
       ibmcloud login -r ${self.triggers.region1} --apikey ${self.triggers.api_key}
+      while (($? -eq $false) -and ( $i -gt 0 )){
+          $i=( $i - 1 )
+          ibmcloud login -r ${self.triggers.region1} --apikey ${self.triggers.api_key}
+      }       
       $key_id = (ibmcloud is keys | findstr ${self.triggers.prefix}${self.triggers.bastion_ssh_key})
+      $i=3
       ibmcloud is key-delete $key_id.split(" ")[0] -f
+      while (($? -eq $false) -and ( $i -gt 0 )){
+          $i=( $i - 1 )
+          ibmcloud is key-delete $key_id.split(" ")[0] -f
+      }      
       ibmcloud config --check-version=false
-      ibmcloud login -r ${self.triggers.region2} --apikey ${self.triggers.api_key}
+      $i=3
+      ibmcloud target -r ${self.triggers.region2}
+      while (($? -eq $false) -and ( $i -gt 0 )){
+          $i=( $i - 1 )
+          ibmcloud target -r ${self.triggers.region2}
+      }       
       $key_id = (ibmcloud is keys | findstr ${self.triggers.prefix}${self.triggers.bastion_ssh_key})
-      ibmcloud is key-delete $key_id.split(" ")[0] -f      
+      $i=3
+      ibmcloud is key-delete $key_id.split(" ")[0] -f   
+      while (($? -eq $false) -and ( $i -gt 0 )){
+          $i=( $i - 1 )
+          ibmcloud is key-delete $key_id.split(" ")[0] -f
+      }
     EOT
   }
   depends_on = [
-    ibm_is_floating_ip.bastion_floating_ip,
+    ibm_is_instance.bastion,
   ]
 }

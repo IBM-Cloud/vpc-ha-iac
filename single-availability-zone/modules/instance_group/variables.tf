@@ -58,6 +58,7 @@ variable "sg_objects" {
   type        = map(any)
 }
 
+
 #################################################################################################################
 ##                                      Load Balancer Section                                                  ## 
 #################################################################################################################
@@ -277,9 +278,31 @@ variable "web_cpu_threshold" {
   type        = number
 }
 
+/**
+* Name: web_placement_group_id
+* Type: string
+* Desc: Placement group ID to be used for Web servers.
+**/
+variable "web_placement_group_id" {
+  description = "Placement group ID to be used for Web servers."
+  type        = string
+}
+
+/**
+* Name: app_placement_group_id
+* Type: string
+* Desc: Placement group ID to be used for App servers.
+**/
+variable "app_placement_group_id" {
+  description = "Placement group ID to be used for App servers."
+  type        = string
+}
 
 /**
 #################################################################################################################
 *                               End of the Variable Section 
 #################################################################################################################
 **/
+
+
+

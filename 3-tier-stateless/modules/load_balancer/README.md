@@ -17,16 +17,12 @@ No modules.
 | Name | Type |
 |------|------|
 | [ibm_is_lb.app_lb](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb) | resource |
-| [ibm_is_lb.db_lb](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb) | resource |
 | [ibm_is_lb.web_lb](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb) | resource |
 | [ibm_is_lb_listener.app_listener](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_listener) | resource |
-| [ibm_is_lb_listener.db_listener](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_listener) | resource |
 | [ibm_is_lb_listener.web_listener](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_listener) | resource |
 | [ibm_is_lb_pool.app_pool](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool) | resource |
-| [ibm_is_lb_pool.db_pool](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool) | resource |
 | [ibm_is_lb_pool.web_pool](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool) | resource |
 | [ibm_is_lb_pool_member.app_lb_member](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool_member) | resource |
-| [ibm_is_lb_pool_member.db_lb_member](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool_member) | resource |
 | [ibm_is_lb_pool_member.web_lb_member](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/resources/is_lb_pool_member) | resource |
 
 ## Inputs
@@ -37,10 +33,6 @@ No modules.
 | <a name="input_app_subnet"></a> [app\_subnet](#input\_app\_subnet) | App subnets Ids. This is required parameter | `any` | n/a | yes |
 | <a name="input_app_target"></a> [app\_target](#input\_app\_target) | Target interface address of the app server | `any` | n/a | yes |
 | <a name="input_app_vsi"></a> [app\_vsi](#input\_app\_vsi) | VSI reference for app from the instance module | `any` | n/a | yes |
-| <a name="input_db_subnet"></a> [db\_subnet](#input\_db\_subnet) | DB subnets Ids. This is required parameter | `any` | n/a | yes |
-| <a name="input_db_target"></a> [db\_target](#input\_db\_target) | Target interface address of the DB server | `any` | n/a | yes |
-| <a name="input_db_vsi"></a> [db\_vsi](#input\_db\_vsi) | VSI reference for db from the instance module | `any` | n/a | yes |
-| <a name="input_dlb_port"></a> [dlb\_port](#input\_dlb\_port) | This is the DB load balancer listener port | `number` | n/a | yes |
 | <a name="input_lb_algo"></a> [lb\_algo](#input\_lb\_algo) | lbaaS backend distribution algorithm | `map(any)` | n/a | yes |
 | <a name="input_lb_port_number"></a> [lb\_port\_number](#input\_lb\_port\_number) | declare lbaaS pool member port numbert | `map(any)` | n/a | yes |
 | <a name="input_lb_protocol"></a> [lb\_protocol](#input\_lb\_protocol) | lbaaS protocols | `map(any)` | n/a | yes |
@@ -62,10 +54,6 @@ No modules.
 | <a name="output_app_lb_id"></a> [app\_lb\_id](#output\_app\_lb\_id) | App load balancer ID |
 | <a name="output_app_lb_ip"></a> [app\_lb\_ip](#output\_app\_lb\_ip) | App load balancer IP |
 | <a name="output_app_lb_pool_id"></a> [app\_lb\_pool\_id](#output\_app\_lb\_pool\_id) | App load balancer pool ID |
-| <a name="output_db_lb_hostname"></a> [db\_lb\_hostname](#output\_db\_lb\_hostname) | DB load balancer Hostname |
-| <a name="output_db_lb_id"></a> [db\_lb\_id](#output\_db\_lb\_id) | DB load balancer ID |
-| <a name="output_db_lb_ip"></a> [db\_lb\_ip](#output\_db\_lb\_ip) | Web load balancer IP |
-| <a name="output_db_lb_pool_id"></a> [db\_lb\_pool\_id](#output\_db\_lb\_pool\_id) | DB load balancer pool ID |
 | <a name="output_web_lb_hostname"></a> [web\_lb\_hostname](#output\_web\_lb\_hostname) | Web load balancer Hostname |
 | <a name="output_web_lb_id"></a> [web\_lb\_id](#output\_web\_lb\_id) | Web load balancer ID |
 | <a name="output_web_lb_ip"></a> [web\_lb\_ip](#output\_web\_lb\_ip) | Web load balancer ID |

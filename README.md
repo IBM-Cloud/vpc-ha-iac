@@ -1,11 +1,11 @@
 # Overview
 
-The goal of this repository is to provide various samples of infrastructure as code (IAC) in the
+This repository aims to provide various samples of infrastructure as code (IAC) in the
 form of terraform scripts for setting up resilient infrastructure on IBM Cloud VPC. The terraform
-scripts provide an automated way for developers, DevOps, or system administrators to set up a
+scripts offer developers, DevOps, or system administrators an automated way to set up a
 resilient 3-tier application with Intel Xeon processors on IBM Cloud Virtual Private Cloud (VPC).
 While there is no one size fit, the intent is to provide example codes for different use cases that
-can be used either as an education tool or framework to build the resilient infrastructure. It is
+can be used either as an educational tool or framework to build the resilient infrastructure. It is
 expected that you will need to modify the code to adapt to your business or application requirements.
 
 Pre-Requisite:
@@ -28,7 +28,7 @@ Does NOT:
 
 Setting up a resilient infrastructure for a 3-tier application (web, app, and db) in a single MZR.
 Each tier will span across the 3 different availability zones. Every tier, the VSIs are created
-across the different availability zones to protect against a single point of failure against
+across the other availability zones to protect against a single point of failure against
 component and availability zone.
 
 In addition, the following are created:
@@ -36,7 +36,7 @@ In addition, the following are created:
 - All VSIs are private only and should be linux
 - Application load balancer for all 3 tiers to distribute traffic to healthy VSIs.
 - Security groups to limit communication within a tier and with adjacent tier
-- Bastion server with public interface and should be linux
+- Bastion server with a public interface and should be linux
 
 ## Use 2: 3 Tier application with autoscale
 
@@ -77,22 +77,18 @@ For db, the tf file is located in the instance module.
 This uses the same infrastructure described in the aforementioned above sections, 3-tier with
 autoscale (MZR) and cross-MZR.
 
-### SZR Experimental
+### Single Availability Zone
 
-This is an experimental as the code has yet to incorporate placement groups. While it does not
-have placement group, the VSI scheduler will **_try_** to place the VSI on different host but is
-not guaranteed.
-
-`NOTE: Placement group will be added in the next minor release.`
-
-All resources are deployed in a single availability zone for a given region.
+This use case is for applications that are deployed in a single availability zone. Resources do
+not expand the single availability zone. Placement groups improve resiliency by ensuring that
+VSIs are created in different compute host/hypervisor.
 
 ### DB
 
-Replication is not part of the terraform automation code and thus needs to be configured and setup
+Replication is not part of the terraform automation code and thus needs to be configured and set up
 as a post-install. More information for maria replication overview can be found [here](https://mariadb.com/kb/en/standard-replication/).
 
-In addition, for additional resiliency measure you can do snapshots of the db as backup. To create
+In addition, for additional resiliency measure, you can do snapshots of the db as backup. To create
 a bash/cron job for regular backup cadence can be found [here](https://www.ibm.com/cloud/blog/automate-the-backup-and-restore-of-cloud-instances-with-snapshots).
 
 # Suggestion/Issues
@@ -100,9 +96,12 @@ a bash/cron job for regular backup cadence can be found [here](https://www.ibm.c
 While there are no warranties of any kind, and there is no service or technical support available
 for these scripts from IBM support, your comments are welcomed by the maintainers and developers,
 who reserve the right to revise or remove the tools at any time. We, maintainers and developers,
-will support the scripts posted in this repository. To report problems, provide suggestions or
-comments, please open a GitHub issue. If the scripts are modified and have issues, we will do our
+will support the scripts posted in this repository. Please open a GitHub issue to report problems
+and provide suggestions or comments. If the scripts are modified and have issues, we will do our
 best to assist.
 
 ## Known Issues
-Private VSIs deployed with RHEL 7.9 may not be able to resolve to an internal IBM satelite yum repo.  As a workaround, deployed a subnet gateway and point to an external RHEL repo.
+* Private VSIs deployed with RHEL 7.9 may not be able to resolve to an internal IBM satellite yum repo.
+As a workaround deployed a subnet gateway and point to an external RHEL repo.
+* In rare cases, terraform destroy does not delete all VSIs that are part of placement groups, single
+availability zone use case. In these cases, manual deletion is required.

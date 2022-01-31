@@ -6,7 +6,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.32.0 |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | n/a |
 
 ## Modules
 
@@ -58,6 +58,7 @@ No modules.
 | <a name="input_db_os_type"></a> [db\_os\_type](#input\_db\_os\_type) | OS image to be used [windows \| linux] for DB Server | `string` | n/a | yes |
 | <a name="input_db_region1_subnets"></a> [db\_region1\_subnets](#input\_db\_region1\_subnets) | Region1 DB subnets CIDR Range | `any` | n/a | yes |
 | <a name="input_db_region2_subnets"></a> [db\_region2\_subnets](#input\_db\_region2\_subnets) | Region2 DB subnets CIDR Range | `any` | n/a | yes |
+| <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Total Database instances that will be created in the user specified region. | `number` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all the resources. | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group Name is used to seperate the resources in a group. | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Required parameter vpc\_id | `string` | n/a | yes |

@@ -233,3 +233,48 @@
 # **/
 # db_pwd = "start123"
 
+# /**
+# *   Enter admin_user value. It is username of the admin.
+# *   Here we have   admin_user = "admin"
+# **/
+#wp_admin_user = "admin"
+
+# /**
+# *   Enter admin_password value. It is the password for the admin.
+# *   Here we have   admin_password = "pass1234"
+# **/
+#wp_admin_password = "pass1234"
+
+# /**
+# *   Enter blog_title value. It is the title for the website or blog.
+# *   Here we have   blog_title = "Blog Title"
+# **/
+#wp_blog_title = "Blog Title"
+
+# /**
+# *   Enter admin_email value. It is the email of the admin.
+# *   Here we have   admin_email = "admin@ibm.com"
+# **/
+#wp_admin_email = "admin@ibm.com"
+
+# /**
+# *   Enter the strategy for DB servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+# *   You can choose host_spread | power_spread here.
+# *   Here we have  db_pg_strategy = "power_spread"
+# **/
+# db_pg_strategy = "power_spread"
+
+# /**
+# *   Enter the strategy for Web servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+# *   You can choose host_spread | power_spread here.
+# *   Here we have  web_pg_strategy = "host_spread"
+# **/
+# web_pg_strategy = "host_spread"
+
+# /**
+# *   Enter the strategy for App servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+# *   You can choose host_spread | power_spread here.
+# *   Here we have  app_pg_strategy = "host_spread"
+# **/
+# app_pg_strategy = "host_spread"
+

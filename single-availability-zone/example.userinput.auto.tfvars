@@ -215,3 +215,24 @@
 # **/
 # app_cpu_threshold = "40"
 
+# /**
+# *   Enter the strategy for DB servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+# *   You can choose host_spread | power_spread here.
+# *   Here we have  db_pg_strategy = "power_spread"
+# **/
+# db_pg_strategy = "power_spread"
+
+# /**
+# *   Enter the strategy for Web servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+# *   You can choose host_spread | power_spread here.
+# *   Here we have  web_pg_strategy = "host_spread"
+# **/
+# web_pg_strategy = "host_spread"
+
+# /**
+# *   Enter the strategy for App servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+# *   You can choose host_spread | power_spread here.
+# *   Here we have  app_pg_strategy = "host_spread"
+# **/
+# app_pg_strategy = "host_spread"
+

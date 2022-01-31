@@ -319,6 +319,86 @@ variable "db_pwd" {
 }
 
 /**
+* Name: web_placement_group_id
+* Type: string
+* Desc: Placement group ID to be used for Web servers.
+**/
+variable "web_placement_group_id" {
+  description = "Placement group ID to be used for Web servers."
+  type        = string
+}
+
+/**
+* Name: app_placement_group_id
+* Type: string
+* Desc: Placement group ID to be used for App servers.
+**/
+variable "app_placement_group_id" {
+  description = "Placement group ID to be used for App servers."
+  type        = string
+}
+
+/**
+* Name: web_lb_hostname
+* Type: string
+* Description: Web Load balancer hostname
+**/
+variable "web_lb_hostname" {
+  description = "Web Load balancer hostname"
+  type        = string
+}
+
+/**
+* Name: wp_blog_title
+* Type: string
+* Description: Title of the website or blog
+**/
+variable "wp_blog_title" {
+  description = "Title of the website or blog"
+  type        = string
+}
+
+/**
+* Name: admin_user
+* Type: string
+* Description: Name of the Admin User for the wordpress website
+**/
+variable "wp_admin_user" {
+  description = "Name of the Admin User of the wordpress website"
+  type        = string
+}
+
+/**
+* Name: admin_password
+* Type: string
+* Description: Password for the Admin User of the wordpress website
+**/
+variable "wp_admin_password" {
+  description = "Password of the Admin User for the wordpress website"
+  type        = string
+}
+
+/**
+* Name: admin_email
+* Type: string
+* Description: Email of the Admin User of the wordpress website
+**/
+variable "wp_admin_email" {
+  description = "Email of the Admin User for the wordpress website"
+  type        = string
+}
+
+/**
+* Name: reregister_rhel
+* Type: string
+* Description: Reregister script for rhel 7.9 for mirror yum repos
+**/
+variable "reregister_rhel" {
+  description = "Reregister script for rhel 7.9 for mirror yum repos"
+  type        = string
+}
+
+/**
 #################################################################################################################
 *                               End of the Variable Section 
 #################################################################################################################
