@@ -142,10 +142,20 @@ resource "null_resource" "delete_dynamic_ssh_key" {
     command = <<EOT
       echo 'connection success'
       ibmcloud config --check-version=false
+      i=3
       ibmcloud login -r ${self.triggers.region} --apikey ${self.triggers.api_key}
+      while [ $? -ne 0 ] && [ $i -gt 0 ]; do
+           i=$(( i - 1 ))
+           ibmcloud login -r ${self.triggers.region} --apikey ${self.triggers.api_key}
+      done      
       key_id=$(ibmcloud is keys | grep ${self.triggers.prefix}${self.triggers.bastion_ssh_key} | awk '{print $1}')
       if [ ! -z "$key_id" ]; then
+          i=3
           ibmcloud is key-delete $key_id -f
+          while [ $? -ne 0 ] && [ $i -gt 0 ]; do
+              i=$(( i - 1 ))
+              ibmcloud is key-delete $key_id -f
+          done           
       fi     
       ibmcloud logout
     EOT    
@@ -176,9 +186,19 @@ resource "null_resource" "delete_dynamic_ssh_key_windows" {
     command     = <<EOT
       Write-Host "Script starts"
       ibmcloud config --check-version=false
+      $i=3
       ibmcloud login -r ${self.triggers.region} --apikey ${self.triggers.api_key}
+      while (($? -eq $false) -and ( $i -gt 0 )){
+          $i=( $i - 1 )
+          ibmcloud login -r ${self.triggers.region} --apikey ${self.triggers.api_key}
+      } 
       $key_id = (ibmcloud is keys | findstr ${self.triggers.prefix}${self.triggers.bastion_ssh_key})
+      $i=3
       ibmcloud is key-delete $key_id.split(" ")[0] -f
+      while (($? -eq $false) -and ( $i -gt 0 )){
+          $i=( $i - 1 )
+          ibmcloud is key-delete $key_id.split(" ")[0] -f
+      } 
       ibmcloud logout
     EOT
   }

@@ -81,3 +81,19 @@ variable "user_ssh_key" {
   description = "This is the existing ssh key on the User's machine and will be attached with the bastion server only. This will ensure the incoming connection on Bastion Server only from the users provided ssh_keys. You can check your key name in IBM cloud. Whose private key content should be there in path ~/.ssh/id_rsa"
   type        = string
 }
+
+/**
+* Name: db_vsi_count
+* Type: number
+* Desc: Total Database instances that will be created in the user specified region.
+*       We have kept the default value to be 2 here. The servers will be created in different zones and it cannot be more than 3.
+**/
+variable "db_vsi_count" {
+  description = "Total Database instances that will be created in the user specified region."
+  type        = number
+  default     = 2
+  validation {
+    condition     = var.db_vsi_count <= 3
+    error_message = "Database VSI count should be less than or equals to 3."
+  }
+}

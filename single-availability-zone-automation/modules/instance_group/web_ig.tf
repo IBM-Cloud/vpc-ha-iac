@@ -21,90 +21,85 @@ locals {
   systemctl start apache2 && systemctl enable apache2
   sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/apache2/apache2.conf
   install_dir="/var/www/html"
-  cd /tmp/ && wget "http://wordpress.org/latest.tar.gz";
-  /bin/tar -C $install_dir -zxf /tmp/latest.tar.gz --strip-components=1
+  wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+  chmod 755 wp-cli.phar
+  sudo mv wp-cli.phar /usr/local/bin/wp
+  chmod -R 775 /var/www/
   chown www-data: $install_dir -R
+  sudo -u www-data /usr/local/bin/wp core download --path=$install_dir
   /bin/mv $install_dir/wp-config-sample.php $install_dir/wp-config.php
   /bin/sed -i "s/database_name_here/$db_name/g" $install_dir/wp-config.php
   /bin/sed -i "s/username_here/$db_user/g" $install_dir/wp-config.php
   /bin/sed -i "s/password_here/$db_pwd/g" $install_dir/wp-config.php
-  sed -i s/'localhost'/${var.db_private_ip}/g $install_dir/wp-config.php
-  cat << EOF >> $install_dir/wp-config.php
-  define('FS_METHOD', 'direct');
-  EOF
-  cat << EOF >> $install_dir/.htaccess
-  <IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
-  RewriteRule ^index.php$ – [L]
-  RewriteCond '%%{REQUEST_FILENAME}' !-f
-  RewriteCond '%%{REQUEST_FILENAME}' !-d
-  RewriteRule . /index.php [L]
-  </IfModule>
-  EOF
-  chown www-data: $install_dir -R
-  grep -A50 'table_prefix' $install_dir/wp-config.php > /tmp/wp-tmp-config
-  curl https://api.wordpress.org/secret-key/1.1/salt/ >> $install_dir/wp-config.php
-  /bin/cat /tmp/wp-tmp-config >> $install_dir/wp-config.php
-  chmod -R 775 /var/www/
+  /bin/sed -i "s/'localhost'/'${var.db_private_ip}'/g" $install_dir/wp-config.php
+  sudo -u www-data /usr/local/bin/wp core install --url='${var.web_lb_hostname}' --title='${var.wp_blog_title}' --admin_user='${var.wp_admin_user}' --admin_password='${var.wp_admin_password}' --admin_email='${var.wp_admin_email}' --path=$install_dir
+  rm /var/www/html/index.html
   systemctl restart apache2
 EOUD 
 
   lin_userdata_web_rhel = <<-EOUD
-  #!/bin/bash 
+  #!/bin/bash
+  if cat /etc/redhat-release |grep -i "release 7"
+  then
+  ###############################################
+  ${var.reregister_rhel}
+  ###############################################
+  sudo yum update -y 
+  sudo yum install -y httpd git wget
+  systemctl start httpd && systemctl enable httpd
   db_name=${var.db_name}
   db_user=${var.db_user}
   db_pwd=${var.db_pwd}
-  yum update -y 
-  yum install -y httpd php git 
-  yum install -y php-devel
-  yum install -y php-pear php-json php-gd php-mysqlnd
-  yum install -y wget 
-  systemctl start httpd && systemctl enable httpd
   install_dir="/var/www/html"
-  if cat /etc/redhat-release |grep -i "release 8"
-  then
-  cd /tmp/ && wget "http://wordpress.org/latest.tar.gz";
-  /bin/tar -C $install_dir -zxf /tmp/latest.tar.gz --strip-components=1
-  else
-  cd /tmp/ && wget "https://wordpress.org/wordpress-5.1.tar.gz";
-  /bin/tar -C $install_dir -zxf /tmp/wordpress-5.1.tar.gz --strip-components=1
-  fi
+  sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  sudo yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm 
+  sudo yum-config-manager --enable remi-php72
+  sudo yum update -y
+  sudo yum install -y php php-pear php-json php-gd php-mysql
+  chown -R apache $install_dir -R
+  chmod -R 775 /var/www/
+  wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+  chmod 755 wp-cli.phar
+  sudo mv wp-cli.phar /usr/local/bin/wp
+  /usr/local/bin/wp --info
+  sudo -u apache /usr/local/bin/wp core download --path=$install_dir
   /bin/mv $install_dir/wp-config-sample.php $install_dir/wp-config.php
   /bin/sed -i "s/database_name_here/$db_name/g" $install_dir/wp-config.php
   /bin/sed -i "s/username_here/$db_user/g" $install_dir/wp-config.php
   /bin/sed -i "s/password_here/$db_pwd/g" $install_dir/wp-config.php
-  sed -i s/'localhost'/${var.db_private_ip}/g $install_dir/wp-config.php
-  cat << EOF >> $install_dir/wp-config.php
-  define("FS_METHOD", "direct");
-  EOF
-  cat << EOF >> $install_dir/.htaccess
-  <IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteBase /
-  RewriteRule ^index.php$ – [L]
-  RewriteCond '%%{REQUEST_FILENAME}' !-f
-  RewriteCond '%%{REQUEST_FILENAME}' !-d
-  RewriteRule . /index.php [L]
-  </IfModule>
-  EOF
-  grep -A50 'table_prefix' $install_dir/wp-config.php > /tmp/wp-tmp-config
-  curl https://api.wordpress.org/secret-key/1.1/salt/ >> $install_dir/wp-config.php
-  /bin/cat /tmp/wp-tmp-config >> $install_dir/wp-config.php
-  cd /var/www/html/wp-content && mkdir uploads
-  chown -R apache:apache /var/www/
-  chmod -R 775 /var/www/
-  if cat /etc/redhat-release |grep -i "release 7"
-  then
+  /bin/sed -i "s/'localhost'/'${var.db_private_ip}'/g" $install_dir/wp-config.php
+  sudo -u apache /usr/local/bin/wp core install --url='${var.web_lb_hostname}' --title='${var.wp_blog_title}' --admin_user='${var.wp_admin_user}' --admin_password='${var.wp_admin_password}' --admin_email='${var.wp_admin_email}' --path=$install_dir
   setenforce Permissive
-  firewall-cmd --permanent --zone=public --add-port=3306/tcp
-  firewall-cmd --reload
   firewall-cmd --permanent --zone=public --add-port=80/tcp
   firewall-cmd --reload
   setenforce Enforcing
   sudo setsebool -P httpd_can_network_connect 1
-  fi
   systemctl restart httpd
+  
+  else
+  yum update -y 
+  yum install -y httpd php git wget
+  yum install -y php-pear php-json php-gd php-mysqlnd
+  systemctl start httpd && systemctl enable httpd
+  db_name=${var.db_name}
+  db_user=${var.db_user}
+  db_pwd=${var.db_pwd}
+  install_dir="/var/www/html"
+  chown -R apache $install_dir -R
+  chmod -R 775 /var/www/
+  wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+  chmod 755 wp-cli.phar
+  sudo mv wp-cli.phar /usr/local/bin/wp
+  /usr/local/bin/wp --info
+  sudo -u apache /usr/local/bin/wp core download --path=$install_dir
+  /bin/mv $install_dir/wp-config-sample.php $install_dir/wp-config.php
+  /bin/sed -i "s/database_name_here/$db_name/g" $install_dir/wp-config.php
+  /bin/sed -i "s/username_here/$db_user/g" $install_dir/wp-config.php
+  /bin/sed -i "s/password_here/$db_pwd/g" $install_dir/wp-config.php
+  /bin/sed -i "s/'localhost'/'${var.db_private_ip}'/g" $install_dir/wp-config.php
+  sudo -u apache /usr/local/bin/wp core install --url='${var.web_lb_hostname}' --title='${var.wp_blog_title}' --admin_user='${var.wp_admin_user}' --admin_password='${var.wp_admin_password}' --admin_email='${var.wp_admin_email}' --path=$install_dir
+  systemctl restart httpd
+  fi
 EOUD
 }
 
@@ -117,14 +112,15 @@ EOUD
 
 resource "ibm_is_instance_template" "web_template" {
 
-  name           = "${var.prefix}web-template"
-  vpc            = var.vpc_id
-  zone           = var.zone
-  keys           = var.ssh_key
-  resource_group = var.resource_group_id
-  image          = var.web_image
-  profile        = var.web_config["instance_profile"]
-  user_data      = split("-", data.ibm_is_image.web_os.os)[0] == "ubuntu" ? local.lin_userdata_web_ubuntu : local.lin_userdata_web_rhel
+  name            = "${var.prefix}web-template"
+  vpc             = var.vpc_id
+  zone            = var.zone
+  keys            = var.ssh_key
+  resource_group  = var.resource_group_id
+  image           = var.web_image
+  profile         = var.web_config["instance_profile"]
+  placement_group = var.web_placement_group_id
+  user_data       = split("-", data.ibm_is_image.web_os.os)[0] == "ubuntu" ? local.lin_userdata_web_ubuntu : local.lin_userdata_web_rhel
   primary_network_interface {
     subnet          = var.subnets["web"].id
     security_groups = [var.sg_objects["web"].id]

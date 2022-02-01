@@ -6,7 +6,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.36.0 |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.37.1 |
 
 ## Modules
 
@@ -46,12 +46,14 @@ No modules.
 | <a name="input_app_image"></a> [app\_image](#input\_app\_image) | Image id for the App VSI for App Instance group template | `string` | n/a | yes |
 | <a name="input_app_max_servers_count"></a> [app\_max\_servers\_count](#input\_app\_max\_servers\_count) | Maximum App servers count for the App Instance group | `number` | n/a | yes |
 | <a name="input_app_min_servers_count"></a> [app\_min\_servers\_count](#input\_app\_min\_servers\_count) | Minimum App servers count for the App Instance group | `number` | n/a | yes |
+| <a name="input_app_placement_group_id"></a> [app\_placement\_group\_id](#input\_app\_placement\_group\_id) | Placement group ID to be used for App servers. | `string` | n/a | yes |
 | <a name="input_db_name"></a> [db\_name](#input\_db\_name) | Database will be created with the specified name | `string` | n/a | yes |
 | <a name="input_db_private_ip"></a> [db\_private\_ip](#input\_db\_private\_ip) | This variable contains the value of DB private IP which is used for connection. | `string` | n/a | yes |
 | <a name="input_db_pwd"></a> [db\_pwd](#input\_db\_pwd) | Database user will be created with the specified password | `string` | n/a | yes |
 | <a name="input_db_user"></a> [db\_user](#input\_db\_user) | Database user will be created with the specified name | `string` | n/a | yes |
 | <a name="input_objects"></a> [objects](#input\_objects) | This variable will contains the objects of LB, LB Pool and LB Listeners. | <pre>object({<br>    lb       = map(any)<br>    pool     = map(any)<br>    listener = map(any)<br>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | This is the prefix text that will be prepended in every resource name created by this Module | `string` | n/a | yes |
+| <a name="input_reregister_rhel"></a> [reregister\_rhel](#input\_reregister\_rhel) | Reregister script for rhel 7.9 for mirror yum repos | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group ID is used to seperate the resources in a group. | `string` | n/a | yes |
 | <a name="input_sg_objects"></a> [sg\_objects](#input\_sg\_objects) | All Security Group objects. This is required parameter | `map(any)` | n/a | yes |
 | <a name="input_ssh_key"></a> [ssh\_key](#input\_ssh\_key) | This is the ssh-key used to connect to the app/web/db VSI from Bastion VSI | `list(any)` | n/a | yes |
@@ -62,8 +64,14 @@ No modules.
 | <a name="input_web_cooldown_time"></a> [web\_cooldown\_time](#input\_web\_cooldown\_time) | Specify the cool down period, the number of seconds to pause further scaling actions after scaling has taken place. | `number` | n/a | yes |
 | <a name="input_web_cpu_threshold"></a> [web\_cpu\_threshold](#input\_web\_cpu\_threshold) | Average target CPU Percent for CPU policy of Web Instance Group | `number` | n/a | yes |
 | <a name="input_web_image"></a> [web\_image](#input\_web\_image) | Image id for the Web VSI for Web Instance group template | `string` | n/a | yes |
+| <a name="input_web_lb_hostname"></a> [web\_lb\_hostname](#input\_web\_lb\_hostname) | Web Load balancer hostname | `string` | n/a | yes |
 | <a name="input_web_max_servers_count"></a> [web\_max\_servers\_count](#input\_web\_max\_servers\_count) | Maximum Web servers count for the Web Instance group | `number` | n/a | yes |
 | <a name="input_web_min_servers_count"></a> [web\_min\_servers\_count](#input\_web\_min\_servers\_count) | Minimum Web servers count for the Web Instance group | `number` | n/a | yes |
+| <a name="input_web_placement_group_id"></a> [web\_placement\_group\_id](#input\_web\_placement\_group\_id) | Placement group ID to be used for Web servers. | `string` | n/a | yes |
+| <a name="input_wp_admin_email"></a> [wp\_admin\_email](#input\_wp\_admin\_email) | Email of the Admin User for the wordpress website | `string` | n/a | yes |
+| <a name="input_wp_admin_password"></a> [wp\_admin\_password](#input\_wp\_admin\_password) | Password of the Admin User for the wordpress website | `string` | n/a | yes |
+| <a name="input_wp_admin_user"></a> [wp\_admin\_user](#input\_wp\_admin\_user) | Name of the Admin User of the wordpress website | `string` | n/a | yes |
+| <a name="input_wp_blog_title"></a> [wp\_blog\_title](#input\_wp\_blog\_title) | Title of the website or blog | `string` | n/a | yes |
 | <a name="input_zone"></a> [zone](#input\_zone) | Resources will be created in the user specified zone | `string` | n/a | yes |
 
 ## Outputs

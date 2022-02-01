@@ -35,7 +35,7 @@ resource "ibm_is_lb_pool" "web_pool" {
   health_retries      = "2"
   health_timeout      = "2"
   health_type         = var.lb_protocol["80"]
-  health_monitor_url  = "/"
+  health_monitor_url  = "/wp-admin/install.php"
   health_monitor_port = "80"
   depends_on          = [ibm_is_lb.web_lb]
 

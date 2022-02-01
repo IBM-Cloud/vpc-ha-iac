@@ -90,23 +90,17 @@ variable "alb_port" {
 }
 
 /**
-* Name: dlb_port
-* Type: number
-* Description: This is the DB load balancer listener port
-**/
-variable "dlb_port" {
-  description = "This is the DB load balancer listener port"
-  type        = number
-  default     = "80"
-}
-
-/**
 * Name: db_vsi_count
 * Type: number
-* Description: Total instances that will be created per zones per tier.
+* Description: Total Database instances that will be created in the user specified region.
+* We have kept the default value to be 2 here. The servers will be created in different zones and it cannot be more than 3.
 **/
 variable "db_vsi_count" {
-  description = "Total instances that will be created per zones per tier."
+  description = "Total Database instances that will be created in the user specified region."
   type        = number
-  default     = 1
+  default     = 2
+  validation {
+    condition     = var.db_vsi_count <= 3
+    error_message = "Database VSI count should be less than or equals to 3."
+  }
 }

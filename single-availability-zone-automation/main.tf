@@ -18,16 +18,51 @@
 * Time Sleep                    = 1
 * Data Volume                   = 2
 * Floating IP                   = 1
-* Null Resource                 = 1
+* Null Resource                 = 2
 * Data Source ssh_key           = 1
 * Data Source Auth Token        = 1
 * Dynamic ssh_key               = 1
+* placement Group               = 3
 *--------------------------------------|
 *--------------------------------------|
-* Total Resources               = 57   |
+* Total Resources               = 61   |
 *--------------------------------------|
 *--------------------------------------|
 **/
+
+/**
+* Placement group validation for Linux/Mac Host Machine check null resource
+* Element: null_resource
+* This resource is used to validate the instance groups max server count and Database VSI count as per the placement group strategy provided.
+**/
+
+resource "null_resource" "placement_group_validation_check_linux" {
+  count = lower(var.local_machine_os_type) == "windows" ? 0 : 1
+  provisioner "local-exec" {
+    command    = <<EOT
+      chmod 755 ${path.cwd}/modules/placement_group/placement_group_validation_check_linux.sh
+      ./modules/placement_group/placement_group_validation_check_linux.sh ${var.web_pg_strategy} ${var.web_max_servers_count} ${var.app_pg_strategy} ${var.app_max_servers_count} ${var.db_pg_strategy} ${var.db_vsi_count}
+    EOT
+    on_failure = fail
+  }
+}
+
+/**
+* Placement group validation for Windows Host Machine check null resource
+* Element: null_resource
+* This resource is used to validate the instance groups max server count and Database VSI count as per the placement group strategy provided.
+**/
+
+resource "null_resource" "placement_group_validation_check_windows" {
+  count = lower(var.local_machine_os_type) == "windows" ? 1 : 0
+  provisioner "local-exec" {
+    interpreter = ["PowerShell", "-Command"]
+    command     = <<EOT
+      & ${path.cwd}/modules/placement_group/placement_group_validation_check_windows.ps1 ${var.web_pg_strategy} ${var.web_max_servers_count} ${var.app_pg_strategy} ${var.app_max_servers_count} ${var.db_pg_strategy} ${var.db_vsi_count}
+    EOT
+    on_failure  = fail
+  }
+}
 
 /**
 * Calling the VPC module with the following required parameters
@@ -40,6 +75,29 @@ module "vpc" {
   source            = "./modules/vpc"
   prefix            = var.prefix
   resource_group_id = var.resource_group_id
+  depends_on = [
+    null_resource.placement_group_validation_check_linux, null_resource.placement_group_validation_check_windows
+  ]
+}
+
+/**
+* Calling the Placement Group module with the following required parameters
+* source: Path of the Source Code of the Placement Group Module
+* prefix: This is the prefix text that will be pre-pended in every resource name created by this module.
+* resource_group_id: The resource group ID
+* db_pg_strategy: The strategy for DB servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+* web_pg_strategy: The strategy for Web servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+* app_pg_strategy: The strategy for App servers placement group - host_spread: place on different compute hosts - power_spread: place on compute hosts that use different power sources.
+**/
+
+module "placement_group" {
+  source            = "./modules/placement_group"
+  prefix            = var.prefix
+  resource_group_id = var.resource_group_id
+  db_pg_strategy    = var.db_pg_strategy
+  web_pg_strategy   = var.web_pg_strategy
+  app_pg_strategy   = var.app_pg_strategy
+  depends_on        = [module.vpc]
 }
 
 /**
@@ -138,7 +196,7 @@ locals {
   valid_ip_counts = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
   web_ip_count    = var.web_max_servers_count + 5 + 2 # 5:reservedIP, 2:load_balancer  
   app_ip_count    = var.app_max_servers_count + 5 + 2 # 5:reservedIP, 2:load_balancer      
-  db_ip_count     = 2 + 5                             # 2:total_db_count 5:reservedIP 
+  db_ip_count     = var.db_vsi_count + 5              # db_vsi_count:total_db_count, 5:reservedIP
 
   ip_count = {
     "web" = [for valid_web_ip_count in local.valid_ip_counts : valid_web_ip_count if valid_web_ip_count > local.web_ip_count][0]
@@ -242,6 +300,7 @@ module "load_balancer" {
 * data_vol_size: Storage size in GB. The value should be between 10 and 2000
 * db_image: Image id to be used with DB VSI
 * db_profile: Hardware configuration profile for the DB VSI
+* db_vsi_count: Total Database instances that will be created in the user specified zone.
 * tiered_profiles: Tiered profiles for Input/Output per seconds in GBs
 * subnets: Subnet ID for the Database VSI
 * db_sg: Security group id to be attached with DB VSI
@@ -249,23 +308,26 @@ module "load_balancer" {
 **/
 
 module "instance" {
-  source            = "./modules/instance"
-  prefix            = var.prefix
-  vpc_id            = module.vpc.id
-  ssh_key           = [data.ibm_is_ssh_key.bastion_key_id.id]
-  resource_group_id = var.resource_group_id
-  zone              = var.zone
-  bandwidth         = var.bandwidth
-  data_vol_size     = var.data_vol_size
-  db_image          = var.db_image
-  db_profile        = var.db_profile
-  tiered_profiles   = var.tiered_profiles
-  subnet            = module.subnet.sub_objects["db"].id
-  db_sg             = module.security_group.sg_objects["db"].id
-  db_pwd            = var.db_pwd
-  db_user           = var.db_user
-  db_name           = var.db_name
-  depends_on        = [module.subnet.ibm_is_subnet, module.security_group, module.bastion]
+  source                = "./modules/instance"
+  prefix                = var.prefix
+  vpc_id                = module.vpc.id
+  ssh_key               = [data.ibm_is_ssh_key.bastion_key_id.id]
+  resource_group_id     = var.resource_group_id
+  zone                  = var.zone
+  bandwidth             = var.bandwidth
+  data_vol_size         = var.data_vol_size
+  db_image              = var.db_image
+  db_profile            = var.db_profile
+  db_vsi_count          = var.db_vsi_count
+  db_placement_group_id = module.placement_group.db_pg_id
+  tiered_profiles       = var.tiered_profiles
+  subnet                = module.subnet.sub_objects["db"].id
+  db_sg                 = module.security_group.sg_objects["db"].id
+  db_pwd                = var.db_pwd
+  db_user               = var.db_user
+  db_name               = var.db_name
+  reregister_rhel       = file("${path.cwd}/reregister.sh")
+  depends_on            = [module.subnet.ibm_is_subnet, module.security_group, module.bastion, module.placement_group]
 
 }
 
@@ -309,6 +371,8 @@ module "instance_group" {
   subnets                = module.subnet.sub_objects
   sg_objects             = module.security_group.sg_objects
   objects                = module.load_balancer.objects
+  web_placement_group_id = module.placement_group.web_pg_id
+  app_placement_group_id = module.placement_group.app_pg_id
   app_image              = var.app_image
   app_config             = var.app_config
   web_image              = var.web_image
@@ -327,7 +391,13 @@ module "instance_group" {
   db_pwd                 = var.db_pwd
   db_user                = var.db_user
   db_name                = var.db_name
-  depends_on             = [module.bastion, module.load_balancer, module.instance]
+  web_lb_hostname        = module.load_balancer.lb_dns.WEB_SERVER
+  wp_blog_title          = var.wp_blog_title
+  wp_admin_user          = var.wp_admin_user
+  wp_admin_password      = var.wp_admin_password
+  wp_admin_email         = var.wp_admin_email
+  reregister_rhel        = file("${path.cwd}/reregister.sh")
+  depends_on             = [module.bastion, module.load_balancer, module.instance, module.placement_group]
 }
 
 /**

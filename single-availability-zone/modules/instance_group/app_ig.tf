@@ -1,6 +1,6 @@
 # /**               
 # #################################################################################################################
-# *                              Start of Instance Group Section for App Module
+# *                              Start  of Instance Group Section for App Module
 # #################################################################################################################
 # **/
 
@@ -12,14 +12,14 @@
 **/
 resource "ibm_is_instance_template" "app_template" {
 
-  name           = "${var.prefix}app-template"
-  vpc            = var.vpc_id
-  zone           = var.zone
-  keys           = var.ssh_key
-  resource_group = var.resource_group_id
-  image          = var.app_image
-  profile        = var.app_config["instance_profile"]
-
+  name            = "${var.prefix}app-template"
+  vpc             = var.vpc_id
+  zone            = var.zone
+  keys            = var.ssh_key
+  resource_group  = var.resource_group_id
+  image           = var.app_image
+  profile         = var.app_config["instance_profile"]
+  placement_group = var.app_placement_group_id
   primary_network_interface {
     subnet          = var.subnets["app"].id
     security_groups = [var.sg_objects["app"].id]

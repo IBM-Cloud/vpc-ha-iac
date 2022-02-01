@@ -6,7 +6,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.33.1 |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.34.0 |
 
 ## Modules
 

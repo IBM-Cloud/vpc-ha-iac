@@ -9,33 +9,33 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.32.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.37.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.32.0 |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.37.1 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_bastion"></a> [bastion](#module\_bastion) | ./modules/bastion |  |
-| <a name="module_instance"></a> [instance](#module\_instance) | ./modules/instance |  |
-| <a name="module_instance_group"></a> [instance\_group](#module\_instance\_group) | ./modules/instance_group |  |
-| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | ./modules/load_balancer |  |
-| <a name="module_public_gateway"></a> [public\_gateway](#module\_public\_gateway) | ./modules/public_gateway |  |
-| <a name="module_security_group"></a> [security\_group](#module\_security\_group) | ./modules/security_group |  |
-| <a name="module_subnet"></a> [subnet](#module\_subnet) | ./modules/subnet |  |
+| <a name="module_bastion"></a> [bastion](#module\_bastion) | ./modules/bastion | n/a |
+| <a name="module_instance"></a> [instance](#module\_instance) | ./modules/instance | n/a |
+| <a name="module_instance_group"></a> [instance\_group](#module\_instance\_group) | ./modules/instance_group | n/a |
+| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | ./modules/load_balancer | n/a |
+| <a name="module_public_gateway"></a> [public\_gateway](#module\_public\_gateway) | ./modules/public_gateway | n/a |
+| <a name="module_security_group"></a> [security\_group](#module\_security\_group) | ./modules/security_group | n/a |
+| <a name="module_subnet"></a> [subnet](#module\_subnet) | ./modules/subnet | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [ibm_is_vpc.vpc](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/resources/is_vpc) | resource |
-| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/data-sources/is_ssh_key) | data source |
-| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_vpc.vpc](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/resources/is_vpc) | resource |
+| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
 
 ## Inputs
 
@@ -50,18 +50,18 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 | <a name="input_app_image"></a> [app\_image](#input\_app\_image) | Custom image id for the app VSI | `string` | n/a | yes |
 | <a name="input_app_max_servers_count"></a> [app\_max\_servers\_count](#input\_app\_max\_servers\_count) | Maximum App servers count for the App Instance group | `number` | n/a | yes |
 | <a name="input_app_min_servers_count"></a> [app\_min\_servers\_count](#input\_app\_min\_servers\_count) | Minimum App servers count for the App Instance group | `number` | n/a | yes |
-| <a name="input_app_os_type"></a> [app\_os\_type](#input\_app\_os\_type) | OS image to be used [windows \| linux] for App Server | `string` | n/a | yes |
+| <a name="input_app_os_type"></a> [app\_os\_type](#input\_app\_os\_type) | OS image to be used [Windows \| Linux] for App Server. This OS type should be same across both the regions. If OS flavor is Windows then we will try to install IIS and OpenSSH service and Rebooting the server .So, It will take minimum 5-10 mins to make the Server avilable. | `string` | n/a | yes |
 | <a name="input_bandwidth"></a> [bandwidth](#input\_bandwidth) | Bandwidth per second in GB. The possible values are 3, 5 and 10 | `number` | n/a | yes |
 | <a name="input_bastion_image"></a> [bastion\_image](#input\_bastion\_image) | Custom image id for the Bastion VSI | `string` | n/a | yes |
 | <a name="input_bastion_ip_count"></a> [bastion\_ip\_count](#input\_bastion\_ip\_count) | IP count is the total number of total\_ipv4\_address\_count for Bastion Subnet | `number` | `8` | no |
-| <a name="input_bastion_os_type"></a> [bastion\_os\_type](#input\_bastion\_os\_type) | OS image to be used [windows \| linux] for Bastion server | `string` | n/a | yes |
+| <a name="input_bastion_os_type"></a> [bastion\_os\_type](#input\_bastion\_os\_type) | OS image to be used [windows \| linux] for Bastion server. This OS type should be same across both the regions. | `string` | n/a | yes |
 | <a name="input_bastion_profile"></a> [bastion\_profile](#input\_bastion\_profile) | Specify the profile needed for Bastion VSI | `string` | `"cx2-2x4"` | no |
 | <a name="input_bastion_ssh_key_var_name"></a> [bastion\_ssh\_key\_var\_name](#input\_bastion\_ssh\_key\_var\_name) | This is the name of the ssh key which will be generated dynamically on the bastion server and further will be attached with all the other Web/App/DB servers. It will be used to login to Web/App/DB servers via Bastion server only. | `string` | `"bastion-ssh-key"` | no |
 | <a name="input_data_vol_size"></a> [data\_vol\_size](#input\_data\_vol\_size) | Storage size in GB. The value should be between 10 and 2000 | `number` | `"10"` | no |
 | <a name="input_db_image"></a> [db\_image](#input\_db\_image) | Custom image id for the Database VSI | `string` | n/a | yes |
-| <a name="input_db_os_type"></a> [db\_os\_type](#input\_db\_os\_type) | OS image to be used [windows \| linux] for DB Server | `string` | n/a | yes |
+| <a name="input_db_os_type"></a> [db\_os\_type](#input\_db\_os\_type) | OS image to be used [Windows \| Linux] for DB server. This OS type should be same across both the regions. If OS flavor is Windows then we will try to install IIS and OpenSSH service and Rebooting the server .So, It will take minimum 5-10 mins to make the Server avilable. | `string` | n/a | yes |
 | <a name="input_db_profile"></a> [db\_profile](#input\_db\_profile) | Hardware configuration profile for the Database VSI. | `string` | `"cx2-2x4"` | no |
-| <a name="input_dlb_port"></a> [dlb\_port](#input\_dlb\_port) | This is the DB load balancer listener port | `number` | `"80"` | no |
+| <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Total Database instances that will be created in the user specified region. | `number` | `2` | no |
 | <a name="input_lb_algo"></a> [lb\_algo](#input\_lb\_algo) | lbaaS backend distribution algorithm | `map(any)` | <pre>{<br>  "least-x": "least_connections",<br>  "rr": "round_robin",<br>  "wrr": "weighted_round_robin"<br>}</pre> | no |
 | <a name="input_lb_port_number"></a> [lb\_port\_number](#input\_lb\_port\_number) | declare lbaaS pool member port number | `map(any)` | <pre>{<br>  "custom": "xxx",<br>  "http": "80",<br>  "https": "443"<br>}</pre> | no |
 | <a name="input_lb_protocol"></a> [lb\_protocol](#input\_lb\_protocol) | lbaaS protocols | `map(any)` | <pre>{<br>  "443": "https",<br>  "80": "http",<br>  "l4-tcp": "tcp"<br>}</pre> | no |
@@ -73,7 +73,6 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 | <a name="input_region"></a> [region](#input\_region) | Please enter a region from the following available region and zones mapping: <br>us-south<br>us-east<br>eu-gb<br>eu-de<br>jp-tok<br>au-syd | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group ID | `string` | n/a | yes |
 | <a name="input_tiered_profiles"></a> [tiered\_profiles](#input\_tiered\_profiles) | Tiered profiles for Input/Output per seconds in GBs | `map(any)` | <pre>{<br>  "10": "10iops-tier",<br>  "3": "general-purpose",<br>  "5": "5iops-tier"<br>}</pre> | no |
-| <a name="input_total_instance"></a> [total\_instance](#input\_total\_instance) | Total instances that will be created per zones per tier. | `number` | `1` | no |
 | <a name="input_user_ssh_key"></a> [user\_ssh\_key](#input\_user\_ssh\_key) | This is the existing ssh key on the User's machine and will be attached with the bastion server only. This will ensure the incoming connection on Bastion Server only from the users provided ssh\_keys. You can check your key name in IBM cloud. Whose private key content should be there in path ~/.ssh/id\_rsa | `string` | n/a | yes |
 | <a name="input_web_aggregation_window"></a> [web\_aggregation\_window](#input\_web\_aggregation\_window) | The aggregation window is the time period in seconds that the instance group manager monitors each instance and determines the average utilization. | `number` | `90` | no |
 | <a name="input_web_config"></a> [web\_config](#input\_web\_config) | Web Configurations to be passed for Web Instance Group creation | `map(any)` | <pre>{<br>  "application_port": "80",<br>  "instance_profile": "cx2-2x4",<br>  "memory_percent": "40",<br>  "network_in": "40",<br>  "network_out": "40"<br>}</pre> | no |
@@ -82,7 +81,7 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 | <a name="input_web_image"></a> [web\_image](#input\_web\_image) | Custom image id for the web VSI | `string` | n/a | yes |
 | <a name="input_web_max_servers_count"></a> [web\_max\_servers\_count](#input\_web\_max\_servers\_count) | Maximum Web servers count for the Web Instance group | `number` | n/a | yes |
 | <a name="input_web_min_servers_count"></a> [web\_min\_servers\_count](#input\_web\_min\_servers\_count) | Minimum Web servers count for the Web Instance group | `number` | n/a | yes |
-| <a name="input_web_os_type"></a> [web\_os\_type](#input\_web\_os\_type) | OS image to be used [windows \| linux] for Web Server | `string` | n/a | yes |
+| <a name="input_web_os_type"></a> [web\_os\_type](#input\_web\_os\_type) | OS image to be used [Windows \| Linux] for Web server. This OS type should be same across both the regions. If OS flavor is Windows then we will try to install IIS and OpenSSH service and Rebooting the server .So, It will take minimum 5-10 mins to make the Server avilable. | `string` | n/a | yes |
 | <a name="input_zones"></a> [zones](#input\_zones) | Region and zones mapping | `map(any)` | <pre>{<br>  "au-syd": [<br>    "au-syd-1",<br>    "au-syd-2",<br>    "au-syd-3"<br>  ],<br>  "br-sao": [<br>    "br-sao-1",<br>    "br-sao-2",<br>    "br-sao-3"<br>  ],<br>  "ca-tor": [<br>    "ca-tor-1",<br>    "ca-tor-2",<br>    "ca-tor-3"<br>  ],<br>  "eu-de": [<br>    "eu-de-1",<br>    "eu-de-2",<br>    "eu-de-3"<br>  ],<br>  "eu-gb": [<br>    "eu-gb-1",<br>    "eu-gb-2",<br>    "eu-gb-3"<br>  ],<br>  "jp-osa": [<br>    "jp-osa-1",<br>    "jp-osa-2",<br>    "jp-osa-3"<br>  ],<br>  "jp-tok": [<br>    "jp-tok-1",<br>    "jp-tok-2",<br>    "jp-tok-3"<br>  ],<br>  "us-east": [<br>    "us-east-1",<br>    "us-east-2",<br>    "us-east-3"<br>  ],<br>  "us-south": [<br>    "us-south-1",<br>    "us-south-2",<br>    "us-south-3"<br>  ]<br>}</pre> | no |
 
 ## Outputs

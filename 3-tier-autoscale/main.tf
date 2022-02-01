@@ -49,7 +49,7 @@ locals {
   valid_ip_counts = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384]
   web_ip_count    = ceil(var.web_max_servers_count / length(var.zones[var.region])) + 5 + 2 # 5:reservedIP, 2:load_balancer  
   app_ip_count    = ceil(var.app_max_servers_count / length(var.zones[var.region])) + 5 + 2 # 5:reservedIP, 2:load_balancer      
-  db_ip_count     = var.total_instance + 5 + 2                                              # 5:reservedIP, 2:load_balancer  
+  db_ip_count     = var.db_vsi_count + 5                                                    # 2:total_db_count 5:reservedIP
 
   ip_count = {
     "web" = [for valid_web_ip_count in local.valid_ip_counts : valid_web_ip_count if valid_web_ip_count > local.web_ip_count][0]
@@ -77,6 +77,7 @@ module "subnet" {
   zones              = var.zones[var.region]
   ip_count           = local.ip_count
   public_gateway_ids = module.public_gateway.pg_ids
+  db_vsi_count       = var.db_vsi_count
   depends_on         = [ibm_is_vpc.vpc]
 }
 
@@ -102,7 +103,6 @@ module "security_group" {
   resource_group_id = var.resource_group_id
   my_public_ip      = var.my_public_ip
   alb_port          = var.alb_port
-  dlb_port          = var.dlb_port
   bastion_sg        = module.bastion.bastion_sg
   app_os_type       = var.app_os_type
   web_os_type       = var.web_os_type
@@ -228,10 +228,6 @@ module "load_balancer" {
   lb_sg             = module.security_group.sg_objects["lb"].id
   subnets           = module.subnet.sub_objects
   alb_port          = var.alb_port
-  dlb_port          = var.dlb_port
-  db_target         = module.instance.db_target
-  db_vsi            = module.instance.db_vsi
-  total_instance    = range(var.total_instance)
   lb_type_private   = var.lb_type_private
   lb_type_public    = var.lb_type_public
   lb_protocol       = var.lb_protocol
@@ -274,8 +270,7 @@ module "instance" {
   tiered_profiles   = var.tiered_profiles
   subnets           = module.subnet.sub_objects["db"].*.id
   db_sg             = module.security_group.sg_objects["db"].id
-  dlb_id            = tostring(module.load_balancer.objects["lb"]["db"].id)
-  total_instance    = range(var.total_instance)
+  db_vsi_count      = var.db_vsi_count
   depends_on        = [module.subnet.ibm_is_subnet, module.security_group, module.bastion]
 }
 

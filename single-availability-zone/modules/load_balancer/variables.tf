@@ -56,16 +56,6 @@ variable "alb_port" {
 }
 
 /**
-* Name: dlb_port
-* Type: number
-* Description: This is the DB load balancer listener port
-**/
-variable "dlb_port" {
-  description = "This is the DB load balancer listener port"
-  type        = number
-}
-
-/**
 * Name: vpc_id
 * Type: String
 * Description: This is the vpc id which will be used for loadbalncer module. We are passing this vpc_id from main.tf
@@ -97,37 +87,6 @@ variable "subnets" {
 variable "lb_sg" {
   description = "Load Balancer Security Group"
   type        = string
-}
-
-/**
-* Name: total_instance
-* Type: number
-* Description: Total instances that will be created in the user specified zone.
-**/
-variable "total_instance" {
-  description = "Total instances that will be created in the user specified zone."
-  type        = number
-}
-
-
-/**
-* Name: db_target
-* Type: any
-* Description: Target interface address of the DB server 
-**/
-variable "db_target" {
-  type        = any
-  description = "Target interface address of the DB server "
-}
-
-/**
-* Name: db_vsi
-* Type: any
-* Description: VSI reference for db from the instance module
-**/
-variable "db_vsi" {
-  type        = any
-  description = "VSI reference for db from the instance module"
 }
 
 /**

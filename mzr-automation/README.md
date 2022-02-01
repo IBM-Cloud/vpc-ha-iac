@@ -7,7 +7,7 @@ VPN is added to help provide access management and internal access to the bastio
 
 <img src="./images/3-tier-app-with-autoscale-vpn-MZR.png" width="500" />
 
-In addtion, software packages are added to the VSIs.  They can be modified or changed to another of choice. You will need to alter the userdata in the following location:
+In addition, software packages are added to the VSIs.  They can be modified or changed to another of choice. You will need to alter the userdata in the following location:
 | VSI | Location |
 | --- | -------- |
 | Web | ./modules/instance_group/web_ig.tf |
@@ -22,36 +22,36 @@ Note: Replication between dbs is a post-install and needs to be enabled through 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.32.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.37.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.32.0 |
-| <a name="provider_time"></a> [time](#provider\_time) | n/a |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.37.1 |
+| <a name="provider_time"></a> [time](#provider\_time) | 0.7.2 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_bastion"></a> [bastion](#module\_bastion) | ./modules/bastion |  |
-| <a name="module_instance"></a> [instance](#module\_instance) | ./modules/instance |  |
-| <a name="module_instance_group"></a> [instance\_group](#module\_instance\_group) | ./modules/instance_group |  |
-| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | ./modules/load_balancer |  |
-| <a name="module_public_gateway"></a> [public\_gateway](#module\_public\_gateway) | ./modules/public_gateway |  |
-| <a name="module_security_group"></a> [security\_group](#module\_security\_group) | ./modules/security_group |  |
-| <a name="module_subnet"></a> [subnet](#module\_subnet) | ./modules/subnet |  |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/vpc |  |
-| <a name="module_vpn"></a> [vpn](#module\_vpn) | ./modules/vpn |  |
+| <a name="module_bastion"></a> [bastion](#module\_bastion) | ./modules/bastion | n/a |
+| <a name="module_instance"></a> [instance](#module\_instance) | ./modules/instance | n/a |
+| <a name="module_instance_group"></a> [instance\_group](#module\_instance\_group) | ./modules/instance_group | n/a |
+| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | ./modules/load_balancer | n/a |
+| <a name="module_public_gateway"></a> [public\_gateway](#module\_public\_gateway) | ./modules/public_gateway | n/a |
+| <a name="module_security_group"></a> [security\_group](#module\_security\_group) | ./modules/security_group | n/a |
+| <a name="module_subnet"></a> [subnet](#module\_subnet) | ./modules/subnet | n/a |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/vpc | n/a |
+| <a name="module_vpn"></a> [vpn](#module\_vpn) | ./modules/vpn | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [time_sleep.wait_600_seconds_app](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
-| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/data-sources/is_ssh_key) | data source |
-| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
 
 ## Inputs
 
@@ -72,7 +72,7 @@ Note: Replication between dbs is a post-install and needs to be enabled through 
 | <a name="input_authentication_algorithm"></a> [authentication\_algorithm](#input\_authentication\_algorithm) | Enter the algorithm that you want to use to authenticate IPSec peers. Available options are md5, sha1, sha256, or sha512 | `string` | `"md5"` | no |
 | <a name="input_bandwidth"></a> [bandwidth](#input\_bandwidth) | Bandwidth per second in GB. The possible values are 3, 5 and 10 | `number` | n/a | yes |
 | <a name="input_bastion_image"></a> [bastion\_image](#input\_bastion\_image) | Custom image id for the Bastion VSI | `string` | n/a | yes |
-| <a name="input_bastion_ip_count"></a> [bastion\_ip\_count](#input\_bastion\_ip\_count) | IP count is the total number of total\_ipv4\_address\_count for Bastion Subnet | `number` | `16` | no |
+| <a name="input_bastion_ip_count"></a> [bastion\_ip\_count](#input\_bastion\_ip\_count) | IP count is the total number of total\_ipv4\_address\_count for Bastion Subnet | `number` | `8` | no |
 | <a name="input_bastion_os_type"></a> [bastion\_os\_type](#input\_bastion\_os\_type) | OS image to be used linux for Bastion server | `string` | n/a | yes |
 | <a name="input_bastion_profile"></a> [bastion\_profile](#input\_bastion\_profile) | Specify the profile needed for Bastion VSI | `string` | `"cx2-2x4"` | no |
 | <a name="input_bastion_ssh_key_var_name"></a> [bastion\_ssh\_key\_var\_name](#input\_bastion\_ssh\_key\_var\_name) | This is the name of the ssh key which will be generated dynamically on the bastion server and further will be attached with all the other Web/App/DB servers. It will be used to login to Web/App/DB servers via Bastion server only. | `string` | `"bastion-ssh-key"` | no |
@@ -83,6 +83,7 @@ Note: Replication between dbs is a post-install and needs to be enabled through 
 | <a name="input_db_profile"></a> [db\_profile](#input\_db\_profile) | Hardware configuration profile for the Database VSI. | `string` | `"cx2-2x4"` | no |
 | <a name="input_db_pwd"></a> [db\_pwd](#input\_db\_pwd) | Database user will be created with the specified password | `string` | n/a | yes |
 | <a name="input_db_user"></a> [db\_user](#input\_db\_user) | Database user will be created with the specified name | `string` | n/a | yes |
+| <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Total Database instances that will be created in the user specified region. | `number` | `2` | no |
 | <a name="input_dh_group"></a> [dh\_group](#input\_dh\_group) | Enter the Diffie-Hellman group that you want to use for the encryption key. Available enumeration type are 2, 5, 14, or 19 | `number` | `2` | no |
 | <a name="input_encryption_algorithm"></a> [encryption\_algorithm](#input\_encryption\_algorithm) | Enter the algorithm that you want to use to encrypt data. Available options are: triple\_des, aes128, or aes256 | `string` | `"triple_des"` | no |
 | <a name="input_ike_version"></a> [ike\_version](#input\_ike\_version) | Enter the IKE protocol version that you want to use. Available options are 1, or 2 | `number` | `2` | no |
@@ -114,6 +115,10 @@ Note: Replication between dbs is a post-install and needs to be enabled through 
 | <a name="input_web_max_servers_count"></a> [web\_max\_servers\_count](#input\_web\_max\_servers\_count) | Maximum Web servers count for the Web Instance group | `number` | n/a | yes |
 | <a name="input_web_min_servers_count"></a> [web\_min\_servers\_count](#input\_web\_min\_servers\_count) | Minimum Web servers count for the Web Instance group | `number` | n/a | yes |
 | <a name="input_web_os_type"></a> [web\_os\_type](#input\_web\_os\_type) | OS image to be used linux for Web Server | `string` | n/a | yes |
+| <a name="input_wp_admin_email"></a> [wp\_admin\_email](#input\_wp\_admin\_email) | Password of the Admin User for the wordpress website | `string` | n/a | yes |
+| <a name="input_wp_admin_password"></a> [wp\_admin\_password](#input\_wp\_admin\_password) | Password of the Admin User for the wordpress website | `string` | n/a | yes |
+| <a name="input_wp_admin_user"></a> [wp\_admin\_user](#input\_wp\_admin\_user) | Name of the Admin User of the wordpress website | `string` | n/a | yes |
+| <a name="input_wp_blog_title"></a> [wp\_blog\_title](#input\_wp\_blog\_title) | Title of the website or blog | `string` | n/a | yes |
 | <a name="input_zones"></a> [zones](#input\_zones) | Region and zones mapping | `map(any)` | <pre>{<br>  "au-syd": [<br>    "au-syd-1",<br>    "au-syd-2",<br>    "au-syd-3"<br>  ],<br>  "br-sao": [<br>    "br-sao-1",<br>    "br-sao-2",<br>    "br-sao-3"<br>  ],<br>  "ca-tor": [<br>    "ca-tor-1",<br>    "ca-tor-2",<br>    "ca-tor-3"<br>  ],<br>  "eu-de": [<br>    "eu-de-1",<br>    "eu-de-2",<br>    "eu-de-3"<br>  ],<br>  "eu-gb": [<br>    "eu-gb-1",<br>    "eu-gb-2",<br>    "eu-gb-3"<br>  ],<br>  "jp-osa": [<br>    "jp-osa-1",<br>    "jp-osa-2",<br>    "jp-osa-3"<br>  ],<br>  "jp-tok": [<br>    "jp-tok-1",<br>    "jp-tok-2",<br>    "jp-tok-3"<br>  ],<br>  "us-east": [<br>    "us-east-1",<br>    "us-east-2",<br>    "us-east-3"<br>  ],<br>  "us-south": [<br>    "us-south-1",<br>    "us-south-2",<br>    "us-south-3"<br>  ]<br>}</pre> | no |
 
 ## Outputs

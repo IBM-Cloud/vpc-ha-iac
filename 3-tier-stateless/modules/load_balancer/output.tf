@@ -66,7 +66,7 @@ output "app_lb_id" {
 * This variable will expose the LB IP for App
 **/
 output "app_lb_ip" {
-  value       = ibm_is_lb.db_lb.private_ips
+  value       = ibm_is_lb.app_lb.private_ips
   description = "App load balancer IP"
 }
 
@@ -77,7 +77,7 @@ output "app_lb_ip" {
 * This variable output the Load Balancer's Hostname for App
 **/
 output "app_lb_hostname" {
-  value       = ibm_is_lb.db_lb.hostname
+  value       = ibm_is_lb.app_lb.hostname
   description = "App load balancer Hostname"
 }
 
@@ -90,50 +90,6 @@ output "app_lb_hostname" {
 output "app_lb_pool_id" {
   value       = ibm_is_lb_pool.app_pool.id
   description = "App load balancer pool ID"
-}
-
-/**
-* Output Variable
-* Element : Load Balancer
-* LB ID For DB
-* This variable will expose the LB ID for DB
-**/
-output "db_lb_id" {
-  value       = ibm_is_lb.db_lb.id
-  description = "DB load balancer ID"
-}
-
-/**
-* Output Variable
-* Element : Load Balancer IP
-* LB IP For DB
-* This variable will expose the LB IP for DB
-**/
-output "db_lb_ip" {
-  value       = ibm_is_lb.db_lb.private_ips
-  description = "Web load balancer IP"
-}
-
-/**
-* Output Variable
-* Element : Load Balancer Hostname
-* LB Hostname For DB
-* This variable output the Load Balancer's Hostname for DB
-**/
-output "db_lb_hostname" {
-  value       = ibm_is_lb.db_lb.hostname
-  description = "DB load balancer Hostname"
-}
-
-/**
-* Output Variable
-* Element : LB Pool
-* Pool ID For DB
-* This variable will expose the Pool Id
-**/
-output "db_lb_pool_id" {
-  value       = ibm_is_lb_pool.db_pool.id
-  description = "DB load balancer pool ID"
 }
 
 /**               

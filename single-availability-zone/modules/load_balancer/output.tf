@@ -28,7 +28,6 @@ output "lb_public_ip" {
 output "lb_private_ip" {
   value = merge(
     { "APP_SERVER" = ibm_is_lb.app_lb.private_ips },
-    { "DB_SERVER" = ibm_is_lb.db_lb.private_ips }
   )
   description = "Private IP for App and DB Server"
 }
@@ -42,7 +41,6 @@ output "lb_private_ip" {
 output "lb_dns" {
   value = merge(
     { "APP_SERVER" = ibm_is_lb.app_lb.hostname },
-    { "DB_SERVER" = ibm_is_lb.db_lb.hostname },
     { "WEB_SERVER" = ibm_is_lb.web_lb.hostname }
   )
   description = "Private IP for App, DB and Web Server"
@@ -58,17 +56,14 @@ output "objects" {
   value = {
     "lb" = {
       "app" = ibm_is_lb.app_lb,
-      "db"  = ibm_is_lb.db_lb,
       "web" = ibm_is_lb.web_lb
     },
     "pool" = {
       "app" = ibm_is_lb_pool.app_pool,
-      "db"  = ibm_is_lb_pool.db_pool,
       "web" = ibm_is_lb_pool.web_pool
     },
     "listener" = {
       "app" = ibm_is_lb_listener.app_listener,
-      "db"  = ibm_is_lb_listener.db_listener,
       "web" = ibm_is_lb_listener.web_listener
     }
   }

@@ -9,11 +9,25 @@ mean increasing the subnet count. Pluse you will also need to modify the securit
 policies to match your application requirements.
 
 * Resource Count for this project:
-* VPC Count             = 1
-* Subnet Count          = 10
-* Security Group Count  = 3
-* Security Group Rule   = 5
-* Load Balancers        = 3
+* VPC Count                     = 1
+* Subnet Count                  = 9
+* Security Group Count          = 5
+* Security Group Rules          = 15
+* Load Balancers                = 2
+* Load Balancer Listener        = 2
+* Load Balancer Pool            = 2
+* Load Balancer Pool Member     = 6
+* Bastion VSI                   = 1
+* Web VSI                       = 3
+* App VSI                       = 3
+* Database VSI                  = 2
+* Time Sleep                    = 1
+* Floating IP                   = 1
+* Null Resource                 = 1
+* Data Source ssh_key           = 1
+* Data Source Auth Token        = 1
+* Dynamic ssh_key               = 1
+* Public Gateway                = 3
 
 <img src="./images/3-tier-app-MZR_v3.jpg"/>
 
@@ -22,13 +36,13 @@ policies to match your application requirements.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.32.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.37.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.32.0 |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.37.1 |
 
 ## Modules
 
@@ -45,9 +59,9 @@ policies to match your application requirements.
 
 | Name | Type |
 |------|------|
-| [ibm_is_vpc.vpc](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/resources/is_vpc) | resource |
-| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/data-sources/is_ssh_key) | data source |
-| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_vpc.vpc](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/resources/is_vpc) | resource |
+| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
 
 ## Inputs
 
@@ -66,7 +80,7 @@ policies to match your application requirements.
 | <a name="input_db_image"></a> [db\_image](#input\_db\_image) | This variable will hold the image name for db instance | `string` | n/a | yes |
 | <a name="input_db_os_type"></a> [db\_os\_type](#input\_db\_os\_type) | OS image to be used [windows \| linux] for DB Server | `string` | n/a | yes |
 | <a name="input_db_profile"></a> [db\_profile](#input\_db\_profile) | This variable will hold the image profile name for db instance | `string` | `"cx2-2x4"` | no |
-| <a name="input_dlb_port"></a> [dlb\_port](#input\_dlb\_port) | This is the DB load balancer listener port | `number` | `"80"` | no |
+| <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Total Database instances that will be created in the user specified region. | `number` | `2` | no |
 | <a name="input_lb_algo"></a> [lb\_algo](#input\_lb\_algo) | lbaaS backend distribution algorithm | `map(any)` | <pre>{<br>  "least-x": "least_connections",<br>  "rr": "round_robin",<br>  "wrr": "weighted_round_robin"<br>}</pre> | no |
 | <a name="input_lb_port_number"></a> [lb\_port\_number](#input\_lb\_port\_number) | declare lbaaS pool member port numbert | `map(any)` | <pre>{<br>  "custom": "xxx",<br>  "http": "80",<br>  "https": "443"<br>}</pre> | no |
 | <a name="input_lb_protocol"></a> [lb\_protocol](#input\_lb\_protocol) | lbaaS protocols | `map(any)` | <pre>{<br>  "443": "https",<br>  "80": "http",<br>  "l4-tcp": "tcp"<br>}</pre> | no |
@@ -88,8 +102,6 @@ policies to match your application requirements.
 |------|-------------|
 | <a name="output_lb-app-dns"></a> [lb-app-dns](#output\_lb-app-dns) | n/a |
 | <a name="output_lb-app-ip"></a> [lb-app-ip](#output\_lb-app-ip) | n/a |
-| <a name="output_lb-db-dns"></a> [lb-db-dns](#output\_lb-db-dns) | n/a |
-| <a name="output_lb-db-ip"></a> [lb-db-ip](#output\_lb-db-ip) | n/a |
 | <a name="output_lb-web-dns"></a> [lb-web-dns](#output\_lb-web-dns) | n/a |
 | <a name="output_lb-web-ip"></a> [lb-web-ip](#output\_lb-web-ip) | n/a |
 | <a name="output_vsi-app-ips"></a> [vsi-app-ips](#output\_vsi-app-ips) | n/a |

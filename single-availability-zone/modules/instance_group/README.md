@@ -44,6 +44,7 @@ No modules.
 | <a name="input_app_image"></a> [app\_image](#input\_app\_image) | Image id for the App VSI for App Instance group template | `string` | n/a | yes |
 | <a name="input_app_max_servers_count"></a> [app\_max\_servers\_count](#input\_app\_max\_servers\_count) | Maximum App servers count for the App Instance group | `number` | n/a | yes |
 | <a name="input_app_min_servers_count"></a> [app\_min\_servers\_count](#input\_app\_min\_servers\_count) | Minimum App servers count for the App Instance group | `number` | n/a | yes |
+| <a name="input_app_placement_group_id"></a> [app\_placement\_group\_id](#input\_app\_placement\_group\_id) | Placement group ID to be used for App servers. | `string` | n/a | yes |
 | <a name="input_objects"></a> [objects](#input\_objects) | This variable will contains the objects of LB, LB Pool and LB Listeners. | <pre>object({<br>    lb       = map(any)<br>    pool     = map(any)<br>    listener = map(any)<br>  })</pre> | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | This is the prefix text that will be prepended in every resource name created by this Module | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group ID is used to seperate the resources in a group. | `string` | n/a | yes |
@@ -58,6 +59,7 @@ No modules.
 | <a name="input_web_image"></a> [web\_image](#input\_web\_image) | Image id for the Web VSI for Web Instance group template | `string` | n/a | yes |
 | <a name="input_web_max_servers_count"></a> [web\_max\_servers\_count](#input\_web\_max\_servers\_count) | Maximum Web servers count for the Web Instance group | `number` | n/a | yes |
 | <a name="input_web_min_servers_count"></a> [web\_min\_servers\_count](#input\_web\_min\_servers\_count) | Minimum Web servers count for the Web Instance group | `number` | n/a | yes |
+| <a name="input_web_placement_group_id"></a> [web\_placement\_group\_id](#input\_web\_placement\_group\_id) | Placement group ID to be used for Web servers. | `string` | n/a | yes |
 | <a name="input_zone"></a> [zone](#input\_zone) | Resources will be created in the user specified zone | `string` | n/a | yes |
 
 ## Outputs

@@ -310,6 +310,56 @@ variable "db_pwd" {
 }
 
 /**
+* Name: web_lb_hostname
+* Type: string
+* Description: Web Load balancer hostname
+**/
+variable "web_lb_hostname" {
+  description = "Web Load balancer hostname"
+  type        = string
+}
+
+/**
+* Name: wp_blog_title
+* Type: string
+* Description: Title of the website or blog
+**/
+variable "wp_blog_title" {
+  description = "Title of the website or blog"
+  type        = string
+}
+/**
+* Name: admin_user
+* Type: string
+* Description: Name of the Admin User for the wordpress website
+**/
+variable "wp_admin_user" {
+  description = "Name of the Admin User of the wordpress website"
+  type        = string
+}
+
+/**
+* Name: admin_password
+* Type: string
+* Description: Password for the Admin User of the wordpress website
+**/
+variable "wp_admin_password" {
+  description = "Password of the Admin User for the wordpress website"
+  type        = string
+}
+
+/**
+* Name: admin_email
+* Type: string
+* Description: Email of the Admin User of the wordpress website
+**/
+variable "wp_admin_email" {
+  description = "Password of the Admin User for the wordpress website"
+  type        = string
+}
+
+
+/**
 #################################################################################################################
 *                               End of the Variable Section 
 #################################################################################################################

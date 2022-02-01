@@ -95,22 +95,6 @@ resource "ibm_is_security_group_rule" "db_rule_80" {
 
 /**
 * Security Group Rule for DB Server
-* This inbound rule will allow the Load Balancer to access the DB servers on the DB load balancer listener port.
-**/
-
-resource "ibm_is_security_group_rule" "db_rule_lb_listener" {
-  group     = ibm_is_security_group.db.id
-  direction = "inbound"
-  remote    = ibm_is_security_group.lb_sg.id
-
-  tcp {
-    port_min = var.dlb_port
-    port_max = var.dlb_port
-  }
-}
-
-/**
-* Security Group Rule for DB Server
 * This will allow all the outbound traffic from the DB servers. Inbound traffics are restricted though, as specified in above rules.
 **/
 

@@ -10,14 +10,14 @@ The terraform code creates resilient infrastructure in 2 separate regions with a
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.32.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.37.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm.jp-tok"></a> [ibm.jp-tok](#provider\_ibm.jp-tok) | 1.32.0 |
-| <a name="provider_ibm.us-east"></a> [ibm.us-east](#provider\_ibm.us-east) | 1.32.0 |
+| <a name="provider_ibm.jp-tok"></a> [ibm.jp-tok](#provider\_ibm.jp-tok) | 1.37.1 |
+| <a name="provider_ibm.us-east"></a> [ibm.us-east](#provider\_ibm.us-east) | 1.37.1 |
 
 ## Modules
 
@@ -49,8 +49,8 @@ The terraform code creates resilient infrastructure in 2 separate regions with a
 
 | Name | Type |
 |------|------|
-| [ibm_is_ssh_key.ssh_key_id_region1](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/data-sources/is_ssh_key) | data source |
-| [ibm_is_ssh_key.ssh_key_id_region2](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.32.0/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id_region1](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id_region2](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
 
 ## Inputs
 
@@ -84,8 +84,7 @@ The terraform code creates resilient infrastructure in 2 separate regions with a
 | <a name="input_db_image_region2"></a> [db\_image\_region2](#input\_db\_image\_region2) | Custom image id for the Database VSI from Region-2 | `string` | n/a | yes |
 | <a name="input_db_os_type"></a> [db\_os\_type](#input\_db\_os\_type) | OS image to be used [Windows \| Linux] for DB server. This OS type should be same across both the regions. If OS flavor is Windows then we will try to install IIS and OpenSSH service and Rebooting the server .So, It will take minimum 5-10 mins to make the Server avilable. | `string` | n/a | yes |
 | <a name="input_db_profile"></a> [db\_profile](#input\_db\_profile) | Hardware configuration profile for the Database VSI. | `string` | `"cx2-2x4"` | no |
-| <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Total instances that will be created per zones per tier. | `number` | `1` | no |
-| <a name="input_dlb_port"></a> [dlb\_port](#input\_dlb\_port) | This is the DB load balancer listener port | `number` | `"80"` | no |
+| <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Total Database instances that will be created in the user specified region. | `number` | `2` | no |
 | <a name="input_expected_body"></a> [expected\_body](#input\_expected\_body) | A case-insensitive sub-string to look for in the response body. If this string is not found, the origin will be marked as unhealthy. A null value of “” is allowed to match on any content | `string` | `""` | no |
 | <a name="input_expected_codes"></a> [expected\_codes](#input\_expected\_codes) | The expected HTTP response code or code range of the health check | `string` | `"2xx"` | no |
 | <a name="input_follow_redirects"></a> [follow\_redirects](#input\_follow\_redirects) | If set to true, a redirect is followed when a redirect is returned by the origin pool. Is set to false, redirects from the origin pool are not followed | `bool` | `"true"` | no |

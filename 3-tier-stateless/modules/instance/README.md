@@ -34,7 +34,7 @@ No modules.
 | <a name="input_db_profile"></a> [db\_profile](#input\_db\_profile) | This variable will hold the image profile name for db instance | `string` | n/a | yes |
 | <a name="input_db_sg"></a> [db\_sg](#input\_db\_sg) | DB Security Group | `any` | n/a | yes |
 | <a name="input_db_subnet"></a> [db\_subnet](#input\_db\_subnet) | DB subnets Ids. This is required parameter | `any` | n/a | yes |
-| <a name="input_dlb_id"></a> [dlb\_id](#input\_dlb\_id) | DB Load Balancer ID | `any` | n/a | yes |
+| <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Total Database instances that will be created in the user specified region. | `number` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all the resources. | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group Id is used to seperated the resources in a group. | `string` | n/a | yes |
 | <a name="input_ssh_key"></a> [ssh\_key](#input\_ssh\_key) | ssh keys for the vsi | `any` | n/a | yes |

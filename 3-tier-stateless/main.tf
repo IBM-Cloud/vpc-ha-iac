@@ -1,11 +1,31 @@
 /**
-* Resource Count for this project:
-* VPC Count             = 1
-* Subnet Count          = 10
-* Security Group Count  = 3
-* Security Group Rule   = 5
-* Load Balancers        = 3
-* 
+----------------------------------------------------------------|
+* Total Resource Count for the default value of this project:   |
+----------------------------------------------------------------|
+* VPC Count                     = 1
+* Subnet Count                  = 9
+* Security Group Count          = 5
+* Security Group Rules          = 15
+* Load Balancers                = 2
+* Load Balancer Listener        = 2
+* Load Balancer Pool            = 2
+* Load Balancer Pool Member     = 6
+* Bastion VSI                   = 1
+* Web VSI                       = 3
+* App VSI                       = 3
+* Database VSI                  = 2
+* Time Sleep                    = 1
+* Floating IP                   = 1
+* Null Resource                 = 1
+* Data Source ssh_key           = 1
+* Data Source Auth Token        = 1
+* Dynamic ssh_key               = 1
+* Public Gateway                = 3
+*--------------------------------------|
+*--------------------------------------|
+* Total Resources               = 60   |
+*--------------------------------------|
+*--------------------------------------|
 **/
 
 resource "ibm_is_vpc" "vpc" {
@@ -30,6 +50,7 @@ locals {
 * vpc_id: VPC ID to contain the subnets
 * prefix: This will be appended in resources created by this module
 * resource_group: The resource group id
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * depend_on: This ensures that the vpc object will be created before the subnets
 **/
 module "subnet" {
@@ -40,6 +61,7 @@ module "subnet" {
   resource_group_id  = var.resource_group_id
   ip_count           = local.subnet_ip_count
   public_gateway_ids = module.public_gateway.pg_ids
+  db_vsi_count       = var.db_vsi_count
   depends_on         = [ibm_is_vpc.vpc]
 }
 
@@ -59,7 +81,6 @@ module "security_group" {
   resource_group_id = var.resource_group_id
   my_public_ip      = var.my_public_ip
   alb_port          = var.alb_port
-  dlb_port          = var.dlb_port
   bastion_sg        = module.bastion.bastion_sg
   app_os_type       = var.app_os_type
   web_os_type       = var.web_os_type
@@ -158,7 +179,6 @@ module "public_gateway" {
 * resource_group: The resource group id
 * web_subnet: IDs of web subnet
 * app_subnet: IDs of app subnet
-* db_subnet: IDs of db subnet
 * depend_on: This ensures that the vpc object will be created before the subnets
 **/
 
@@ -170,19 +190,15 @@ module "load_balancer" {
   zones             = var.zones[var.region]
   web_subnet        = module.subnet.web_subnet_ids
   app_subnet        = module.subnet.app_subnet_ids
-  db_subnet         = module.subnet.db_subnet_ids
   alb_port          = var.alb_port
-  dlb_port          = var.dlb_port
   web_target        = module.instance.web_target
   app_target        = module.instance.app_target
-  db_target         = module.instance.db_target
   lb_protocol       = var.lb_protocol
   lb_algo           = var.lb_algo
   lb_port_number    = var.lb_port_number
   lb_sg             = module.security_group.lb_sg
   web_vsi           = module.instance.web_vsi
   app_vsi           = module.instance.app_vsi
-  db_vsi            = module.instance.db_vsi
   total_instance    = range(var.total_instance)
   depends_on        = [module.subnet.ibm_is_subnet, module.instance.ibm_is_instance]
 }
@@ -197,6 +213,7 @@ module "load_balancer" {
 * web_subnet: IDs of web subnet
 * app_subnet: IDs of app subnet
 * db_subnet: IDs of db subnet
+* db_vsi_count: Total Database instances that will be created in the user specified region.
 * depend_on: This ensures that the vpc object will be created before the subnets
 **/
 
@@ -221,9 +238,9 @@ module "instance" {
   web_sg            = module.security_group.web_sg
   db_sg             = module.security_group.db_sg
   wlb_id            = module.load_balancer.web_lb_id
-  dlb_id            = module.load_balancer.db_lb_id
   alb_id            = module.load_balancer.app_lb_id
   total_instance    = range(var.total_instance)
+  db_vsi_count      = var.db_vsi_count
   depends_on        = [module.subnet.ibm_is_subnet, module.security_group, module.bastion]
 }
 
@@ -251,23 +268,6 @@ output "lb-app-dns" {
   value = module.load_balancer.app_lb_hostname
 }
 
-
-/**
-*                                DB Load Balancers Sections
-*                                         Starts Here
-**/
-
-output "lb-db-ip" {
-  value = module.load_balancer.db_lb_ip
-}
-output "lb-db-dns" {
-  value = module.load_balancer.db_lb_hostname
-}
-
-/**
-*                                DB Load Balancers Sections
-*                                         Ends Here
-**/
 
 output "vsi-web-ips" {
   value = module.instance.web_target

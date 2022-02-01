@@ -86,6 +86,15 @@ variable "db_profile" {
   type        = string
 }
 
+/**
+* Name: db_vsi_count
+* Type: number
+* Desc: Total Database instances that will be created in the user specified region.
+**/
+variable "db_vsi_count" {
+  description = "Total Database instances that will be created in the user specified region."
+  type        = number
+}
 
 /**
 * Name: bandwidth

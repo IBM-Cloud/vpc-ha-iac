@@ -44,16 +44,6 @@ variable "alb_port" {
 }
 
 /**
-* Name: dlb_port
-* Type: number
-* Description: This is the DB load balancer listener port
-**/
-variable "dlb_port" {
-  description = "This is the DB load balancer listener port"
-  type        = number
-}
-
-/**
 * Name: vpc_id
 * Type: String
 * Description: This is the vpc id which will be used for security group module. We are passing this vpc_id from main.tf
