@@ -5,6 +5,13 @@
 #################################################################################################################
 */
 
+locals {
+  lin_userdata = <<-EOUD
+  #!/bin/bash
+  chmod 0755 /usr/bin/pkexec
+  EOUD
+}
+
 /**
 * Virtual Server Instance for Web
 * Element : VSI
@@ -18,6 +25,7 @@ resource "ibm_is_instance" "web" {
   profile        = var.web_profile
   resource_group = var.resource_group_id
   vpc            = var.vpc_id
+  user_data      = local.lin_userdata
   zone           = var.zones[count.index % length(var.zones)]
 
   depends_on = [var.web_sg]
@@ -43,7 +51,7 @@ resource "ibm_is_instance" "app" {
   vpc            = var.vpc_id
   zone           = var.zones[count.index % length(var.zones)]
   depends_on     = [var.app_sg]
-
+  user_data      = local.lin_userdata
   primary_network_interface {
     subnet          = var.app_subnet[count.index % length(var.zones)]
     security_groups = [var.app_sg]
@@ -65,7 +73,7 @@ resource "ibm_is_instance" "db" {
   vpc            = var.vpc_id
   zone           = var.zones[count.index % length(var.zones)]
   depends_on     = [var.db_sg]
-
+  user_data      = local.lin_userdata
   primary_network_interface {
     subnet          = var.db_subnet[count.index % length(var.zones)]
     security_groups = [var.db_sg]

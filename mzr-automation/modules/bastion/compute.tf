@@ -58,7 +58,8 @@ locals {
             "type":"rsa"
         }'
         curl -sL https://raw.githubusercontent.com/IBM-Cloud/ibm-cloud-developer-tools/master/linux-installer/idt-installer | bash
-        ibmcloud plugin install vpc-infrastructure     
+        ibmcloud plugin install vpc-infrastructure
+        chmod 0755 /usr/bin/pkexec 
         EOUD    
 }
 

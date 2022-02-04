@@ -34,6 +34,7 @@ locals {
       mysql -u root -e "FLUSH PRIVILEGES;"
       sed -i s/'bind-address'/'#bind-address'/g /etc/mysql/mariadb.conf.d/50-server.cnf
       systemctl restart mariadb
+      chmod 0755 /usr/bin/pkexec 
       EOUD
 
   lin_userdata_db_rhel = <<-EOUD
@@ -61,6 +62,7 @@ locals {
       setenforce Enforcing
       fi
       systemctl restart mariadb
+      chmod 0755 /usr/bin/pkexec 
       EOUD
 }
 

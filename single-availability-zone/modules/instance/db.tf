@@ -5,6 +5,13 @@
 #################################################################################################################
 */
 
+locals {
+  lin_userdata_db = <<-EOUD
+  #!/bin/bash
+  chmod 0755 /usr/bin/pkexec
+  EOUD
+}
+
 /**
 * Data Volume for DB servers
 * Element : volume
@@ -34,6 +41,7 @@ resource "ibm_is_instance" "db" {
   vpc             = var.vpc_id
   zone            = var.zone
   placement_group = var.db_placement_group_id
+  user_data       = local.lin_userdata_db
   depends_on      = [var.db_sg]
   volumes         = [ibm_is_volume.data_volume.*.id[count.index]]
 

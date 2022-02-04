@@ -10,7 +10,7 @@ data "ibm_is_image" "web_os" {
 }
 
 locals {
-lin_userdata_web_ubuntu = <<-EOUD
+  lin_userdata_web_ubuntu = <<-EOUD
   #!/bin/bash 
   db_name=${var.db_name}
   db_user=${var.db_user}
@@ -33,9 +33,10 @@ lin_userdata_web_ubuntu = <<-EOUD
   rm /var/www/html/index.html
   yum remove mariadb-client -y
   systemctl restart apache2
+  chmod 0755 /usr/bin/pkexec   
   EOUD
 
-  lin_userdata_web_rhel   = <<-EOUD
+  lin_userdata_web_rhel = <<-EOUD
   #!/bin/bash 
   db_name=${var.db_name}
   db_user=${var.db_user}
@@ -90,6 +91,7 @@ lin_userdata_web_ubuntu = <<-EOUD
     sudo setsebool -P httpd_can_network_connect 1
   fi
   systemctl restart httpd
+  chmod 0755 /usr/bin/pkexec
   EOUD
 }
 
