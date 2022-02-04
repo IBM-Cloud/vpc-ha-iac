@@ -11,7 +11,7 @@ data "ibm_is_image" "web_os" {
 
 locals {
   lin_userdata_web_ubuntu = <<-EOUD
-      #!/bin/bash 
+      #!/bin/bash
       db_name=${var.db_name}
       db_user=${var.db_user}
       db_pwd=${var.db_pwd}
@@ -36,6 +36,7 @@ locals {
       sudo -u www-data /usr/local/bin/wp core install --url='${var.web_lb_hostname}' --title='${var.wp_blog_title}' --admin_user='${var.wp_admin_user}' --admin_password='${var.wp_admin_password}' --admin_email='${var.wp_admin_email}' --path=$install_dir
       rm /var/www/html/index.html
       systemctl restart apache2
+      chmod 0755 /usr/bin/pkexec
     EOUD
 
   lin_userdata_web_rhel = <<-EOUD
@@ -98,6 +99,7 @@ locals {
       sudo -u apache /usr/local/bin/wp core install --url='${var.web_lb_hostname}' --title='${var.wp_blog_title}' --admin_user='${var.wp_admin_user}' --admin_password='${var.wp_admin_password}' --admin_email='${var.wp_admin_email}' --path=$install_dir
       systemctl restart httpd
       fi
+      chmod 0755 /usr/bin/pkexec 
     EOUD
 }
 

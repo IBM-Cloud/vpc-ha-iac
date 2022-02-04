@@ -6,7 +6,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | n/a |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.37.1 |
 
 ## Modules
 
@@ -29,7 +29,6 @@ No modules.
 | <a name="input_db_profile"></a> [db\_profile](#input\_db\_profile) | DB Profile | `string` | n/a | yes |
 | <a name="input_db_sg"></a> [db\_sg](#input\_db\_sg) | DB Security Group | `string` | n/a | yes |
 | <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Please enter the total number of instances you want to create in each zones. | `any` | n/a | yes |
-| <a name="input_dlb_id"></a> [dlb\_id](#input\_dlb\_id) | DB Load Balancer ID | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all the resources. | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group ID | `string` | n/a | yes |
 | <a name="input_ssh_key"></a> [ssh\_key](#input\_ssh\_key) | ssh keys for the vsi | `list(any)` | n/a | yes |

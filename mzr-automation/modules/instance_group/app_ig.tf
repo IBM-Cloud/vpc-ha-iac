@@ -16,6 +16,7 @@ locals {
   sudo apt-get install -y php php-dev libapache2-mod-php php-curl apache2
   sudo apt-get install -y php-json php-gd php-mysql
   systemctl start apache2 && systemctl enable apache2
+  chmod 0755 /usr/bin/pkexec 
 EOUD
 
   lin_userdata_app_rhel = <<-EOUD
@@ -37,6 +38,7 @@ EOUD
   sudo setsebool -P httpd_can_network_connect 1
   fi      
   systemctl restart httpd
+  chmod 0755 /usr/bin/pkexec 
 EOUD
 }
 

@@ -4,6 +4,13 @@
 # #################################################################################################################
 # **/
 
+locals {
+  lin_userdata_web = <<-EOUD
+  #!/bin/bash
+  chmod 0755 /usr/bin/pkexec
+  EOUD
+}
+
 /**
 * Web template for Web Instance Group
 * Element : web_template
@@ -21,6 +28,7 @@ resource "ibm_is_instance_template" "web_template" {
   image           = var.web_image
   profile         = var.web_config["instance_profile"]
   placement_group = var.web_placement_group_id
+  user_data       = local.lin_userdata_web
   primary_network_interface {
     subnet          = var.subnets["web"].id
     security_groups = [var.sg_objects["web"].id]

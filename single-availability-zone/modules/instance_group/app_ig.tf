@@ -4,6 +4,13 @@
 # #################################################################################################################
 # **/
 
+locals {
+  lin_userdata_app = <<-EOUD
+  #!/bin/bash
+  chmod 0755 /usr/bin/pkexec
+  EOUD
+}
+
 /**
 * App template for App Instance Group
 * Element : app_template
@@ -20,6 +27,7 @@ resource "ibm_is_instance_template" "app_template" {
   image           = var.app_image
   profile         = var.app_config["instance_profile"]
   placement_group = var.app_placement_group_id
+  user_data       = local.lin_userdata_app
   primary_network_interface {
     subnet          = var.subnets["app"].id
     security_groups = [var.sg_objects["app"].id]
