@@ -100,6 +100,12 @@ will support the scripts posted in this repository. Please open a GitHub issue t
 and provide suggestions or comments. If the scripts are modified and have issues, we will do our
 best to assist.
 
+## Caveats
+* Release 3.1.1 has the polkit remediation (CVE-2021-4034) by removing the SUID-bit from pkexe. This is executed as part of the post-provisioining script for the each of the virtual server instance `tf` files.
+```
+# chmod 0755 /usr/bin/pkexec
+```
+
 ## Known Issues
 * Private VSIs deployed with RHEL 7.9 may not be able to resolve to an internal IBM satellite yum repo.
 As a workaround deployed a subnet gateway and point to an external RHEL repo.
