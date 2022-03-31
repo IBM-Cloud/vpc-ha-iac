@@ -21,23 +21,26 @@ variable "bastion_image" {
 }
 
 /**
-* Name: my_public_ip
-* Type: string
-* Description: This is the User's Public IP address which will be used to login to Bastion VSI in the format X.X.X.X
-*              Please update your public IP address everytime before executing terraform apply. As your Public IP address could be dynamically changing each day.
+* Name: public_ip_address_list
+* Type: list
+* Description: This is the list of User's Public IP address which will be used to login to Bastion VSI in the format X.X.X.X
+*              Please update your public IP address every time before executing terraform apply. As your Public IP address could be dynamically changing each day.
 *              To get your Public IP you can use command <dig +short myip.opendns.com @resolver1.opendns.com> or visit "https://www.whatismyip.com"
 **/
-variable "my_public_ip" {
-  description = "Provide the User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply"
+variable "public_ip_addresses" {
+  description = "Provide the list of User's Public IP addresses in the format \"X.X.X.X\" which will be used to login to Bastion VSI.\nFor example: \"123.201.8.30,219.91.139.49\". \nAlso Please provide the updated list of public IP addresses everytime before executing."
   type        = string
   validation {
-    condition     = can(regex("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$", var.my_public_ip))
-    error_message = "Error: Invalid IP address provided."
+    condition     = can([for y in formatlist("%s/32", [for x in split(",", var.public_ip_addresses) : trimspace(x)]) : regex("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(/((?:[1-9])|(?:[1-2][0-9])|(?:3[0-2])))$", y)])
+    error_message = "Error: Format of the provided IP addresses in the list is not valid."
   }
   validation {
-    condition     = !can(regex("(^0\\.)|(^10\\.)|(^100\\.6[4-9]\\.)|(^100\\.[7-9][0-9]\\.)|(^100\\.1[0-1][0-9]\\.)|(^100\\.12[0-7]\\.)|(^127\\.)|(^169\\.254\\.)|(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-1]\\.)|(^192\\.0\\.0\\.)|(^192\\.0\\.2\\.)|(^192\\.88\\.99\\.)|(^192\\.168\\.)|(^198\\.1[8-9]\\.)|(^198\\.51\\.100\\.)|(^203\\.0\\.113\\.)|(^22[4-9]\\.)|(^23[0-9]\\.)|(^24[0-9]\\.)|(^25[0-5]\\.)", var.my_public_ip))
-    error_message = "Error: Please enter your own Public IP address in valid format."
+    condition     = alltrue([for x in formatlist("%s/32", [for x in split(",", var.public_ip_addresses) : trimspace(x)]) : !can(regex("(^0\\.)|(^10\\.)|(^100\\.6[4-9]\\.)|(^100\\.[7-9][0-9]\\.)|(^100\\.1[0-1][0-9]\\.)|(^100\\.12[0-7]\\.)|(^127\\.)|(^169\\.254\\.)|(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-1]\\.)|(^192\\.0\\.0\\.)|(^192\\.0\\.2\\.)|(^192\\.88\\.99\\.)|(^192\\.168\\.)|(^198\\.1[8-9]\\.)|(^198\\.51\\.100\\.)|(^203\\.0\\.113\\.)|(^22[4-9]\\.)|(^23[0-9]\\.)|(^24[0-9]\\.)|(^25[0-5]\\.)", x))])
+    error_message = "Error: Provided IP address in the list is not a public IP address."
   }
+}
+locals {
+  public_ip_address_list = formatlist("%s/32", [for x in split(",", var.public_ip_addresses) : trimspace(x)])
 }
 
 /**

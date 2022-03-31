@@ -103,10 +103,11 @@ module "placement_group" {
 /**
 * Data Resource
 * Element : SSH Key
-* This will return the ssh key id of the User-ssh-key. This is the existing ssh key of user which will be used to login to Bastion server.
+* This will return the ssh key id/ids of the User-ssh-key. This is the existing ssh key/keys of user which will be used to login to Bastion server.
 **/
 data "ibm_is_ssh_key" "ssh_key_id" {
-  name = var.user_ssh_key
+  count = length(local.user_ssh_key_list)
+  name  = local.user_ssh_key_list[count.index]
 }
 
 /**
@@ -131,22 +132,22 @@ data "ibm_is_ssh_key" "ssh_key_id" {
 **/
 
 module "bastion" {
-  source                = "./modules/bastion"
-  prefix                = var.prefix
-  vpc_id                = module.vpc.id
-  user_ssh_key          = [data.ibm_is_ssh_key.ssh_key_id.id]
-  bastion_ssh_key       = var.bastion_ssh_key_var_name
-  my_public_ip          = var.my_public_ip
-  resource_group_id     = var.resource_group_id
-  zone                  = var.zone
-  api_key               = var.api_key
-  region                = var.regions[var.zone]
-  bastion_profile       = var.bastion_profile
-  bastion_os_type       = var.bastion_os_type
-  local_machine_os_type = var.local_machine_os_type
-  bastion_image         = var.bastion_image
-  bastion_ip_count      = var.bastion_ip_count
-  depends_on            = [module.vpc]
+  source                 = "./modules/bastion"
+  prefix                 = var.prefix
+  vpc_id                 = module.vpc.id
+  user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id.*.id
+  bastion_ssh_key        = var.bastion_ssh_key_var_name
+  public_ip_address_list = local.public_ip_address_list
+  resource_group_id      = var.resource_group_id
+  zone                   = var.zone
+  api_key                = var.api_key
+  region                 = var.regions[var.zone]
+  bastion_profile        = var.bastion_profile
+  bastion_os_type        = var.bastion_os_type
+  local_machine_os_type  = var.local_machine_os_type
+  bastion_image          = var.bastion_image
+  bastion_ip_count       = var.bastion_ip_count
+  depends_on             = [module.vpc]
 }
 
 /**
@@ -246,7 +247,6 @@ module "security_group" {
   vpc_id            = module.vpc.id
   prefix            = var.prefix
   resource_group_id = var.resource_group_id
-  my_public_ip      = var.my_public_ip
   alb_port          = var.alb_port
   bastion_sg        = module.bastion.bastion_sg
   app_os_type       = var.app_os_type

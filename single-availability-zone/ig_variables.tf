@@ -134,7 +134,7 @@ variable "web_cooldown_time" {
 *       network_in        : Average target Network in (Mbps) for Network in policy of App Instance Group
 *       network_out       : Average target Network out (Mbps) for Network out policy of App Instance Group"
 *       instance_profile  : Hardware configuration profile for the App VSI.
-* Type: map(number)
+* Type: map(any)
 **/
 
 

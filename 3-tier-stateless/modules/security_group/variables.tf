@@ -8,6 +8,7 @@
 /**
 * Name: resource_group_id
 * Type: String
+* Description: Please enter the Resource Group ID to be used for creation of the resources
 */
 variable "resource_group_id" {
   description = "Resource Group Id is used to seperate the resources in a group."
@@ -50,16 +51,6 @@ variable "alb_port" {
 **/
 variable "vpc_id" {
   description = "Required parameter vpc_id"
-  type        = string
-}
-
-/**
-* Name: my_public_ip
-* Type: string
-* Description: This is the User's Public IP address which will be used to login to Bastion VSI in the format X.X.X.X
-**/
-variable "my_public_ip" {
-  description = "Provide the User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply"
   type        = string
 }
 

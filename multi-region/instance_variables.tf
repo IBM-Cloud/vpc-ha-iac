@@ -35,7 +35,7 @@ variable "bandwidth" {
   type        = number
 
   validation {
-    condition     = contains(["3", "5", "10"], var.bandwidth)
+    condition     = contains(["3", "5", "10", 3, 5, 10], var.bandwidth)
     error_message = "Error: Incorrect value for bandwidth. Allowed values are 3, 5 and 10."
   }
 }
@@ -48,7 +48,7 @@ variable "bandwidth" {
 variable "data_vol_size" {
   description = "Storage size in GB. The value should be between 10 and 2000"
   type        = number
-  default     = "10"
+  default     = 10
   validation {
     condition     = var.data_vol_size >= 10 && var.data_vol_size <= 2000
     error_message = "Error: Incorrect value for size. Allowed size should be between 10 and 2000 GB."

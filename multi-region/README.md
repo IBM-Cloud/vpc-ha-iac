@@ -5,58 +5,61 @@ The terraform code creates resilient infrastructure in 2 separate regions with a
 
 **Note:** Replication between dbs is a post-install and needs to be configured by the db software.
 
+## Resources
+[Terraform How-to guide](https://cloud.ibm.com/docs/cloud-infrastructure?topic=cloud-infrastructure-create-three-tier-resilient-vpc-mzr)
+
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.37.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.39.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm.jp-tok"></a> [ibm.jp-tok](#provider\_ibm.jp-tok) | 1.37.1 |
-| <a name="provider_ibm.us-east"></a> [ibm.us-east](#provider\_ibm.us-east) | 1.37.1 |
+| <a name="provider_ibm.jp-tok"></a> [ibm.jp-tok](#provider\_ibm.jp-tok) | 1.39.1 |
+| <a name="provider_ibm.us-east"></a> [ibm.us-east](#provider\_ibm.us-east) | 1.39.1 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_bastion_region1"></a> [bastion\_region1](#module\_bastion\_region1) | ./modules/bastion |  |
-| <a name="module_bastion_region2"></a> [bastion\_region2](#module\_bastion\_region2) | ./modules/bastion |  |
-| <a name="module_cos"></a> [cos](#module\_cos) | ./modules/cos |  |
-| <a name="module_global_load_balancer"></a> [global\_load\_balancer](#module\_global\_load\_balancer) | ./modules/global_load_balancer |  |
-| <a name="module_instance_group_region1"></a> [instance\_group\_region1](#module\_instance\_group\_region1) | ./modules/instance_group |  |
-| <a name="module_instance_group_region2"></a> [instance\_group\_region2](#module\_instance\_group\_region2) | ./modules/instance_group |  |
-| <a name="module_instance_region1"></a> [instance\_region1](#module\_instance\_region1) | ./modules/instance |  |
-| <a name="module_instance_region2"></a> [instance\_region2](#module\_instance\_region2) | ./modules/instance |  |
-| <a name="module_load_balancer_region1"></a> [load\_balancer\_region1](#module\_load\_balancer\_region1) | ./modules/load_balancer |  |
-| <a name="module_load_balancer_region2"></a> [load\_balancer\_region2](#module\_load\_balancer\_region2) | ./modules/load_balancer |  |
-| <a name="module_pg_region1"></a> [pg\_region1](#module\_pg\_region1) | ./modules/public_gateway |  |
-| <a name="module_pg_region2"></a> [pg\_region2](#module\_pg\_region2) | ./modules/public_gateway |  |
-| <a name="module_sg_region1"></a> [sg\_region1](#module\_sg\_region1) | ./modules/security_group |  |
-| <a name="module_sg_region2"></a> [sg\_region2](#module\_sg\_region2) | ./modules/security_group |  |
-| <a name="module_ssh_key_data_sources_region1"></a> [ssh\_key\_data\_sources\_region1](#module\_ssh\_key\_data\_sources\_region1) | ./modules/ssh_key |  |
-| <a name="module_ssh_key_data_sources_region2"></a> [ssh\_key\_data\_sources\_region2](#module\_ssh\_key\_data\_sources\_region2) | ./modules/ssh_key |  |
-| <a name="module_subnet_region1"></a> [subnet\_region1](#module\_subnet\_region1) | ./modules/subnet |  |
-| <a name="module_subnet_region2"></a> [subnet\_region2](#module\_subnet\_region2) | ./modules/subnet |  |
-| <a name="module_transit_gateway"></a> [transit\_gateway](#module\_transit\_gateway) | ./modules/transit_gateway |  |
-| <a name="module_vpc_region1"></a> [vpc\_region1](#module\_vpc\_region1) | ./modules/vpc |  |
-| <a name="module_vpc_region2"></a> [vpc\_region2](#module\_vpc\_region2) | ./modules/vpc |  |
+| <a name="module_bastion_region1"></a> [bastion\_region1](#module\_bastion\_region1) | ./modules/bastion | n/a |
+| <a name="module_bastion_region2"></a> [bastion\_region2](#module\_bastion\_region2) | ./modules/bastion | n/a |
+| <a name="module_cos"></a> [cos](#module\_cos) | ./modules/cos | n/a |
+| <a name="module_global_load_balancer"></a> [global\_load\_balancer](#module\_global\_load\_balancer) | ./modules/global_load_balancer | n/a |
+| <a name="module_instance_group_region1"></a> [instance\_group\_region1](#module\_instance\_group\_region1) | ./modules/instance_group | n/a |
+| <a name="module_instance_group_region2"></a> [instance\_group\_region2](#module\_instance\_group\_region2) | ./modules/instance_group | n/a |
+| <a name="module_instance_region1"></a> [instance\_region1](#module\_instance\_region1) | ./modules/instance | n/a |
+| <a name="module_instance_region2"></a> [instance\_region2](#module\_instance\_region2) | ./modules/instance | n/a |
+| <a name="module_load_balancer_region1"></a> [load\_balancer\_region1](#module\_load\_balancer\_region1) | ./modules/load_balancer | n/a |
+| <a name="module_load_balancer_region2"></a> [load\_balancer\_region2](#module\_load\_balancer\_region2) | ./modules/load_balancer | n/a |
+| <a name="module_pg_region1"></a> [pg\_region1](#module\_pg\_region1) | ./modules/public_gateway | n/a |
+| <a name="module_pg_region2"></a> [pg\_region2](#module\_pg\_region2) | ./modules/public_gateway | n/a |
+| <a name="module_sg_region1"></a> [sg\_region1](#module\_sg\_region1) | ./modules/security_group | n/a |
+| <a name="module_sg_region2"></a> [sg\_region2](#module\_sg\_region2) | ./modules/security_group | n/a |
+| <a name="module_ssh_key_data_sources_region1"></a> [ssh\_key\_data\_sources\_region1](#module\_ssh\_key\_data\_sources\_region1) | ./modules/ssh_key | n/a |
+| <a name="module_ssh_key_data_sources_region2"></a> [ssh\_key\_data\_sources\_region2](#module\_ssh\_key\_data\_sources\_region2) | ./modules/ssh_key | n/a |
+| <a name="module_subnet_region1"></a> [subnet\_region1](#module\_subnet\_region1) | ./modules/subnet | n/a |
+| <a name="module_subnet_region2"></a> [subnet\_region2](#module\_subnet\_region2) | ./modules/subnet | n/a |
+| <a name="module_transit_gateway"></a> [transit\_gateway](#module\_transit\_gateway) | ./modules/transit_gateway | n/a |
+| <a name="module_vpc_region1"></a> [vpc\_region1](#module\_vpc\_region1) | ./modules/vpc | n/a |
+| <a name="module_vpc_region2"></a> [vpc\_region2](#module\_vpc\_region2) | ./modules/vpc | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [ibm_is_ssh_key.ssh_key_id_region1](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
-| [ibm_is_ssh_key.ssh_key_id_region2](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.37.1/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id_region1](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.39.1/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id_region2](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.39.1/docs/data-sources/is_ssh_key) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alb_port"></a> [alb\_port](#input\_alb\_port) | This is the Application load balancer listener port | `number` | `"80"` | no |
+| <a name="input_alb_port"></a> [alb\_port](#input\_alb\_port) | This is the Application load balancer listener port | `number` | `80` | no |
 | <a name="input_allow_insecure"></a> [allow\_insecure](#input\_allow\_insecure) | If set to true, the certificate is not validated when the health check uses HTTPS. If set to false, the certificate is validated, even if the health check uses HTTPS. The default value is false. | `bool` | `"false"` | no |
 | <a name="input_api_key"></a> [api\_key](#input\_api\_key) | Please enter the IBM Cloud API key. | `string` | n/a | yes |
 | <a name="input_app_aggregation_window"></a> [app\_aggregation\_window](#input\_app\_aggregation\_window) | The aggregation window is the time period in seconds that the instance group manager monitors each instance and determines the average utilization. | `number` | `90` | no |
@@ -79,7 +82,7 @@ The terraform code creates resilient infrastructure in 2 separate regions with a
 | <a name="input_cis_glb_plan"></a> [cis\_glb\_plan](#input\_cis\_glb\_plan) | Plan to be used for CIS instance for GLB | `string` | `"standard"` | no |
 | <a name="input_cos_bucket_plan"></a> [cos\_bucket\_plan](#input\_cos\_bucket\_plan) | Please enter plan name for COS bucket. Possible value is <br>1:lite<br>2:standard | `string` | n/a | yes |
 | <a name="input_cross_region_location"></a> [cross\_region\_location](#input\_cross\_region\_location) | Cross Region service provides higher durability and availability than using a single region, at the cost of slightly higher latency. This service is available today in the U.S., E.U., and A.P. areas. | `string` | n/a | yes |
-| <a name="input_data_vol_size"></a> [data\_vol\_size](#input\_data\_vol\_size) | Storage size in GB. The value should be between 10 and 2000 | `number` | `"10"` | no |
+| <a name="input_data_vol_size"></a> [data\_vol\_size](#input\_data\_vol\_size) | Storage size in GB. The value should be between 10 and 2000 | `number` | `10` | no |
 | <a name="input_db_image_region1"></a> [db\_image\_region1](#input\_db\_image\_region1) | Custom image id for the Database VSI from Region-1 | `string` | n/a | yes |
 | <a name="input_db_image_region2"></a> [db\_image\_region2](#input\_db\_image\_region2) | Custom image id for the Database VSI from Region-2 | `string` | n/a | yes |
 | <a name="input_db_os_type"></a> [db\_os\_type](#input\_db\_os\_type) | OS image to be used [Windows \| Linux] for DB server. This OS type should be same across both the regions. If OS flavor is Windows then we will try to install IIS and OpenSSH service and Rebooting the server .So, It will take minimum 5-10 mins to make the Server avilable. | `string` | n/a | yes |
@@ -106,18 +109,18 @@ The terraform code creates resilient infrastructure in 2 separate regions with a
 | <a name="input_lb_type_public"></a> [lb\_type\_public](#input\_lb\_type\_public) | This variable will hold the Load Balancer type as public | `string` | `"public"` | no |
 | <a name="input_local_machine_os_type"></a> [local\_machine\_os\_type](#input\_local\_machine\_os\_type) | Operating System to be used [windows \| mac \| linux] for your local machine which is running terraform apply | `string` | n/a | yes |
 | <a name="input_minimum_origins"></a> [minimum\_origins](#input\_minimum\_origins) | The minimum number of origins that must be healthy for the pool to serve traffic. If the number of healthy origins falls within this number, the pool will be marked unhealthy and we will failover to the next available pool | `number` | `1` | no |
-| <a name="input_my_public_ip"></a> [my\_public\_ip](#input\_my\_public\_ip) | Provide the User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply | `string` | n/a | yes |
 | <a name="input_notification_email"></a> [notification\_email](#input\_notification\_email) | The Email address to send health status notifications to. This can be an individual mailbox or a mailing list. | `string` | n/a | yes |
 | <a name="input_obj_content"></a> [obj\_content](#input\_obj\_content) | Literal string value to use as an object content, which will be uploaded as UTF-8 encoded text. Conflicts with content\_base64 and content\_file | `string` | n/a | yes |
 | <a name="input_obj_key"></a> [obj\_key](#input\_obj\_key) | The name of an object in the COS bucket. This is used to identify our object. | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | This is the prefix text that will be prepended in every resource name created by this script. | `string` | n/a | yes |
+| <a name="input_public_ip_addresses"></a> [public\_ip\_addresses](#input\_public\_ip\_addresses) | Provide the list of User's Public IP addresses in the format "X.X.X.X" which will be used to login to Bastion VSI.<br>For example: "123.201.8.30,219.91.139.49". <br>Also Please provide the updated list of public IP addresses everytime before executing. | `string` | n/a | yes |
 | <a name="input_region1_pool_weight"></a> [region1\_pool\_weight](#input\_region1\_pool\_weight) | The origin pool-1 weight. | `number` | `1` | no |
 | <a name="input_region2_pool_weight"></a> [region2\_pool\_weight](#input\_region2\_pool\_weight) | The origin pool-2 weight. | `number` | `1` | no |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group ID | `string` | n/a | yes |
 | <a name="input_retries"></a> [retries](#input\_retries) | The number of retries to attempt in case of a timeout before marking the origin as unhealthy | `number` | `3` | no |
 | <a name="input_storage_class"></a> [storage\_class](#input\_storage\_class) | Storage class helps in choosing a right storage plan and location and helps in reducing the cost. | `string` | n/a | yes |
 | <a name="input_tiered_profiles"></a> [tiered\_profiles](#input\_tiered\_profiles) | Tiered profiles for Input/Output per seconds in GBs | `map(any)` | <pre>{<br>  "10": "10iops-tier",<br>  "3": "general-purpose",<br>  "5": "5iops-tier"<br>}</pre> | no |
-| <a name="input_user_ssh_key"></a> [user\_ssh\_key](#input\_user\_ssh\_key) | This is the existing ssh key on the User's machine and will be attached with the bastion server only. This will ensure the incoming connection on Bastion Server only from the users provided ssh\_keys. You can check your key name in IBM cloud. Whose private key content should be there in path ~/.ssh/id\_rsa | `string` | n/a | yes |
+| <a name="input_user_ssh_keys"></a> [user\_ssh\_keys](#input\_user\_ssh\_keys) | This is the list of existing ssh key/keys on the User's machine and will be attached with the bastion server only.<br>For example: "first-ssh-key,second-ssh-key".<br>This will ensure the incoming connection on Bastion Server only from the users provided ssh\_keys. You can check your key name in IBM cloud. | `string` | n/a | yes |
 | <a name="input_web_aggregation_window"></a> [web\_aggregation\_window](#input\_web\_aggregation\_window) | The aggregation window is the time period in seconds that the instance group manager monitors each instance and determines the average utilization. | `number` | `90` | no |
 | <a name="input_web_config"></a> [web\_config](#input\_web\_config) | Web Configurations to be passed for Web Instance Group creation | `map(any)` | <pre>{<br>  "application_port": "80",<br>  "instance_profile": "cx2-2x4",<br>  "memory_percent": "40",<br>  "network_in": "40",<br>  "network_out": "40"<br>}</pre> | no |
 | <a name="input_web_cooldown_time"></a> [web\_cooldown\_time](#input\_web\_cooldown\_time) | Specify the cool down period, the number of seconds to pause further scaling actions after scaling has taken place. | `number` | `120` | no |
@@ -134,7 +137,6 @@ The terraform code creates resilient infrastructure in 2 separate regions with a
 | Name | Description |
 |------|-------------|
 | <a name="output_BASTION_VSI"></a> [BASTION\_VSI](#output\_BASTION\_VSI) | This variable will display the public IP address of Bastion Server |
-| <a name="output_COS_BUCKET"></a> [COS\_BUCKET](#output\_COS\_BUCKET) | n/a |
 | <a name="output_DB_VSI"></a> [DB\_VSI](#output\_DB\_VSI) | This variable will display the private IP address of DB servers |
 | <a name="output_IG_WEB_APP_VSI"></a> [IG\_WEB\_APP\_VSI](#output\_IG\_WEB\_APP\_VSI) | This variable will display the private IP address of Web and App IG servers |
 | <a name="output_LOAD_BALANCER_REGION_1"></a> [LOAD\_BALANCER\_REGION\_1](#output\_LOAD\_BALANCER\_REGION\_1) | This variable will display the private and public IP addresses and DNS of load balancers for region1 |
