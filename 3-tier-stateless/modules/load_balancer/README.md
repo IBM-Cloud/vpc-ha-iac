@@ -6,7 +6,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | n/a |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.39.1 |
 
 ## Modules
 
@@ -50,11 +50,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_app_lb_hostname"></a> [app\_lb\_hostname](#output\_app\_lb\_hostname) | App load balancer Hostname |
 | <a name="output_app_lb_id"></a> [app\_lb\_id](#output\_app\_lb\_id) | App load balancer ID |
-| <a name="output_app_lb_ip"></a> [app\_lb\_ip](#output\_app\_lb\_ip) | App load balancer IP |
-| <a name="output_app_lb_pool_id"></a> [app\_lb\_pool\_id](#output\_app\_lb\_pool\_id) | App load balancer pool ID |
-| <a name="output_web_lb_hostname"></a> [web\_lb\_hostname](#output\_web\_lb\_hostname) | Web load balancer Hostname |
+| <a name="output_lb_dns"></a> [lb\_dns](#output\_lb\_dns) | Private IP for App, DB and Web Server |
+| <a name="output_lb_private_ip"></a> [lb\_private\_ip](#output\_lb\_private\_ip) | Private IP for App and DB Server |
+| <a name="output_lb_public_ip"></a> [lb\_public\_ip](#output\_lb\_public\_ip) | Public IP for Web Server |
+| <a name="output_objects"></a> [objects](#output\_objects) | This variable will contains the objects of LB, LB Pool and LB Listeners. |
 | <a name="output_web_lb_id"></a> [web\_lb\_id](#output\_web\_lb\_id) | Web load balancer ID |
-| <a name="output_web_lb_ip"></a> [web\_lb\_ip](#output\_web\_lb\_ip) | Web load balancer ID |
-| <a name="output_web_lb_pool_id"></a> [web\_lb\_pool\_id](#output\_web\_lb\_pool\_id) | Web load balancer pool ID |

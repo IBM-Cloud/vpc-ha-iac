@@ -79,6 +79,6 @@ variable "lb_port_number" {
 variable "alb_port" {
   description = "This is the Application load balancer listener port"
   type        = number
-  default     = "80"
+  default     = 80
 }
 

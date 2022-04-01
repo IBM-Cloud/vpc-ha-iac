@@ -186,6 +186,11 @@ variable "db_profile" {
   type        = string
 }
 
+/**
+* Name: zones
+* Desc: List of Availability Zones where compute resource will be created
+* Type: list(any)
+**/
 variable "zones" {
   description = "List of Availability Zones where compute resource will be created"
   type        = list(any)

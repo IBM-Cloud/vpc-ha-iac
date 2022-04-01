@@ -87,7 +87,6 @@ module "subnet" {
 * vpc_id: VPC ID to contain the subnets
 * prefix: This will be appended in resources created by this module
 * resource_group_id: The resource group id
-* my_public_ip: User's Public IP address which will be used to login to Bastion VSI from their local machine
 * alb_port: This is the Application load balancer listener port
 * dlb_port: This is the DB load balancer listener port
 * app_os_type: Provide App servers OS flavour
@@ -101,7 +100,6 @@ module "security_group" {
   vpc_id            = ibm_is_vpc.vpc.id
   prefix            = var.prefix
   resource_group_id = var.resource_group_id
-  my_public_ip      = var.my_public_ip
   alb_port          = var.alb_port
   bastion_sg        = module.bastion.bastion_sg
   app_os_type       = var.app_os_type
@@ -113,10 +111,11 @@ module "security_group" {
 /**
 * Data Resource
 * Element : SSH Key
-* This will return the ssh key id of the User-ssh-key. This is the existing ssh key of user which will be used to login to Bastion server.
+* This will return the ssh key/keys id of the User-ssh-key. This is the existing ssh key/keys of user which will be used to login to Bastion server.
 **/
 data "ibm_is_ssh_key" "ssh_key_id" {
-  name = var.user_ssh_key
+  count = length(local.user_ssh_key_list)
+  name  = local.user_ssh_key_list[count.index]
 }
 
 /**
@@ -124,10 +123,10 @@ data "ibm_is_ssh_key" "ssh_key_id" {
 * source: Source Directory of the Module
 * prefix: This will be appended in resources created by this module
 * vpc_id: VPC ID to contain the subnets
-* user_ssh_key: This is the name of an existing ssh key of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
+* user_ssh_key: This is the list of the existing ssh keys of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
     And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
 * bastion_ssh_key: This key will be created dynamically on the bastion VSI. It will be used to login to Web/App/DB servers via Bastion.
-* my_public_ip: User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI
+* public_ip_address_list: List of User's Public IP addresses in the format X.X.X.X/32 which will be used to login to Bastion VSI
 * resource_group_id: The resource group id
 * zones: List of zones for the provided region. If region is us-south then zones would be ["us-south-1","us-south-2","us-south-3"]
 * api_key: Api key of user which will be used to login to IBM cloud in provisioner section
@@ -141,22 +140,22 @@ data "ibm_is_ssh_key" "ssh_key_id" {
 **/
 
 module "bastion" {
-  source                = "./modules/bastion"
-  prefix                = var.prefix
-  vpc_id                = ibm_is_vpc.vpc.id
-  user_ssh_key          = [data.ibm_is_ssh_key.ssh_key_id.id]
-  bastion_ssh_key       = var.bastion_ssh_key_var_name
-  my_public_ip          = var.my_public_ip
-  resource_group_id     = var.resource_group_id
-  zones                 = var.zones[var.region]
-  api_key               = var.api_key
-  region                = var.region
-  bastion_profile       = var.bastion_profile
-  bastion_os_type       = var.bastion_os_type
-  local_machine_os_type = var.local_machine_os_type
-  bastion_image         = var.bastion_image
-  bastion_ip_count      = var.bastion_ip_count
-  depends_on            = [ibm_is_vpc.vpc]
+  source                 = "./modules/bastion"
+  prefix                 = var.prefix
+  vpc_id                 = ibm_is_vpc.vpc.id
+  user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id.*.id
+  bastion_ssh_key        = var.bastion_ssh_key_var_name
+  public_ip_address_list = local.public_ip_address_list
+  resource_group_id      = var.resource_group_id
+  zones                  = var.zones[var.region]
+  api_key                = var.api_key
+  region                 = var.region
+  bastion_profile        = var.bastion_profile
+  bastion_os_type        = var.bastion_os_type
+  local_machine_os_type  = var.local_machine_os_type
+  bastion_image          = var.bastion_image
+  bastion_ip_count       = var.bastion_ip_count
+  depends_on             = [ibm_is_vpc.vpc]
 }
 
 # /**

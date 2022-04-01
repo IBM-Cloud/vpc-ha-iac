@@ -94,6 +94,6 @@ output "BASTION_VSI" {
 * Element : COS Public and Private endpoint
 * This variable will return the public and private end points for the COS bucket.
 **/
-output "COS_BUCKET" {
-  value = module.cos.object_endpoint
-}
+# output "COS_BUCKET" {
+#   value = module.cos.object_endpoint
+# }

@@ -54,7 +54,7 @@
 #     If you don't have an existing key, then create one on your local system using <ssh-keygen -t rsa -b 4096 -C "user_ID"> command. And then create a ssh key in IBM cloud
 #     with the public contents of file ~/.ssh/id_rsa.pub  
 # */
-# user_ssh_key = "Enter your IBM cloud ssh key name"
+#  user_ssh_keys = "first-ssh-key,second-ssh-key"
 
 # /**
 # *   Operating System to be used [windows | mac | linux] for your local machine which is running terraform apply
@@ -63,14 +63,14 @@
 # local_machine_os_type   = "mac"
 
 # /** 
-#     This is the public IP address of user's local machine. We will whitelist only this public IP in Bastion's security group. So that, Bastion server can 
+#     This is the list of public IP address of user's local machines. We will whitelist only these public IP in Bastion's security group. So that, Bastion server can 
 #     be accessed only from the User's System.
-#     Please update your public IP address before every terraform apply. 
+#     Please update the  public IP address list before every terraform apply. 
 #     As your Public IP address could be dynamically changing each day. 
 #     To get your Public IP you can use command <dig +short myip.opendns.com @resolver1.opendns.com> or visit "https://www.whatismyip.com"
-#     The IP Address should be in format of X.X.X.X and will be used to login to the bastion server
+#     The IP Address should be in format of X.X.X.X/32 and will be used to login to the bastion server
 # */
-# my_public_ip = "192.168.1.1"
+# public_ip_addresses = "123.201.8.30,219.91.139.49"
 
 
 # /**
@@ -111,7 +111,7 @@
 # *   If you select 3, then the tiered profile used for the extra volume storage of DB server will be general-purpose
 # *   If it is 5, then it would be 5iops-tier and if it is 10, then it would be 10iops-tier
 # **/
-# bandwidth = "3"
+# bandwidth = 3
 
 
 # /**

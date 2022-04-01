@@ -95,7 +95,7 @@ variable "bandwidth" {
   description = "Bandwidth per second in GB. The possible values are 3, 5 and 10"
   type        = number
   validation {
-    condition     = contains([3, 5, 10], var.bandwidth)
+    condition     = contains(["3", "5", "10", 3, 5, 10], var.bandwidth)
     error_message = "Error: Incorrect value for bandwidth. Allowed values are 3, 5 and 10."
   }
 }

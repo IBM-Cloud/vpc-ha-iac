@@ -17,39 +17,6 @@ output "web_lb_id" {
 
 /**
 * Output Variable
-* Element : Load Balancer IP
-* LB IP For Web
-* This variable will expose the LB IP for web
-**/
-output "web_lb_ip" {
-  value       = ibm_is_lb.web_lb.public_ips
-  description = "Web load balancer ID"
-}
-
-/**
-* Output Variable
-* Element : Load Balancer Hostname
-* LB ID For Web
-* This variable output the Load Balancer's Hostname for web
-**/
-output "web_lb_hostname" {
-  value       = ibm_is_lb.web_lb.hostname
-  description = "Web load balancer Hostname"
-}
-
-/**
-* Output Variable
-* Element : LB Pool
-* Pool ID For Web
-* This variable will expose the Pool Id
-**/
-output "web_lb_pool_id" {
-  value       = ibm_is_lb_pool.web_pool.id
-  description = "Web load balancer pool ID"
-}
-
-/**
-* Output Variable
 * Element : Load Balancer
 * LB ID For App
 * This variable will expose the LB ID for App
@@ -61,35 +28,65 @@ output "app_lb_id" {
 
 /**
 * Output Variable
-* Element : Load Balancer IP
-* LB IP For App
-* This variable will expose the LB IP for App
+* Element : LB Public IP
+* Public IP address for the Web Load Balancer
+* This variable will return IP address for the Web Load Balancer
 **/
-output "app_lb_ip" {
-  value       = ibm_is_lb.app_lb.private_ips
-  description = "App load balancer IP"
+output "lb_public_ip" {
+  value = merge(
+    { "WEB_SERVER" = ibm_is_lb.web_lb.public_ips }
+  )
+  description = "Public IP for Web Server"
 }
 
 /**
 * Output Variable
-* Element : Load Balancer Hostname
-* LB Hostname For App
-* This variable output the Load Balancer's Hostname for App
+* Element : LB Private IP
+* Private IP address for the App and DB Load Balancer
+* This variable will return IP address for the App and DB Load Balancer
 **/
-output "app_lb_hostname" {
-  value       = ibm_is_lb.app_lb.hostname
-  description = "App load balancer Hostname"
+output "lb_private_ip" {
+  value = merge(
+    { "APP_SERVER" = ibm_is_lb.app_lb.private_ips },
+  )
+  description = "Private IP for App and DB Server"
 }
 
 /**
 * Output Variable
-* Element : LB Pool
-* Pool ID For App
-* This variable will expose the Pool Id
+* Element : LB DNS
+* DNS address for the App, DB and Web Load Balancer
+* This variable will return DNS for the App and DB Load Balancer
 **/
-output "app_lb_pool_id" {
-  value       = ibm_is_lb_pool.app_pool.id
-  description = "App load balancer pool ID"
+output "lb_dns" {
+  value = merge(
+    { "APP_SERVER" = ibm_is_lb.app_lb.hostname },
+    { "WEB_SERVER" = ibm_is_lb.web_lb.hostname }
+  )
+  description = "Private IP for App, DB and Web Server"
+}
+
+/**
+* Output Variable: objects
+* Element : objects
+* This variable will return the objects of LB, LB Pool and LB Listeners for app, db and web tiers.
+**/
+output "objects" {
+  description = "This variable will contains the objects of LB, LB Pool and LB Listeners. "
+  value = {
+    "lb" = {
+      "app" = ibm_is_lb.app_lb,
+      "web" = ibm_is_lb.web_lb
+    },
+    "pool" = {
+      "app" = ibm_is_lb_pool.app_pool,
+      "web" = ibm_is_lb_pool.web_pool
+    },
+    "listener" = {
+      "app" = ibm_is_lb_listener.app_listener,
+      "web" = ibm_is_lb_listener.web_listener
+    }
+  }
 }
 
 /**               

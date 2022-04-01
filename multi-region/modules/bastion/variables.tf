@@ -56,13 +56,13 @@ variable "bastion_ip_count" {
 }
 
 /**
-* Name: my_public_ip
-* Type: string
-* Description: This is the User's Public IP address which will be used to login to Bastion VSI in the format X.X.X.X
+* Name: public_ip_address_list
+* Type: list
+* Description: This is the list of User's Public IP address which will be used to login to Bastion VSI in the format X.X.X.X/32(for single ip address) or a valid CIDR.
 **/
-variable "my_public_ip" {
-  description = "Provide the User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply"
-  type        = string
+variable "public_ip_address_list" {
+  description = "Provide the User's Public IP address in the format X.X.X.X/32 which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply"
+  type        = list(any)
 }
 
 /**

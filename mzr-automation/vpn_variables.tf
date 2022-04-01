@@ -88,7 +88,7 @@ variable "admin_state_up" {
 variable "interval" {
   description = "Dead peer detection interval in seconds. How often to test that the peer gateway is responsive."
   type        = number
-  default     = "30"
+  default     = 30
   validation {
     condition     = var.interval >= 1 && var.interval <= 86399
     error_message = "Error: Incorrect value for timeout. Allowed value should be between 1 and 86399."
@@ -103,7 +103,7 @@ variable "interval" {
 variable "timeout" {
   description = "Dead peer detection timeout in seconds. Defines the timeout interval after which all connections to a peer are deleted due to inactivity. This timeout applies only to IKEv1."
   type        = number
-  default     = "120"
+  default     = 120
   validation {
     condition     = var.timeout >= 2 && var.timeout <= 86399
     error_message = "Error: Incorrect value for timeout. Allowed value should be between 2 and 86399."

@@ -50,18 +50,19 @@ variable "api_key" {
   description = "Please enter the IBM Cloud API key."
   sensitive   = true
 }
-
 /**
 * Name: user_ssh_key
-* Type: String
-* Description: This is the name of an existing ssh key of user which will be used to login to the Bastion server. You can check your key name in IBM cloud.
-*              Whose private key content should be there in path ~/.ssh/id_rsa 
-*              If you don't have an existing key, then create one using <ssh-keygen -t rsa -b 4096 -C "user_ID"> command. And create a ssh key in IBM cloud
-*              with the public contents of file ~/.ssh/id_rsa.pub  
+* Type: list
+* Description: This is the list of the existing ssh key/keys of user which will be used to login to the Bastion server. For example "first-ssh-key,second-ssh-key". You can check your key name in IBM cloud.
+*              If you don't have an existing key, then create one using <ssh-keygen -t rsa -b 4096 -C "user_ID"> command. And create a ssh key in IBM cloud with the public contents of file ~/.ssh/id_rsa.pub.
 **/
-variable "user_ssh_key" {
+variable "user_ssh_keys" {
+  description = "This is the list of existing ssh key/keys on the User's machine and will be attached with the bastion server only.\nFor example: \"first-ssh-key,second-ssh-key\".\nThis will ensure the incoming connection on Bastion Server only from the users provided ssh_keys. You can check your key name in IBM cloud."
   type        = string
-  description = "Enter your IBM cloud ssh key name."
+}
+
+locals {
+  user_ssh_key_list = [for x in split(",", var.user_ssh_keys) : trimspace(x)]
 }
 
 /**
@@ -77,7 +78,7 @@ variable "region" {
 /**
 * Name: resource_group
 * Type: String
-* 
+* Description: Please enter the Resource Group ID to be used for creation of the resources
 */
 variable "resource_group_id" {
   type        = string
@@ -119,7 +120,7 @@ variable "db_vsi_count" {
 }
 
 /**               
-#################################################################################################################
+##########################################################################################################
 *                                   End of the Variable Section 
-#################################################################################################################
+##########################################################################################################
 **/

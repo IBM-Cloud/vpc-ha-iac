@@ -34,8 +34,9 @@ resource "ibm_is_security_group" "bastion" {
 
 resource "ibm_is_security_group_rule" "bastion_rule_22" {
   group     = ibm_is_security_group.bastion.id
+  count     = length(var.public_ip_address_list)
   direction = "inbound"
-  remote    = "${var.my_public_ip}/32"
+  remote    = var.public_ip_address_list[count.index]
   tcp {
     port_min = local.sg_port
     port_max = local.sg_port

@@ -54,16 +54,6 @@ variable "vpc_id" {
 }
 
 /**
-* Name: my_public_ip
-* Type: string
-* Description: This is the User's Public IP address which will be used to login to Bastion VSI in the format X.X.X.X
-**/
-variable "my_public_ip" {
-  description = "Provide the User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply"
-  type        = string
-}
-
-/**
 * Name: app_os_type
 * Desc: OS image to be used [windows | linux] for App Server
 * Type: string

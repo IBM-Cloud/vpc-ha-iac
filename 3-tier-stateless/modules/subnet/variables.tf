@@ -21,6 +21,7 @@ variable "ip_count" {
 /**
 * Name: resource_group_id
 * Type: String
+* Description: Please enter the Resource Group ID to be used for creation of the resources
 */
 variable "resource_group_id" {
   description = "Resource Group Id is used to seperated the resources in a group."

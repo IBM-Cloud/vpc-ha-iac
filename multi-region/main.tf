@@ -133,10 +133,11 @@ module "transit_gateway" {
 /**
  * Data Resource
  * Element : SSH Key
- * This will return the ssh key id of the User-ssh-key. This is the existing ssh key of user which will be used to login to Bastion server.
+ * This will return the ssh key/keys id of the User-ssh-key. This is the existing ssh key of user which will be used to login to Bastion server.
  **/
 data "ibm_is_ssh_key" "ssh_key_id_region1" {
-  name     = var.user_ssh_key
+  count    = length(local.user_ssh_key_list)
+  name     = local.user_ssh_key_list[count.index]
   provider = ibm.jp-tok
 }
 
@@ -145,9 +146,9 @@ data "ibm_is_ssh_key" "ssh_key_id_region1" {
 * source: Source Directory of the Module
 * vpc_id: VPC ID to contain the subnets
 * prefix: This will be appended in resources created by this module
-* user_ssh_key: This is the name of an existing ssh key of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
+* user_ssh_key: This is the list of existing ssh key/keys of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
 *    And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
-* my_public_ip: User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI
+* public_ip_address_list:List of User's Public IP addresses in the format X.X.X.X/32 which will be used to login to Bastion VSI
 * resource_group_id: The resource group id
 * zones: List of zones for the provided region. If region is jp-tok then zones would be ["jp-tok-1","jp-tok-2","jp-tok-3"]
 * region1: User specified Region-1 code
@@ -164,22 +165,22 @@ data "ibm_is_ssh_key" "ssh_key_id_region1" {
 **/
 
 module "bastion_region1" {
-  source                = "./modules/bastion"
-  prefix                = "${var.prefix}bastion1-"
-  vpc_id                = module.vpc_region1.id
-  user_ssh_key          = [data.ibm_is_ssh_key.ssh_key_id_region1.id]
-  my_public_ip          = var.my_public_ip
-  resource_group_id     = var.resource_group_id
-  zones                 = var.zones[local.region1]
-  region1               = local.region1
-  region2               = local.region2
-  api_key               = var.api_key
-  bastion_image         = var.bastion_image_region1
-  bastion_profile       = var.bastion_profile
-  bastion_os_type       = var.bastion_os_type
-  bastion_ip_count      = var.bastion_ip_count
-  local_machine_os_type = var.local_machine_os_type
-  depends_on            = [module.vpc_region1]
+  source                 = "./modules/bastion"
+  prefix                 = "${var.prefix}bastion1-"
+  vpc_id                 = module.vpc_region1.id
+  user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id_region1.*.id
+  public_ip_address_list = local.public_ip_address_list
+  resource_group_id      = var.resource_group_id
+  zones                  = var.zones[local.region1]
+  region1                = local.region1
+  region2                = local.region2
+  api_key                = var.api_key
+  bastion_image          = var.bastion_image_region1
+  bastion_profile        = var.bastion_profile
+  bastion_os_type        = var.bastion_os_type
+  bastion_ip_count       = var.bastion_ip_count
+  local_machine_os_type  = var.local_machine_os_type
+  depends_on             = [module.vpc_region1]
   providers = {
     ibm = ibm.jp-tok
   }
@@ -188,10 +189,11 @@ module "bastion_region1" {
 # /**
 # * Data Resource
 # * Element : SSH Key
-# * This will return the ssh key id of the User-ssh-key. This is the existing ssh key of user which will be used to login to Bastion server.
+# * This will return the ssh key/keys id of the User-ssh-key. This is the existing ssh key of user which will be used to login to Bastion server.
 # **/
 data "ibm_is_ssh_key" "ssh_key_id_region2" {
-  name     = var.user_ssh_key
+  count    = length(local.user_ssh_key_list)
+  name     = local.user_ssh_key_list[count.index]
   provider = ibm.us-east
 }
 
@@ -200,9 +202,9 @@ data "ibm_is_ssh_key" "ssh_key_id_region2" {
 * source: Source Directory of the Module
 * vpc_id: VPC ID to contain the subnets
 * prefix: This will be appended in resources created by this module
-* user_ssh_key: This is the name of an existing ssh key of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
+* user_ssh_key: This is the list of  existing ssh key/keys of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
 *    And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
-* my_public_ip: User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI
+* public_ip_address_list: List of User's Public IP addresses in the format X.X.X.X/32 which will be used to login to Bastion VSI
 * resource_group_id: The resource group id
 * zones: List of zones for the provided region. If region is us-east then zones would be ["us-east-1","us-east-2","us-east-3"]
 * region1: User specified Region-1 code
@@ -219,22 +221,22 @@ data "ibm_is_ssh_key" "ssh_key_id_region2" {
 **/
 
 module "bastion_region2" {
-  source                = "./modules/bastion"
-  prefix                = "${var.prefix}bastion2-"
-  vpc_id                = module.vpc_region2.id
-  user_ssh_key          = [data.ibm_is_ssh_key.ssh_key_id_region2.id]
-  my_public_ip          = var.my_public_ip
-  resource_group_id     = var.resource_group_id
-  zones                 = var.zones[local.region2]
-  region1               = local.region1
-  region2               = local.region2
-  api_key               = var.api_key
-  bastion_image         = var.bastion_image_region2
-  bastion_profile       = var.bastion_profile
-  bastion_os_type       = var.bastion_os_type
-  bastion_ip_count      = var.bastion_ip_count
-  local_machine_os_type = var.local_machine_os_type
-  depends_on            = [module.vpc_region2]
+  source                 = "./modules/bastion"
+  prefix                 = "${var.prefix}bastion2-"
+  vpc_id                 = module.vpc_region2.id
+  user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id_region2.*.id
+  public_ip_address_list = local.public_ip_address_list
+  resource_group_id      = var.resource_group_id
+  zones                  = var.zones[local.region2]
+  region1                = local.region1
+  region2                = local.region2
+  api_key                = var.api_key
+  bastion_image          = var.bastion_image_region2
+  bastion_profile        = var.bastion_profile
+  bastion_os_type        = var.bastion_os_type
+  bastion_ip_count       = var.bastion_ip_count
+  local_machine_os_type  = var.local_machine_os_type
+  depends_on             = [module.vpc_region2]
   providers = {
     ibm = ibm.us-east
   }

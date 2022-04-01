@@ -111,3 +111,4 @@ best to assist.
 As a workaround deployed a subnet gateway and point to an external RHEL repo.
 * In rare cases, terraform destroy does not delete all VSIs that are part of placement groups, single
 availability zone use case. In these cases, manual deletion is required.
+* There is an intermittent issue exist in instance group creation in which an internal error occurs. In these cases try to destroy and recreate the infrastructure after some time.
