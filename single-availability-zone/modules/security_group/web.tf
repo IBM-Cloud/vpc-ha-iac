@@ -5,7 +5,7 @@
 */
 
 locals {
-  web_sg_port = lower(var.web_os_type) == "windows" ? "3389" : "22"
+  web_sg_port = "22"
 }
 
 /**
@@ -37,8 +37,8 @@ resource "ibm_is_security_group_rule" "web_rule_22" {
   remote    = var.bastion_sg
   tcp {
     port_min = local.web_sg_port
-    port_max = local.web_sg_port
-  }
+    port_max = local.web_sg_port  
+}
 }
 
 /**

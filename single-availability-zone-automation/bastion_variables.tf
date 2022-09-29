@@ -7,6 +7,16 @@
 
 
 /**
+* Name: enable_floating_ip
+* Type: bool
+* Description: Determines whether to enable floating IP for Bastion server or not. Give true or false.
+**/
+variable "enable_floating_ip" {
+  description = "Determines whether to enable floating IP for Bastion server or not. Give true or false."
+  type        = bool
+}
+
+/**
 * Name: bastion_image
 * Type: String
 * Description: This is the image id used for Bastion VSI.

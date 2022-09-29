@@ -104,23 +104,27 @@ variable "prefix" {
 }
 
 /**
-* Name: db_vsi_count
-* Type: number
-* Desc: Total Database instances that will be created in the user specified region.
-*       We have kept the default value to be 2 here. The servers will be created in different zones and it cannot be more than 3.
+* Name: enable_dbaas
+* Type: Bool
+* Description: For enabling Database as a Service which is a managed DB service.
 **/
-variable "db_vsi_count" {
-  description = "Total Database instances that will be created in the user specified region."
-  type        = number
-  default     = 2
-  validation {
-    condition     = var.db_vsi_count <= 3
-    error_message = "Database VSI count should be less than or equals to 3."
-  }
+variable "enable_dbaas" {
+  type        = bool
+  description = "For enabling Database as a Service which is a managed DB service."
+}
+
+/**
+* Name: db_admin_password
+* Type: String
+* Description: The admin user password for the Database service instance. No special characters; minimum 10 characters, A-Z, a-z, 0-9
+*/
+variable "db_admin_password" {
+  type        = string
+  description = "The admin user password for the Database service instance. No special characters; minimum 10 characters, A-Z, a-z, 0-9"
 }
 
 /**               
-##########################################################################################################
+###########################################################################################################
 *                                   End of the Variable Section 
-##########################################################################################################
+###########################################################################################################
 **/

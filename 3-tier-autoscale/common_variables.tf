@@ -1,5 +1,5 @@
-###################################################################################################
-###################################################################################################
+##################################################################################################
+##################################################################################################
 
 # This Terraform file defines the variables used in this Terraform scripts for this repo.
 # Input variable allowing users to customize aspects of the configuration when used directly 
@@ -8,7 +8,7 @@
 ##################################################################################################
 ##################################################################################################
 
-
+  
 /**
 * Name: api_key
 * Type: String
@@ -92,7 +92,7 @@ variable "prefix" {
     condition     = can(regex("^[A-Za-z][-0-9A-Za-z]*-$", var.prefix))
     error_message = "For the prefix value only a-z, A-Z and 0-9 are allowed, the prefix should start with a character, and the prefix should end a with hyphen(-)."
   }
-}            
+}
 
 
 

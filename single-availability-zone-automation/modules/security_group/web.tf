@@ -5,9 +5,8 @@
 */
 
 locals {
-  web_sg_port = lower(var.web_os_type) == "windows" ? "3389" : "22"
+  web_sg_port = "22"
 }
-
 /**
 * Security Group for Web Server
 * Defining resource "Security Group". This will be responsible to handle security for the 

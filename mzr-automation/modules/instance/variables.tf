@@ -155,22 +155,12 @@ variable "db_name" {
 }
 
 /**
-* Name: db_user
+* Name: db_password
 * Type: string
-* Description: Database user will be created with the specified name
+* Description: Admin user will be created with the specified password
 **/
-variable "db_user" {
-  description = "Database user will be created with the specified name"
-  type        = string
-}
-
-/**
-* Name: db_pwd
-* Type: string
-* Description: Database user will be created with the specified password
-**/
-variable "db_pwd" {
-  description = "Database user will be created with the specified password"
+variable "db_password" {
+  description = "Admin user will be created with the specified password"
   type        = string
 }
 

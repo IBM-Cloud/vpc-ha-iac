@@ -3,10 +3,10 @@
 *                  Resources Section of the Security Group Module for DB Tier
 #################################################################################################################
 */
-
 locals {
-  db_sg_port = lower(var.db_os_type) == "windows" ? "3389" : "22"
+  db_sg_port = "22"
 }
+
 
 /**
 * Security Group for DB Server
@@ -35,9 +35,9 @@ resource "ibm_is_security_group_rule" "db_rule_22" {
   direction = "inbound"
   remote    = var.bastion_sg
   tcp {
-    port_min = local.db_sg_port
-    port_max = local.db_sg_port
-  }
+   port_min = local.db_sg_port
+   port_max = local.db_sg_port  
+}
 }
 
 /**

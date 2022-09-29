@@ -5,7 +5,6 @@
 ###################################################################################################
 ###################################################################################################
 
-
 /**
 * Name: web_config
 * Desc: This web_config map will be passed to the Instance Group Module
@@ -16,7 +15,6 @@
 *       instance_profile  : Hardware configuration profile for the Web VSI.
 * Type: map(number)
 **/
-
 variable "web_config" {
   description = "Web Configurations to be passed for Web Instance Group creation"
   type        = map(any)

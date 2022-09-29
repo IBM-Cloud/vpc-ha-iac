@@ -52,39 +52,3 @@ variable "vpc_id" {
   description = "Required parameter vpc_id"
   type        = string
 }
-
-/**
-* Name: app_os_type
-* Desc: OS image to be used [windows | linux] for App Server
-* Type: string
-**/
-variable "app_os_type" {
-  description = "OS image to be used [windows | linux] for App Server"
-  type        = string
-}
-
-/**
-* Name: web_os_type
-* Desc: OS image to be used [windows | linux] for Web Server
-* Type: string
-**/
-variable "web_os_type" {
-  description = "OS image to be used [windows | linux] for Web Server"
-  type        = string
-}
-
-/**
-* Name: db_os_type
-* Desc: OS image to be used [windows | linux] for Db Server
-* Type: string
-**/
-variable "db_os_type" {
-  description = "OS image to be used [windows | linux] for DB Server"
-  type        = string
-}
-
-/**               
-#################################################################################################################
-*                                   End of the Variable Section 
-#################################################################################################################
-**/

@@ -31,7 +31,6 @@ output "app_subnet_ids" {
 * Element : DB subnets ids
 * This variable will output the id's of DB Subnet
 **/
-
 output "db_subnet_ids" {
   value       = ibm_is_subnet.db_subnet.*.id
   description = "Subnet ids of DB for all zones"

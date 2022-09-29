@@ -6,6 +6,16 @@
 ###################################################################################################
 
 /**
+ * Name: enable_floating_ip
+ * Type: bool
+ * Description: Determines whether to enable floating IP for Bastion server or not. Give true or false.
+**/
+variable "enable_floating_ip" {
+  description = "Determines whether to enable floating IP for Bastion server or not. Give true or false."
+  type        = bool
+}
+
+/**
 * Name: bastion_profile
 * Type: String
 * Description: Specify the profile needed for Bastion VSI.

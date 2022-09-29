@@ -7,13 +7,49 @@
 # Using the datasource to get the tokens object 
 data "ibm_iam_auth_token" "auth_token" {}
 
+data "ibm_is_image" "bastion_os" {
+  identifier = var.bastion_image
+}
+
 /**
 * This local block is used to declare the local variables for linux and windows Bastion server userdata.
 * In these Bastion server userdata, we are creating the bastion ssh keys on IBM cloud. This ssh key will then be attached 
 * to the app/web/db servers. Thus only bastion server will have access to these servers.
 **/
+data "template_file" "db_vsi_userdata_bastion" {
+  count    = var.enable_dbaas ? 0 : 1
+  template = file("${path.cwd}/modules/bastion/db_vsi_userdata_bastion.tpl")
+  vars = {
+    region            = "${var.region}"
+    prefix            = "${var.prefix}"
+    bastion_ssh_key   = "${var.bastion_ssh_key}"
+    resource_group_id = "${var.resource_group_id}"
+    iam_access_token  = "${data.ibm_iam_auth_token.auth_token.iam_access_token}"
+  }
+}
+
+data "template_file" "dbaas_userdata_bastion" {
+  count    = var.enable_dbaas ? 1 : 0
+  template = file("${path.cwd}/modules/bastion/dbaas_userdata_bastion.tpl")
+  vars = {
+    db_name           = "${var.db_name}"
+    db_password       = "${var.db_password}"
+    db_hostname       = "${var.db_hostname}"
+    db_port           = "${var.db_port}"
+    region            = "${var.region}"
+    prefix            = "${var.prefix}"
+    bastion_ssh_key   = "${var.bastion_ssh_key}"
+    resource_group_id = "${var.resource_group_id}"
+    iam_access_token  = "${data.ibm_iam_auth_token.auth_token.iam_access_token}"
+    image             = "${data.ibm_is_image.bastion_os.os}"
+  }
+}
 
 locals {
+  bastion_userdata = var.enable_dbaas ? data.template_file.dbaas_userdata_bastion[0].rendered : data.template_file.db_vsi_userdata_bastion[0].rendered
+}
+
+/**
   win_userdata = <<-EOUD
         Content-Type: text/x-shellscript; charset="us-ascii"
         MIME-Version: 1.0
@@ -42,27 +78,10 @@ locals {
         Expand-Archive -Path "C:\Users\cloudbase-init\IBM_Cloud_CLI_2.0.2_windows_amd64.zip" -DestinationPath "C:\Users\cloudbase-init"
         C:\Users\cloudbase-init\IBM_Cloud_CLI\ibmcloud.exe config --check-version=false
         C:\Users\cloudbase-init\IBM_Cloud_CLI\ibmcloud.exe plugin install vpc-infrastructure
-      EOUD
-
-  lin_userdata = <<-EOUD
-        #!/bin/bash
-        ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa  2>&1 >/dev/null
-        cur_date=$(date "+%Y-%m-%d")
-        pub_key=`cat ~/.ssh/id_rsa.pub`
-        export oauth_token="${data.ibm_iam_auth_token.auth_token.iam_access_token}"
-        vpc_api_endpoint="https://${var.region}.iaas.cloud.ibm.com"
-        curl -X POST "$vpc_api_endpoint/v1/keys?version=$cur_date&generation=2" -H "Authorization: $oauth_token" -d '{
-            "name":"${var.prefix}${var.bastion_ssh_key}",
-            "resource_group":{"id":"${var.resource_group_id}"},
-            "public_key":"'"$pub_key"'",
-            "type":"rsa"
-        }'
-        curl -sL https://raw.githubusercontent.com/IBM-Cloud/ibm-cloud-developer-tools/master/linux-installer/idt-installer | bash
-        ibmcloud plugin install vpc-infrastructure
-        chmod 0755 /usr/bin/pkexec 
-        EOUD    
+      EOUD  
 }
 
+**/
 /**
 * Virtual Server Instance for Bastion Server or Jump Server
 * Element : VSI
@@ -85,7 +104,7 @@ resource "ibm_is_instance" "bastion" {
   resource_group = var.resource_group_id
   vpc            = var.vpc_id
   zone           = var.zones[0]
-  user_data      = lower(var.bastion_os_type) == "windows" ? local.win_userdata : local.lin_userdata
+  user_data      = local.bastion_userdata
 
   primary_network_interface {
     subnet          = ibm_is_subnet.bastion_sub.id
@@ -105,9 +124,9 @@ resource "ibm_is_instance" "bastion" {
 * Element : Wait for few seconds
 **/
 
-resource "time_sleep" "wait_240_seconds" {
+resource "time_sleep" "wait_600_seconds" {
   depends_on      = [ibm_is_instance.bastion]
-  create_duration = "240s"
+  create_duration = "600s"
 }
 
 

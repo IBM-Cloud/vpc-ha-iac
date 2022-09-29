@@ -114,6 +114,7 @@ data "ibm_is_ssh_key" "ssh_key_id" {
 * Calling the Bastion module with the following required parameters
 * source: Source Directory of the Module
 * prefix: This will be appended in resources created by this module
+* enable_floating_ip: Determines whether to create Floating IP or not
 * vpc_id: VPC ID to contain the subnets
 * user_ssh_key: This is the name of an existing ssh key of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
     And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
@@ -134,6 +135,7 @@ data "ibm_is_ssh_key" "ssh_key_id" {
 module "bastion" {
   source                 = "./modules/bastion"
   prefix                 = var.prefix
+  enable_floating_ip     = var.enable_floating_ip
   vpc_id                 = module.vpc.id
   user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id.*.id
   bastion_ssh_key        = var.bastion_ssh_key_var_name
@@ -214,7 +216,7 @@ locals {
 * resource_group_id: The resource group ID
 * zone: Please provide the zone name. e.g. us-south-1,us-south-2,us-south-3,us-east-1,etc.
 * ip_count: Total number of IP Address for each subnet
-* public_gateway_ids: List of ids of all the public gateways of region 1 where subnets will get attached
+* public_gateway_id: Public Gateway ID where subnets will get attached
 * depends_on: This ensures that the vpc object will be created before the Subnet Module
 **/
 module "subnet" {
@@ -249,9 +251,6 @@ module "security_group" {
   resource_group_id = var.resource_group_id
   alb_port          = var.alb_port
   bastion_sg        = module.bastion.bastion_sg
-  app_os_type       = var.app_os_type
-  web_os_type       = var.web_os_type
-  db_os_type        = var.db_os_type
   depends_on        = [module.vpc, module.subnet]
 }
 
@@ -289,6 +288,40 @@ module "load_balancer" {
 }
 
 /**
+* Calling the db module with the following required parameters
+* source: Source Directory of the Module
+* prefix: This will be appended in resources created by this module
+* resource_group_id: The resource group id
+**/
+module "db" {
+  count                       = var.enable_dbaas ? 1 : 0
+  source                      = "./modules/db"
+  prefix                      = var.prefix
+  resource_group_id           = var.resource_group_id
+  region                      = var.regions[var.zone]
+  db_admin_password           = var.db_admin_password
+  service_endpoints           = var.db_access_endpoints
+  db_version                  = local.db_version
+  service                     = local.service
+  plan                        = local.plan
+  member_cpu_allocation_count = local.member_cpu_allocation_count
+  member_disk_allocation_mb   = local.member_disk_allocation_mb
+  member_memory_allocation_mb = local.member_memory_allocation_mb
+  tags                        = local.tags
+  users                       = local.users
+  create_timeout              = local.create_timeout
+  update_timeout              = local.update_timeout
+  delete_timeout              = local.delete_timeout
+  auto_scaling                = var.db_enable_autoscaling == true ? local.auto_scaling : []
+  key_protect_instance        = local.key_protect_instance
+  key_protect_key             = local.key_protect_key
+  whitelist                   = local.whitelist
+  backup_id                   = local.backup_id
+  backup_encryption_key_crn   = local.backup_encryption_key_crn
+  remote_leader_id            = local.remote_leader_id
+}
+
+/**
 * Calling the Instance module with the following required parameters
 * source: Source Directory of the Module
 * prefix: This will be appended in resources created by this module
@@ -308,6 +341,7 @@ module "load_balancer" {
 **/
 
 module "instance" {
+  count                 = var.enable_dbaas ? 0 : 1
   source                = "./modules/instance"
   prefix                = var.prefix
   vpc_id                = module.vpc.id
@@ -321,10 +355,11 @@ module "instance" {
   db_vsi_count          = var.db_vsi_count
   db_placement_group_id = module.placement_group.db_pg_id
   tiered_profiles       = var.tiered_profiles
+  db_password           = var.db_admin_password
+  db_name               = var.db_name
   subnet                = module.subnet.sub_objects["db"].id
   db_sg                 = module.security_group.sg_objects["db"].id
   depends_on            = [module.subnet.ibm_is_subnet, module.security_group, module.bastion, module.placement_group]
-
 }
 
 /**
@@ -356,7 +391,6 @@ module "instance" {
 * app_cooldown_time: Specify the cool down period, the number of seconds to pause further scaling actions after scaling has taken place.
 * depends_on: This ensures that the vpc and other objects will be created before the instance group
 **/
-
 module "instance_group" {
   source                 = "./modules/instance_group"
   vpc_id                 = module.vpc.id

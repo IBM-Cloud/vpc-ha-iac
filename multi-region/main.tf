@@ -63,17 +63,17 @@ locals {
 * obj_content: Literal string value to use as an object content, which will be uploaded as UTF-8 encoded text. Conflicts with content_base64 and content_file. 
 **/
 
-module "cos" {
-  source                = "./modules/cos"
-  prefix                = "${var.prefix}region-${local.region1}-"
-  resource_group_id     = var.resource_group_id
-  cos_bucket_plan       = var.cos_bucket_plan
-  cross_region_location = var.cross_region_location
-  storage_class         = var.storage_class
-  bucket_location       = var.bucket_location
-  obj_key               = var.obj_key
-  obj_content           = var.obj_content
-}
+# module "cos" {
+#   source                = "./modules/cos"
+#   prefix                = "${var.prefix}region-${local.region1}-"
+#   resource_group_id     = var.resource_group_id
+#   cos_bucket_plan       = var.cos_bucket_plan
+#   cross_region_location = var.cross_region_location
+#   storage_class         = var.storage_class
+#   bucket_location       = var.bucket_location
+#   obj_key               = var.obj_key
+#   obj_content           = var.obj_content
+# }
 
 /**
 * Calling the VPC module for region1 with the following required parameters
@@ -146,6 +146,7 @@ data "ibm_is_ssh_key" "ssh_key_id_region1" {
 * source: Source Directory of the Module
 * vpc_id: VPC ID to contain the subnets
 * prefix: This will be appended in resources created by this module
+* enable_floating_ip: Determines whether to create Floating IP or not
 * user_ssh_key: This is the list of existing ssh key/keys of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
 *    And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
 * public_ip_address_list:List of User's Public IP addresses in the format X.X.X.X/32 which will be used to login to Bastion VSI
@@ -167,6 +168,7 @@ data "ibm_is_ssh_key" "ssh_key_id_region1" {
 module "bastion_region1" {
   source                 = "./modules/bastion"
   prefix                 = "${var.prefix}bastion1-"
+  enable_floating_ip     = var.enable_floating_ip
   vpc_id                 = module.vpc_region1.id
   user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id_region1.*.id
   public_ip_address_list = local.public_ip_address_list
@@ -202,6 +204,7 @@ data "ibm_is_ssh_key" "ssh_key_id_region2" {
 * source: Source Directory of the Module
 * vpc_id: VPC ID to contain the subnets
 * prefix: This will be appended in resources created by this module
+* enable_floating_ip: Determines whether to create Floating IP or not
 * user_ssh_key: This is the list of  existing ssh key/keys of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
 *    And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
 * public_ip_address_list: List of User's Public IP addresses in the format X.X.X.X/32 which will be used to login to Bastion VSI
@@ -223,6 +226,7 @@ data "ibm_is_ssh_key" "ssh_key_id_region2" {
 module "bastion_region2" {
   source                 = "./modules/bastion"
   prefix                 = "${var.prefix}bastion2-"
+  enable_floating_ip     = var.enable_floating_ip
   vpc_id                 = module.vpc_region2.id
   user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id_region2.*.id
   public_ip_address_list = local.public_ip_address_list
@@ -818,35 +822,35 @@ module "instance_group_region2" {
 * depends_on: This ensures that the loadbalancers will be created before the global loadbalancer
 **/
 
-module "global_load_balancer" {
-  source                  = "./modules/global_load_balancer"
-  prefix                  = var.prefix
-  resource_group_id       = var.resource_group_id
-  region1                 = local.region1
-  region2                 = local.region2
-  glb_domain_name         = var.glb_domain_name
-  glb_traffic_steering    = var.glb_traffic_steering
-  glb_region1_code        = var.glb_region1_code
-  glb_region2_code        = var.glb_region2_code
-  cis_glb_plan            = var.cis_glb_plan
-  cis_glb_location        = var.cis_glb_location
-  glb_proxy_enabled       = var.glb_proxy_enabled
-  expected_body           = var.expected_body
-  expected_codes          = var.expected_codes
-  glb_healthcheck_method  = var.glb_healthcheck_method
-  glb_healthcheck_timeout = var.glb_healthcheck_timeout
-  glb_healthcheck_path    = var.glb_healthcheck_path
-  glb_protocol_type       = var.glb_protocol_type
-  interval                = var.interval
-  retries                 = var.retries
-  follow_redirects        = var.follow_redirects
-  glb_healthcheck_port    = var.glb_healthcheck_port
-  allow_insecure          = var.allow_insecure
-  minimum_origins         = var.minimum_origins
-  region1_pool_weight     = var.region1_pool_weight
-  region2_pool_weight     = var.region2_pool_weight
-  notification_email      = var.notification_email
-  web_lb_ip_region1       = module.load_balancer_region1.lb_public_ip["WEB_SERVER"][0]
-  web_lb_ip_region2       = module.load_balancer_region2.lb_public_ip["WEB_SERVER"][0]
-  depends_on              = [module.load_balancer_region1, module.load_balancer_region2]
-}
+# module "global_load_balancer" {
+#   source                  = "./modules/global_load_balancer"
+#   prefix                  = var.prefix
+#   resource_group_id       = var.resource_group_id
+#   region1                 = local.region1
+#   region2                 = local.region2
+#   glb_domain_name         = var.glb_domain_name
+#   glb_traffic_steering    = var.glb_traffic_steering
+#   glb_region1_code        = var.glb_region1_code
+#   glb_region2_code        = var.glb_region2_code
+#   cis_glb_plan            = var.cis_glb_plan
+#   cis_glb_location        = var.cis_glb_location
+#   glb_proxy_enabled       = var.glb_proxy_enabled
+#   expected_body           = var.expected_body
+#   expected_codes          = var.expected_codes
+#   glb_healthcheck_method  = var.glb_healthcheck_method
+#   glb_healthcheck_timeout = var.glb_healthcheck_timeout
+#   glb_healthcheck_path    = var.glb_healthcheck_path
+#   glb_protocol_type       = var.glb_protocol_type
+#   interval                = var.interval
+#   retries                 = var.retries
+#   follow_redirects        = var.follow_redirects
+#   glb_healthcheck_port    = var.glb_healthcheck_port
+#   allow_insecure          = var.allow_insecure
+#   minimum_origins         = var.minimum_origins
+#   region1_pool_weight     = var.region1_pool_weight
+#   region2_pool_weight     = var.region2_pool_weight
+#   notification_email      = var.notification_email
+#   web_lb_ip_region1       = module.load_balancer_region1.lb_public_ip["WEB_SERVER"][0]
+#   web_lb_ip_region2       = module.load_balancer_region2.lb_public_ip["WEB_SERVER"][0]
+#   depends_on              = [module.load_balancer_region1, module.load_balancer_region2]
+# }
