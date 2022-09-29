@@ -79,14 +79,14 @@ output "DB_VSI" {
 **/
 output "BASTION_VSI" {
   description = "This variable will display the public IP address of Bastion Server"
-  value = merge(
+  value = var.enable_floating_ip ? merge(
     {
       "PUBLIC_IP" = merge(
         { "BASTION1" = module.bastion_region1.bastion_ip },
         { "BASTION2" = module.bastion_region2.bastion_ip }
       )
     }
-  )
+  ) : null
 }
 
 /**

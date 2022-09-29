@@ -87,29 +87,6 @@ variable "db_name" {
   type        = string
 }
 
-
-/**
-* Name: db_user
-* Type: string
-* Description: Database user will be created with the specified name
-**/
-variable "db_user" {
-  description = "Database user will be created with the specified name"
-  type        = string
-}
-
-
-
-/**
-* Name: db_pwd
-* Type: string
-* Description: Database user will be created with the specified password
-**/
-variable "db_pwd" {
-  description = "Database user will be created with the specified password"
-  type        = string
-}
-
 /**
 #################################################################################################################
 *                               End of the Variable Section 

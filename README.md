@@ -31,6 +31,10 @@ Each tier will span across the 3 different availability zones. Every tier, the V
 across the other availability zones to protect against a single point of failure against
 component and availability zone.
 
+User has a choice between self-managed DB (installing and managing DB of choice) or opt-in with
+[IBM Cloud DBaaS (MySQL)](https://cloud.ibm.com/docs/databases-for-mysql?topic=databases-for-mysql-getting-started).
+To opt-in for IBM Cloud DBaaS (MySQl) change the DBaaS flag to true in the `userinput.auto.tfvars`.
+
 In addition, the following are created:
 
 - All VSIs are private only and should be linux
@@ -66,7 +70,10 @@ Additional elements are added for multi-region
 
 ## Automation Use Cases
 
-This installs the following software packages, Wordpress, Apache, PHP, and Maria db.
+This installs the following software packages, Wordpress, Apache, and (self-managed) Maria DB.
+
+User has a choice to opt-out of Maria DB and opt-in with [IBM Cloud DBaaS (MySQL)](https://cloud.ibm.com/docs/databases-for-mysql?topic=databases-for-mysql-getting-started). To opt-in for IBM Cloud DBaaS (MySQl) change the DBaaS flag to true in the
+`userinput.auto.tfvars`.
 
 <img src="./single-availability-zone-automation/images/Software-stack.png" width="250" />
 
@@ -83,13 +90,17 @@ This use case is for applications that are deployed in a single availability zon
 not expand the single availability zone. Placement groups improve resiliency by ensuring that
 VSIs are created in different compute host/hypervisor.
 
-### DB
+User has a choice between self-managed DB (installing and managing DB of choice) or opt-in with
+[IBM Cloud DBaaS (MySQL)](https://cloud.ibm.com/docs/databases-for-mysql?topic=databases-for-mysql-getting-started).
+To opt-in for IBM Cloud DBaaS (MySQl) change the DBaaS flag to true in the `userinput.auto.tfvars`.
+
+### Self-managed DB
 
 Replication is not part of the terraform automation code and thus needs to be configured and set up
 as a post-install. More information for maria replication overview can be found [here](https://mariadb.com/kb/en/standard-replication/).
 
-In addition, for additional resiliency measure, you can do snapshots of the db as backup. To create
-a bash/cron job for regular backup cadence can be found [here](https://www.ibm.com/cloud/blog/automate-the-backup-and-restore-of-cloud-instances-with-snapshots).
+In addition, for additional resiliency measure, you can do snapshots of the db as backup. More information
+can be found [here](https://cloud.ibm.com/docs/vpc?topic=vpc-backup-service-about).
 
 # Suggestion/Issues
 
@@ -101,7 +112,7 @@ and provide suggestions or comments. If the scripts are modified and have issues
 best to assist.
 
 ## Caveats
-* Release 3.1.1 has the polkit remediation (CVE-2021-4034) by removing the SUID-bit from pkexe. This is executed as part of the post-provisioining script for the each of the virtual server instance `tf` files.
+* Release 3.1.1 has the polkit remediation (CVE-2021-4034) by removing the SUID-bit from pkexe. This is executed as part of the post-provisioning script for the each of the virtual server instance `tf` files.
 ```
 # chmod 0755 /usr/bin/pkexec
 ```

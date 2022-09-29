@@ -160,3 +160,24 @@ variable "prefix" {
     error_message = "For the prefix value only a-z, A-Z and 0-9 are allowed, the prefix should start with a character, and the prefix should end a with hyphen(-)."
   }
 }
+
+
+/**
+* Name: enable_dbaas
+* Type: Bool
+* Description: For enabling Database as a Service which is a managed DB service.
+**/
+variable "enable_dbaas" {
+  type        = bool
+  description = "For enabling Database as a Service which is a managed DB service."
+}
+
+/**
+* Name: db_admin_password
+* Type: String
+* Description: The admin user password for the Database service instance. No special characters; minimum 10 characters, A-Z, a-z, 0-9
+*/
+variable "db_admin_password" {
+  type        = string
+  description = "The admin user password for the Database service instance. No special characters; minimum 10 characters, A-Z, a-z, 0-9"
+}

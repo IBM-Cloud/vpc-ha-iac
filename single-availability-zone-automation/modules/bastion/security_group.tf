@@ -29,7 +29,7 @@ resource "ibm_is_security_group" "bastion" {
 /**
 * Security Group Rule for Bastion Server
 * This inbound rule will allow the user to ssh connect to the Bastion server on port 22 from their local machine.
-* This rule will only whitelist/allow the user's public IP address. So that no other person can access the bastion server.
+* This rule will only allow the user's public IP address. So that no other person can access the bastion server.
 **/
 
 resource "ibm_is_security_group_rule" "bastion_rule_22" {

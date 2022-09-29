@@ -62,7 +62,7 @@ variable "zone" {
 /**
 * Name: public_gateway_id
 * Desc: Id of the public gateway where subnets will get attached
-* Type: list(any)
+* Type: string
 **/
 variable "public_gateway_id" {
   description = "Id of the public gateway where subnets will get attached"

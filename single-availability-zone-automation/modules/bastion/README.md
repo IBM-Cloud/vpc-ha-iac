@@ -28,6 +28,7 @@ No modules.
 | [null_resource.delete_dynamic_ssh_key_windows](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [time_sleep.wait_240_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [ibm_iam_auth_token.auth_token](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/iam_auth_token) | data source |
+| [ibm_is_image.bastion_os](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/is_image) | data source |
 
 ## Inputs
 
@@ -39,6 +40,7 @@ No modules.
 | <a name="input_bastion_os_type"></a> [bastion\_os\_type](#input\_bastion\_os\_type) | OS image to be used [windows \| linux] | `string` | n/a | yes |
 | <a name="input_bastion_profile"></a> [bastion\_profile](#input\_bastion\_profile) | Specify the profile needed for Bastion VSI | `string` | n/a | yes |
 | <a name="input_bastion_ssh_key"></a> [bastion\_ssh\_key](#input\_bastion\_ssh\_key) | This is the name of the ssh key which will be generated dynamically on the bastion server and further will be attached with all the other Web/App/DB servers. It will be used to login to Web/App/DB servers via Bastion server only. | `string` | n/a | yes |
+| <a name="input_enable_floating_ip"></a> [enable\_floating\_ip](#input\_enable\_floating\_ip) | Determines whether to enable floating IP for Bastion server or not. Give true or false. | `bool` | n/a | yes |
 | <a name="input_local_machine_os_type"></a> [local\_machine\_os\_type](#input\_local\_machine\_os\_type) | Operating System to be used [windows \| mac \| linux] for your local machine which is running terraform apply | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all the resources. | `string` | n/a | yes |
 | <a name="input_public_ip_address_list"></a> [public\_ip\_address\_list](#input\_public\_ip\_address\_list) | Provide the User's Public IP address in the format X.X.X.X/32 which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply | `list(any)` | n/a | yes |

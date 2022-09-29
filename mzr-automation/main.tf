@@ -42,11 +42,44 @@
 * prefix: This is the prefix text that will be pre-pended in every resource name created by this module.
 * resource_group_id: The resource group ID
 **/
-
 module "vpc" {
   source            = "./modules/vpc"
   prefix            = var.prefix
   resource_group_id = var.resource_group_id
+}
+
+# /**
+# * Calling the db module with the following required parameters
+# * source: Source Directory of the Module
+# * prefix: This will be appended in resources created by this module
+# * resource_group_id: The resource group id
+# **/
+module "db" {
+  count                       = var.enable_dbaas ? 1 : 0
+  source                      = "./modules/db"
+  prefix                      = var.prefix
+  resource_group_id           = var.resource_group_id
+  region                      = var.region
+  db_admin_password           = var.db_admin_password
+  service_endpoints           = var.db_access_endpoints
+  db_version                  = local.db_version
+  service                     = local.service
+  plan                        = local.plan
+  member_cpu_allocation_count = local.member_cpu_allocation_count
+  member_disk_allocation_mb   = local.member_disk_allocation_mb
+  member_memory_allocation_mb = local.member_memory_allocation_mb
+  tags                        = local.tags
+  users                       = local.users
+  create_timeout              = local.create_timeout
+  update_timeout              = local.update_timeout
+  delete_timeout              = local.delete_timeout
+  auto_scaling                = var.db_enable_autoscaling == true ? local.auto_scaling : []
+  key_protect_instance        = local.key_protect_instance
+  key_protect_key             = local.key_protect_key
+  whitelist                   = local.whitelist
+  backup_id                   = local.backup_id
+  backup_encryption_key_crn   = local.backup_encryption_key_crn
+  remote_leader_id            = local.remote_leader_id
 }
 
 /**
@@ -79,7 +112,6 @@ data "ibm_is_ssh_key" "ssh_key_id" {
 * bastion_ip_count: IP count is the total number of total_ipv4_address_count for Bastion Subnet
 * depends_on: This ensures that the subnet and security group object will be created before the bastion
 **/
-
 module "bastion" {
   source                 = "./modules/bastion"
   prefix                 = var.prefix
@@ -96,10 +128,16 @@ module "bastion" {
   local_machine_os_type  = var.local_machine_os_type
   bastion_image          = var.bastion_image
   bastion_ip_count       = var.bastion_ip_count
-  vpn_routing_table_id   = module.vpn.routing_table_id
   public_gateway_ids     = module.public_gateway.pg_ids
-  vpn_mode               = var.vpn_mode
+  enable_dbaas           = var.enable_dbaas
+  db_name                = var.db_name
+  db_password            = var.db_admin_password
+  db_hostname            = var.enable_dbaas ? module.db[0].db_hostname : ""
+  db_port                = var.enable_dbaas ? module.db[0].db_port : ""
   depends_on             = [module.vpc]
+  vpn_routing_table_id   = module.vpn.routing_table_id
+  vpn_mode               = var.vpn_mode
+  #db_certificate         = var.enable_dbaas ? module.db[0].db_certificate : ""
 }
 
 # /**
@@ -114,7 +152,6 @@ module "bastion" {
 # * Now, before re-running the script -> Check the Bastion server image version. If it is windows, 
 # * It should be "Windows Server 2019 Standard Edition (amd64) ibm-windows-server-2019-full-standard-amd64-6" only.
 # **/
-
 data "ibm_is_ssh_key" "bastion_key_id" {
   name = "${var.prefix}${var.bastion_ssh_key_var_name}"
   depends_on = [
@@ -263,6 +300,7 @@ module "load_balancer" {
 **/
 
 module "instance" {
+  count             = var.enable_dbaas ? 0 : 1
   source            = "./modules/instance"
   prefix            = var.prefix
   vpc_id            = module.vpc.id
@@ -277,8 +315,7 @@ module "instance" {
   tiered_profiles   = var.tiered_profiles
   subnets           = module.subnet.sub_objects["db"].*.id
   db_sg             = module.security_group.sg_objects["db"].id
-  db_pwd            = var.db_pwd
-  db_user           = var.db_user
+  db_password       = var.db_admin_password
   db_name           = var.db_name
   depends_on        = [module.subnet.ibm_is_subnet, module.security_group, module.bastion]
 }
@@ -312,7 +349,6 @@ module "instance" {
 * app_cooldown_time: Specify the cool down period, the number of seconds to pause further scaling actions after scaling has taken place.
 * depends_on: This ensures that the vpc and other objects will be created before the instance group
 **/
-
 module "instance_group" {
   source                 = "./modules/instance_group"
   vpc_id                 = module.vpc.id
@@ -337,10 +373,13 @@ module "instance_group" {
   app_cpu_threshold      = var.app_cpu_threshold
   app_aggregation_window = var.app_aggregation_window
   app_cooldown_time      = var.app_cooldown_time
-  db_private_ip          = module.instance.db_target[0]
-  db_pwd                 = var.db_pwd
-  db_user                = var.db_user
+  enable_dbaas           = var.enable_dbaas
+  db_password            = var.db_admin_password
+  db_hostname            = var.enable_dbaas ? module.db[0].db_hostname : ""
+  db_certificate         = var.enable_dbaas ? module.db[0].db_certificate : ""
+  db_port                = var.enable_dbaas ? module.db[0].db_port : ""
   db_name                = var.db_name
+  db_private_ip          = var.enable_dbaas ? "" : module.instance[0].db_target[0]
   web_lb_hostname        = module.load_balancer.lb_dns.WEB_SERVER
   wp_blog_title          = var.wp_blog_title
   wp_admin_user          = var.wp_admin_user

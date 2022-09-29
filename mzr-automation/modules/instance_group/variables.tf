@@ -288,33 +288,13 @@ variable "web_cpu_threshold" {
 }
 
 /**
-* Name: db_name
-* Type: string
-* Description: Database will be created with the specified name
+* Name: enable_dbaas
+* Type: Bool
+* Description: For enabling Database as a Service which is a managed DB service.
 **/
-variable "db_name" {
-  description = "Database will be created with the specified name"
-  type        = string
-}
-
-/**
-* Name: db_user
-* Type: string
-* Description: Database user will be created with the specified name
-**/
-variable "db_user" {
-  description = "Database user will be created with the specified name"
-  type        = string
-}
-
-/**
-* Name: db_pwd
-* Type: string
-* Description: Database user will be created with the specified password
-**/
-variable "db_pwd" {
-  description = "Database user will be created with the specified password"
-  type        = string
+variable "enable_dbaas" {
+  type        = bool
+  description = "For enabling Database as a Service which is a managed DB service."
 }
 
 /**
@@ -367,6 +347,55 @@ variable "wp_admin_email" {
   type        = string
 }
 
+/**
+* Name: db_name
+* Type: string
+* Description: Database will be created with the specified name
+**/
+variable "db_name" {
+  description = "Database will be created with the specified name"
+  type        = string
+}
+
+/**
+* Name: db_password
+* Desc: Admin password of the DB service required to access the DB service.
+* Type: string
+**/
+variable "db_password" {
+  description = "Admin password of the DB service required to access the DB service."
+  type        = string
+}
+
+/**
+* Name: db_hostname
+* Desc: Hostname of the DB service created to access.
+* Type: string
+**/
+variable "db_hostname" {
+  description = "Hostname of the DB service created to access."
+  type        = string
+}
+
+/**
+* Name: db_port
+* Desc: Port at which the DB service is accessible.
+* Type: string
+**/
+variable "db_port" {
+  description = "Port at which the DB service is accessible."
+  type        = string
+}
+
+/**
+* Name: db_certificate
+* Desc: The variable contains the db SSL certificate which could be used for connecting to the DB.
+* type        = string
+**/
+variable "db_certificate" {
+  description = "The variable contains the db SSL certificate which could be used for connecting to the DB"
+  type        = string
+}
 
 /**
 #################################################################################################################

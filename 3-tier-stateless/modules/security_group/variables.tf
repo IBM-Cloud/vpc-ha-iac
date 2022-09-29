@@ -74,16 +74,6 @@ variable "web_os_type" {
   type        = string
 }
 
-/**
-* Name: db_os_type
-* Desc: OS image to be used [windows | linux] for DB Server
-* Type: string
-**/
-variable "db_os_type" {
-  description = "OS image to be used [windows | linux] for DB Server"
-  type        = string
-}
-
 /**               
 #################################################################################################################
 *                                   End of the Variable Section 

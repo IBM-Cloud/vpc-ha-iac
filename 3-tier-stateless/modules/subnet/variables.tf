@@ -59,6 +59,16 @@ variable "zones" {
 }
 
 /**
+* Name: public_gateway_ids
+* Desc: List of ids of all the public gateways where subnets will get attached
+* Type: list(any)
+**/
+variable "public_gateway_ids" {
+  description = "List of ids of all the public gateways where subnets will get attached"
+  type        = list(any)
+}
+
+/**
 * Name: db_vsi_count
 * Type: number
 * Desc: Total Database instances that will be created in the user specified region.
@@ -68,15 +78,6 @@ variable "db_vsi_count" {
   type        = number
 }
 
-/**
-* Name: public_gateway_ids
-* Desc: List of ids of all the public gateways where subnets will get attached
-* Type: list(any)
-**/
-variable "public_gateway_ids" {
-  description = "List of ids of all the public gateways where subnets will get attached"
-  type        = list(any)
-}
 /**               
 #################################################################################################################
 *                                   End of the Variable Section 

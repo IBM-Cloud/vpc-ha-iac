@@ -12,7 +12,7 @@ locals {
   lin_userdata_app_ubuntu = <<-EOUD
   #!/bin/bash
   sudo apt-get -y update
-  sudo apt-get install -y php php-dev libapache2-mod-php php-curl apache2
+  sudo apt-get install -y php php-dev libapache2-mod-php php-curl apache2 mysql-client
   sudo apt-get install -y php-json php-gd php-mysql
   systemctl start apache2 && systemctl enable apache2
   chmod 0755 /usr/bin/pkexec
@@ -22,15 +22,12 @@ EOUD
   #!/bin/bash
   if cat /etc/redhat-release |grep -i "release 7"
   then
-  ###############################################
-  ${var.reregister_rhel}
-  ###############################################
   fi
   yum update -y
   yum install -y httpd php git
   yum install -y php-devel
   yum install -y php-pear php-json php-gd
-  yum install -y wget
+  yum install -y wget mysql
   systemctl start httpd && systemctl enable httpd
   echo "Welcome to the IBM" > /var/www/html/index.html
   chmod 755 /var/www/html/index.html

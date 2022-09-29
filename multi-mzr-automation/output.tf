@@ -74,19 +74,39 @@ output "DB_VSI" {
 
 /**
 * Output Variable
+* Element : db_connection_command_region_1
+* This ouput variable will output the Database connection command which is useful for the server to connect to the database.
+**/
+output "db_connection_command_region_1" {
+  description = "This ouput variable will output the Database connection command which is useful for the server to connect to the database."
+  value       = module.db_region1.db_connection_command
+}
+
+/**
+* Output Variable
+* Element : db_connection_command_region_2
+* This ouput variable will output the Database connection command which is useful for the server to connect to the database.
+**/
+output "db_connection_command_region_2" {
+  description = "This ouput variable will output the Database connection command which is useful for the server to connect to the database."
+  value       = module.db_region2.db_connection_command
+}
+
+/**
+* Output Variable
 * Element : Bastion VSI
 * This variable will output the Public IP address for bastion server.
 **/
 output "BASTION_VSI" {
   description = "This variable will display the public IP address of Bastion Server"
-  value = merge(
+  value = var.enable_floating_ip ? merge(
     {
       "PUBLIC_IP" = merge(
         { "BASTION1" = module.bastion_region1.bastion_ip },
         { "BASTION2" = module.bastion_region2.bastion_ip }
       )
     }
-  )
+  ) : null
 }
 
 /**

@@ -35,20 +35,6 @@ variable "web_os_type" {
   }
 }
 
-/**
-* Name: db_os_type
-* Desc: OS image to be used linux for DB Server
-* Type: string
-**/
-variable "db_os_type" {
-  description = "OS image to be used is linux for DB Server"
-  type        = string
-  validation {
-    condition     = contains(["linux"], var.db_os_type)
-    error_message = "Error: Incorrect value for DB OS Flavour. Allowed values are windows and linux."
-  }
-}
-
 /**               
 #################################################################################################################
 *                                   End of the Variable Section 

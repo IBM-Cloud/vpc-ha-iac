@@ -10,8 +10,9 @@
 
 
 
-
-
+#
+###################################  Common User Input Variables  ##################################
+#
 #/**
 #*   Enter your IBM cloud API key here.
 #**/
@@ -44,7 +45,7 @@
 #
 #
 # /** 
-#     This is the list of public IP address of user's local machines. We will whitelist only these public IP in Bastion's security group. So that, Bastion server can 
+#     This is the list of public IP address of user's local machines. We will allowlist only these public IP in Bastion's security group. So that, Bastion server can 
 #     be accessed only from the User's System.
 #     Please update the  public IP address list before every terraform apply. 
 #     As your Public IP address could be dynamically changing each day. 
@@ -307,3 +308,9 @@
 #* Desc:  Literal string value to use as an object content, which will be uploaded as UTF-8 encoded text. Conflicts with content_base64 and content_file. 
 #**/
 #obj_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+# /**
+# *   Determines whether to create Floating IP or not. Give true or false.
+# *   Here we have  enable_floating_ip = true
+# **/
+# enable_floating_ip = true
