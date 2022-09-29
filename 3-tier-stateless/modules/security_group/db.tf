@@ -8,7 +8,7 @@
 * This local variables checks the db os type and open ports accordingly.
 */
 locals {
-  db_sg_port = lower(var.db_os_type) == "windows" ? "3389" : "22"
+  db_sg_port = "22"
 }
 
 /**

@@ -71,17 +71,17 @@ locals {
 * obj_content: Literal string value to use as an object content, which will be uploaded as UTF-8 encoded text. Conflicts with content_base64 and content_file. 
 **/
 
-module "cos" {
-  source                = "./modules/cos"
-  prefix                = "${var.prefix}region-${local.region1}-"
-  resource_group_id     = var.resource_group_id
-  cos_bucket_plan       = var.cos_bucket_plan
-  cross_region_location = var.cross_region_location
-  storage_class         = var.storage_class
-  bucket_location       = var.bucket_location
-  obj_key               = var.obj_key
-  obj_content           = var.obj_content
-}
+# module "cos" {
+#   source                = "./modules/cos"
+#   prefix                = "${var.prefix}region-${local.region1}-"
+#   resource_group_id     = var.resource_group_id
+#   cos_bucket_plan       = var.cos_bucket_plan
+#   cross_region_location = var.cross_region_location
+#   storage_class         = var.storage_class
+#   bucket_location       = var.bucket_location
+#   obj_key               = var.obj_key
+#   obj_content           = var.obj_content
+# }
 
 /**
 * Calling the VPC module for region1 with the following required parameters
@@ -129,14 +129,86 @@ module "vpc_region2" {
 * depends_on: This ensures that the VPC objects will be created before the transit gateway
 **/
 
-module "transit_gateway" {
-  source            = "./modules/transit_gateway"
-  prefix            = var.prefix
-  resource_group_id = var.resource_group_id
-  location          = local.region1
-  vpc_crn_region1   = module.vpc_region1.crn
-  vpc_crn_region2   = module.vpc_region2.crn
-  depends_on        = [module.vpc_region1, module.vpc_region2]
+# module "transit_gateway" {
+#   source            = "./modules/transit_gateway"
+#   prefix            = var.prefix
+#   resource_group_id = var.resource_group_id
+#   location          = local.region1
+#   vpc_crn_region1   = module.vpc_region1.crn
+#   vpc_crn_region2   = module.vpc_region2.crn
+#   depends_on        = [module.vpc_region1, module.vpc_region2]
+# }
+
+/**
+* Calling the db module with the following required parameters
+* source: Source Directory of the Module
+* prefix: This will be appended in resources created by this module
+* resource_group_id: The resource group id
+**/
+module "db_region1" {
+  source                      = "./modules/db"
+  prefix                      = "${var.prefix}${local.region1}-"
+  resource_group_id           = var.resource_group_id
+  region                      = local.region1
+  db_admin_password           = var.db_admin_password
+  service_endpoints           = var.db_access_endpoints_region_1
+  db_version                  = local.db_version_region_1
+  service                     = local.service_region_1
+  plan                        = local.plan_region_1
+  member_cpu_allocation_count = local.member_cpu_allocation_count_region_1
+  member_disk_allocation_mb   = local.member_disk_allocation_mb_region_1
+  member_memory_allocation_mb = local.member_memory_allocation_mb_region_1
+  tags                        = local.tags_region_1
+  users                       = local.users_region_1
+  create_timeout              = local.create_timeout_region_1
+  update_timeout              = local.update_timeout_region_1
+  delete_timeout              = local.delete_timeout_region_1
+  auto_scaling                = var.db_enable_autoscaling_region_1 == true ? local.auto_scaling_region_1 : []
+  key_protect_instance        = local.key_protect_instance_region_1
+  key_protect_key             = local.key_protect_key_region_1
+  whitelist                   = local.whitelist_region_1
+  backup_id                   = local.backup_id_region_1
+  backup_encryption_key_crn   = local.backup_encryption_key_crn_region_1
+  remote_leader_id            = local.remote_leader_id_region_1
+  providers = {
+    ibm = ibm.jp-tok
+  }
+}
+
+/**
+* Calling the db module with the following required parameters
+* source: Source Directory of the Module
+* prefix: This will be appended in resources created by this module
+* resource_group_id: The resource group id
+**/
+module "db_region2" {
+  source                      = "./modules/db"
+  prefix                      = "${var.prefix}${local.region1}-"
+  resource_group_id           = var.resource_group_id
+  region                      = local.region2
+  db_admin_password           = var.db_admin_password
+  service_endpoints           = var.db_access_endpoints_region_2
+  db_version                  = local.db_version_region_2
+  service                     = local.service_region_2
+  plan                        = local.plan_region_2
+  member_cpu_allocation_count = local.member_cpu_allocation_count_region_2
+  member_disk_allocation_mb   = local.member_disk_allocation_mb_region_2
+  member_memory_allocation_mb = local.member_memory_allocation_mb_region_2
+  tags                        = local.tags_region_2
+  users                       = local.users_region_2
+  create_timeout              = local.create_timeout_region_2
+  update_timeout              = local.update_timeout_region_2
+  delete_timeout              = local.delete_timeout_region_2
+  auto_scaling                = var.db_enable_autoscaling_region_2 == true ? local.auto_scaling_region_2 : []
+  key_protect_instance        = local.key_protect_instance_region_2
+  key_protect_key             = local.key_protect_key_region_2
+  whitelist                   = local.whitelist_region_2
+  backup_id                   = local.backup_id_region_2
+  backup_encryption_key_crn   = local.backup_encryption_key_crn_region_2
+  remote_leader_id            = local.remote_leader_id_region_2
+  providers = {
+    ibm = ibm.jp-osa
+  }
 }
 
 /**
@@ -155,6 +227,7 @@ data "ibm_is_ssh_key" "ssh_key_id_region1" {
 * source: Source Directory of the Module
 * vpc_id: VPC ID to contain the subnets
 * prefix: This will be appended in resources created by this module
+* enable_floating_ip: Determines whether to create Floating IP or not
 * user_ssh_key: This is the list of the existing ssh key/keys of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
 * And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
 * my_public_ip: User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI
@@ -176,6 +249,7 @@ data "ibm_is_ssh_key" "ssh_key_id_region1" {
 module "bastion_region1" {
   source                 = "./modules/bastion"
   prefix                 = "${var.prefix}bastion1-"
+  enable_floating_ip     = var.enable_floating_ip
   vpc_id                 = module.vpc_region1.id
   user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id_region1.*.id
   public_ip_address_list = local.public_ip_address_list
@@ -211,6 +285,7 @@ data "ibm_is_ssh_key" "ssh_key_id_region2" {
 * source: Source Directory of the Module
 * vpc_id: VPC ID to contain the subnets
 * prefix: This will be appended in resources created by this module
+* enable_floating_ip: Determines whether to create Floating IP or not
 * user_ssh_key: This is the list  of  existing ssh key/keys of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
 *    And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
 * my_public_ip: User's Public IP address in the format X.X.X.X which will be used to login to Bastion VSI
@@ -232,6 +307,7 @@ data "ibm_is_ssh_key" "ssh_key_id_region2" {
 module "bastion_region2" {
   source                 = "./modules/bastion"
   prefix                 = "${var.prefix}bastion2-"
+  enable_floating_ip     = var.enable_floating_ip
   vpc_id                 = module.vpc_region2.id
   user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id_region2.*.id
   public_ip_address_list = local.public_ip_address_list
@@ -856,35 +932,35 @@ module "instance_group_region2" {
 * depends_on: This ensures that the loadbalancers will be created before the global loadbalancer
 **/
 
-module "global_load_balancer" {
-  source                  = "./modules/global_load_balancer"
-  prefix                  = var.prefix
-  resource_group_id       = var.resource_group_id
-  region1                 = local.region1
-  region2                 = local.region2
-  glb_domain_name         = var.glb_domain_name
-  glb_traffic_steering    = var.glb_traffic_steering
-  glb_region1_code        = var.glb_region1_code
-  glb_region2_code        = var.glb_region2_code
-  cis_glb_plan            = var.cis_glb_plan
-  cis_glb_location        = var.cis_glb_location
-  glb_proxy_enabled       = var.glb_proxy_enabled
-  expected_body           = var.expected_body
-  expected_codes          = var.expected_codes
-  glb_healthcheck_method  = var.glb_healthcheck_method
-  glb_healthcheck_timeout = var.glb_healthcheck_timeout
-  glb_healthcheck_path    = var.glb_healthcheck_path
-  glb_protocol_type       = var.glb_protocol_type
-  interval                = var.interval
-  retries                 = var.retries
-  follow_redirects        = var.follow_redirects
-  glb_healthcheck_port    = var.glb_healthcheck_port
-  allow_insecure          = var.allow_insecure
-  minimum_origins         = var.minimum_origins
-  region1_pool_weight     = var.region1_pool_weight
-  region2_pool_weight     = var.region2_pool_weight
-  notification_email      = var.notification_email
-  web_lb_ip_region1       = module.load_balancer_region1.lb_public_ip["WEB_SERVER"][0]
-  web_lb_ip_region2       = module.load_balancer_region2.lb_public_ip["WEB_SERVER"][0]
-  depends_on              = [module.load_balancer_region1, module.load_balancer_region2]
-}
+# module "global_load_balancer" {
+#   source                  = "./modules/global_load_balancer"
+#   prefix                  = var.prefix
+#   resource_group_id       = var.resource_group_id
+#   region1                 = local.region1
+#   region2                 = local.region2
+#   glb_domain_name         = var.glb_domain_name
+#   glb_traffic_steering    = var.glb_traffic_steering
+#   glb_region1_code        = var.glb_region1_code
+#   glb_region2_code        = var.glb_region2_code
+#   cis_glb_plan            = var.cis_glb_plan
+#   cis_glb_location        = var.cis_glb_location
+#   glb_proxy_enabled       = var.glb_proxy_enabled
+#   expected_body           = var.expected_body
+#   expected_codes          = var.expected_codes
+#   glb_healthcheck_method  = var.glb_healthcheck_method
+#   glb_healthcheck_timeout = var.glb_healthcheck_timeout
+#   glb_healthcheck_path    = var.glb_healthcheck_path
+#   glb_protocol_type       = var.glb_protocol_type
+#   interval                = var.interval
+#   retries                 = var.retries
+#   follow_redirects        = var.follow_redirects
+#   glb_healthcheck_port    = var.glb_healthcheck_port
+#   allow_insecure          = var.allow_insecure
+#   minimum_origins         = var.minimum_origins
+#   region1_pool_weight     = var.region1_pool_weight
+#   region2_pool_weight     = var.region2_pool_weight
+#   notification_email      = var.notification_email
+#   web_lb_ip_region1       = module.load_balancer_region1.lb_public_ip["WEB_SERVER"][0]
+#   web_lb_ip_region2       = module.load_balancer_region2.lb_public_ip["WEB_SERVER"][0]
+#   depends_on              = [module.load_balancer_region1, module.load_balancer_region2]
+# }

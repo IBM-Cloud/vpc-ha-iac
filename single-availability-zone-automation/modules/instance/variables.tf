@@ -156,21 +156,11 @@ variable "db_name" {
 }
 
 /**
-* Name: db_user
-* Type: string
-* Description: Database user will be created with the specified name
-**/
-variable "db_user" {
-  description = "Database user will be created with the specified name"
-  type        = string
-}
-
-/**
-* Name: db_pwd
+* Name: db_password
 * Type: string
 * Description: Database user will be created with the specified password
 **/
-variable "db_pwd" {
+variable "db_password" {
   description = "Database user will be created with the specified password"
   type        = string
 }
@@ -182,16 +172,6 @@ variable "db_pwd" {
 **/
 variable "db_placement_group_id" {
   description = "Placement group ID to be used for Database servers."
-  type        = string
-}
-
-/**
-* Name: reregister_rhel
-* Type: string
-* Description: Reregister script for rhel 7.9 for mirror yum repos
-**/
-variable "reregister_rhel" {
-  description = "Reregister script for rhel 7.9 for mirror yum repos"
   type        = string
 }
 

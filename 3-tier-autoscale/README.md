@@ -12,13 +12,13 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.39.1 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.45.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.39.1 |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.45.0 |
 
 ## Modules
 
@@ -36,9 +36,9 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 
 | Name | Type |
 |------|------|
-| [ibm_is_vpc.vpc](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.39.1/docs/resources/is_vpc) | resource |
-| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.39.1/docs/data-sources/is_ssh_key) | data source |
-| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.39.1/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_vpc.vpc](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.45.0/docs/resources/is_vpc) | resource |
+| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.45.0/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.45.0/docs/data-sources/is_ssh_key) | data source |
 
 ## Inputs
 
@@ -65,6 +65,7 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 | <a name="input_db_os_type"></a> [db\_os\_type](#input\_db\_os\_type) | OS image to be used [Windows \| Linux] for DB server. This OS type should be same across both the regions. If OS flavor is Windows then we will try to install IIS and OpenSSH service and Rebooting the server .So, It will take minimum 5-10 mins to make the Server avilable. | `string` | n/a | yes |
 | <a name="input_db_profile"></a> [db\_profile](#input\_db\_profile) | Hardware configuration profile for the Database VSI. | `string` | `"cx2-2x4"` | no |
 | <a name="input_db_vsi_count"></a> [db\_vsi\_count](#input\_db\_vsi\_count) | Total Database instances that will be created in the user specified region. | `number` | `2` | no |
+| <a name="input_enable_floating_ip"></a> [enable\_floating\_ip](#input\_enable\_floating\_ip) | Determines whether to enable floating IP for Bastion server or not. Give true or false. | `bool` | n/a | yes |
 | <a name="input_lb_algo"></a> [lb\_algo](#input\_lb\_algo) | lbaaS backend distribution algorithm | `map(any)` | <pre>{<br>  "least-x": "least_connections",<br>  "rr": "round_robin",<br>  "wrr": "weighted_round_robin"<br>}</pre> | no |
 | <a name="input_lb_port_number"></a> [lb\_port\_number](#input\_lb\_port\_number) | declare lbaaS pool member port number | `map(any)` | <pre>{<br>  "custom": "xxx",<br>  "http": "80",<br>  "https": "443"<br>}</pre> | no |
 | <a name="input_lb_protocol"></a> [lb\_protocol](#input\_lb\_protocol) | lbaaS protocols | `map(any)` | <pre>{<br>  "443": "https",<br>  "80": "http",<br>  "l4-tcp": "tcp"<br>}</pre> | no |
@@ -72,11 +73,11 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 | <a name="input_lb_type_public"></a> [lb\_type\_public](#input\_lb\_type\_public) | This variable will hold the Load Balancer type as public | `string` | `"public"` | no |
 | <a name="input_local_machine_os_type"></a> [local\_machine\_os\_type](#input\_local\_machine\_os\_type) | Operating System to be used [windows \| mac \| linux] for your local machine which is running terraform apply | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | This is the prefix text that will be prepended in every resource name created by this script. | `string` | n/a | yes |
-| <a name="input_public_ip_address_list"></a> [public\_ip\_address\_list](#input\_public\_ip\_address\_list) | Provide the User's Public IP address in the format X.X.X.X/32 which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply | `list(any)` | n/a | yes |
+| <a name="input_public_ip_addresses"></a> [public\_ip\_addresses](#input\_public\_ip\_addresses) | Provide the list of User's Public IP addresses in the format "X.X.X.X" which will be used to login to Bastion VSI.<br>For example: "123.201.8.30,219.91.139.49". <br>Also Please provide the updated list of public IP addresses everytime before executing. | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | Please enter a region from the following available region and zones mapping: <br>us-south<br>us-east<br>eu-gb<br>eu-de<br>jp-tok<br>au-syd | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group ID | `string` | n/a | yes |
 | <a name="input_tiered_profiles"></a> [tiered\_profiles](#input\_tiered\_profiles) | Tiered profiles for Input/Output per seconds in GBs | `map(any)` | <pre>{<br>  "10": "10iops-tier",<br>  "3": "general-purpose",<br>  "5": "5iops-tier"<br>}</pre> | no |
-| <a name="input_user_ssh_key"></a> [user\_ssh\_key](#input\_user\_ssh\_key) | This is the existing ssh key on the User's machine and will be attached with the bastion server only. This will ensure the incoming connection on Bastion Server only from the users provided ssh\_keys. You can check your key name in IBM cloud. Whose private key content should be there in path ~/.ssh/id\_rsa | `list(string)` | n/a | yes |
+| <a name="input_user_ssh_keys"></a> [user\_ssh\_keys](#input\_user\_ssh\_keys) | This is the list of existing ssh key/keys on the User's machine and will be attached with the bastion server only.<br>For example: "first-ssh-key,second-ssh-key".<br>This will ensure the incoming connection on Bastion Server only from the users provided ssh\_keys. You can check your key name in IBM cloud. | `string` | n/a | yes |
 | <a name="input_web_aggregation_window"></a> [web\_aggregation\_window](#input\_web\_aggregation\_window) | The aggregation window is the time period in seconds that the instance group manager monitors each instance and determines the average utilization. | `number` | `90` | no |
 | <a name="input_web_config"></a> [web\_config](#input\_web\_config) | Web Configurations to be passed for Web Instance Group creation | `map(any)` | <pre>{<br>  "application_port": "80",<br>  "instance_profile": "cx2-2x4",<br>  "memory_percent": "40",<br>  "network_in": "40",<br>  "network_out": "40"<br>}</pre> | no |
 | <a name="input_web_cooldown_time"></a> [web\_cooldown\_time](#input\_web\_cooldown\_time) | Specify the cool down period, the number of seconds to pause further scaling actions after scaling has taken place. | `number` | `120` | no |
@@ -91,5 +92,6 @@ Autoscale helps the VSI to scale horizontally (up or down) based on VSIs' resour
 
 | Name | Description |
 |------|-------------|
+| <a name="output_BASTION_PUBLIC_IP"></a> [BASTION\_PUBLIC\_IP](#output\_BASTION\_PUBLIC\_IP) | This variable will display the public IP address of Bastion Server |
 | <a name="output_LOAD_BALANCER"></a> [LOAD\_BALANCER](#output\_LOAD\_BALANCER) | This variable will display the private and public IP addresses and DNS of load balancers |
-| <a name="output_VSI"></a> [VSI](#output\_VSI) | This variable will display the private IP address of DB servers and the public IP address of Bastion Server |
+| <a name="output_VSI"></a> [VSI](#output\_VSI) | This variable will display the private IP addresses of App/Web/DB servers |

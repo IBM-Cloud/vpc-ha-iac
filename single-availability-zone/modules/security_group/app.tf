@@ -3,9 +3,8 @@
 *                      Resources Section of the Security Group Module for App Tier
 #################################################################################################################
 */
-
 locals {
-  sg_port = lower(var.app_os_type) == "windows" ? "3389" : "22"
+  app_sg_port = "22"
 }
 
 /**
@@ -36,9 +35,9 @@ resource "ibm_is_security_group_rule" "app_rule_22" {
   direction = "inbound"
   remote    = var.bastion_sg
   tcp {
-    port_min = local.sg_port
-    port_max = local.sg_port
-  }
+    port_min = local.app_sg_port
+    port_max = local.app_sg_port  
+}
 }
 
 /**

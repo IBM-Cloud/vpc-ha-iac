@@ -3,13 +3,13 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
-| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.39.1 |
+| <a name="requirement_ibm"></a> [ibm](#requirement\_ibm) | 1.45.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.39.1 |
+| <a name="provider_ibm"></a> [ibm](#provider\_ibm) | 1.45.0 |
 | <a name="provider_time"></a> [time](#provider\_time) | 0.7.2 |
 
 ## Modules
@@ -31,8 +31,8 @@
 | Name | Type |
 |------|------|
 | [time_sleep.wait_600_seconds_app](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
-| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.39.1/docs/data-sources/is_ssh_key) | data source |
-| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.39.1/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.bastion_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.45.0/docs/data-sources/is_ssh_key) | data source |
+| [ibm_is_ssh_key.ssh_key_id](https://registry.terraform.io/providers/IBM-Cloud/ibm/1.45.0/docs/data-sources/is_ssh_key) | data source |
 
 ## Inputs
 
@@ -81,12 +81,12 @@
 | <a name="input_perfect_forward_secrecy"></a> [perfect\_forward\_secrecy](#input\_perfect\_forward\_secrecy) | Enter the Perfect Forward Secrecy protocol that you want to use during a session. Available options are disabled, group\_2, group\_5, and group\_14 | `string` | `"disabled"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | This is the prefix text that will be prepended in every resource name created by this script. | `string` | n/a | yes |
 | <a name="input_preshared_key"></a> [preshared\_key](#input\_preshared\_key) | The Key configured on the peer gateway. The key is usually a complex string similar to a password. | `string` | n/a | yes |
-| <a name="input_public_ip_address_list"></a> [public\_ip\_address\_list](#input\_public\_ip\_address\_list) | Provide the User's Public IP address in the format X.X.X.X/32 which will be used to login to Bastion VSI. Also Please update your changed public IP address everytime before executing terraform apply | `list(any)` | n/a | yes |
+| <a name="input_public_ip_addresses"></a> [public\_ip\_addresses](#input\_public\_ip\_addresses) | Provide the list of User's Public IP addresses in the format "X.X.X.X" which will be used to login to Bastion VSI.<br>For example: "123.201.8.30,219.91.139.49". <br>Also Please provide the updated list of public IP addresses everytime before executing. | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | Please enter a region from the following available region and zones mapping: <br>us-south<br>us-east<br>eu-gb<br>eu-de<br>jp-tok<br>au-syd | `string` | n/a | yes |
 | <a name="input_resource_group_id"></a> [resource\_group\_id](#input\_resource\_group\_id) | Resource Group ID | `string` | n/a | yes |
 | <a name="input_tiered_profiles"></a> [tiered\_profiles](#input\_tiered\_profiles) | Tiered profiles for Input/Output per seconds in GBs | `map(any)` | <pre>{<br>  "10": "10iops-tier",<br>  "3": "general-purpose",<br>  "5": "5iops-tier"<br>}</pre> | no |
 | <a name="input_timeout"></a> [timeout](#input\_timeout) | Dead peer detection timeout in seconds. Defines the timeout interval after which all connections to a peer are deleted due to inactivity. This timeout applies only to IKEv1. | `number` | `120` | no |
-| <a name="input_user_ssh_key"></a> [user\_ssh\_key](#input\_user\_ssh\_key) | This is the existing ssh key/keys on the User's machine and will be attached with the bastion server only. This will ensure the incoming connection on Bastion Server only from the users provided ssh\_keys. You can check your key name in IBM cloud. Whose private key content should be there in path ~/.ssh/id\_rsa | `list(string)` | n/a | yes |
+| <a name="input_user_ssh_keys"></a> [user\_ssh\_keys](#input\_user\_ssh\_keys) | This is the list of existing ssh key/keys on the User's machine and will be attached with the bastion server only.<br>For example: "first-ssh-key,second-ssh-key".<br>This will ensure the incoming connection on Bastion Server only from the users provided ssh\_keys. You can check your key name in IBM cloud. | `string` | n/a | yes |
 | <a name="input_vpn_mode"></a> [vpn\_mode](#input\_vpn\_mode) | Mode in VPN gateway. Supported values are route or policy. | `string` | n/a | yes |
 | <a name="input_web_aggregation_window"></a> [web\_aggregation\_window](#input\_web\_aggregation\_window) | The aggregation window is the time period in seconds that the instance group manager monitors each instance and determines the average utilization. | `number` | `90` | no |
 | <a name="input_web_config"></a> [web\_config](#input\_web\_config) | Web Configurations to be passed for Web Instance Group creation | `map(any)` | <pre>{<br>  "application_port": "80",<br>  "instance_profile": "cx2-2x4",<br>  "memory_percent": "70",<br>  "network_in": "4000",<br>  "network_out": "4000"<br>}</pre> | no |

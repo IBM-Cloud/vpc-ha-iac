@@ -122,6 +122,7 @@ data "ibm_is_ssh_key" "ssh_key_id" {
 * Calling the Bastion module with the following required parameters
 * source: Source Directory of the Module
 * prefix: This will be appended in resources created by this module
+* enable_floating_ip: Determines whether to create Floating IP or not
 * vpc_id: VPC ID to contain the subnets
 * user_ssh_key: This is the list of the existing ssh keys of user which will be used to login to Bastion server. Its private key content should be there in path ~/.ssh/id_rsa 
     And public key content should be uploaded to IBM cloud. If you don't have an existing key then create one using ssh-keygen -t rsa -b 4096 -C "user_ID" command.
@@ -142,6 +143,7 @@ data "ibm_is_ssh_key" "ssh_key_id" {
 module "bastion" {
   source                 = "./modules/bastion"
   prefix                 = var.prefix
+  enable_floating_ip     = var.enable_floating_ip
   vpc_id                 = ibm_is_vpc.vpc.id
   user_ssh_key           = data.ibm_is_ssh_key.ssh_key_id.*.id
   bastion_ssh_key        = var.bastion_ssh_key_var_name

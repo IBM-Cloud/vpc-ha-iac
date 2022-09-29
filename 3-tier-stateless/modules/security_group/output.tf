@@ -26,6 +26,16 @@ output "lb_sg" {
   description = "Security Group ID for Load Balancer"
 }
 
+/**
+*
+* Output Variable for App Server Security Group
+* This variable will return the App Security Group ID 
+* 
+**/
+output "app_sg" {
+  value       = ibm_is_security_group.app.id
+  description = "Security Group id for the app"
+}
 
 /**
 *
@@ -36,18 +46,6 @@ output "lb_sg" {
 output "db_sg" {
   value       = ibm_is_security_group.db.id
   description = "Security Group id for the db"
-}
-
-
-/**
-*
-* Output Variable for App Server Security Group
-* This variable will return the App Security Group ID 
-* 
-**/
-output "app_sg" {
-  value       = ibm_is_security_group.app.id
-  description = "Security Group id for the app"
 }
 
 /**
@@ -64,7 +62,6 @@ output "sg_objects" {
   description = "This output variable will expose the objects of all security groups"
   value = {
     "app" = ibm_is_security_group.app,
-    "db"  = ibm_is_security_group.db,
     "lb"  = ibm_is_security_group.lb_sg,
     "web" = ibm_is_security_group.web
   }

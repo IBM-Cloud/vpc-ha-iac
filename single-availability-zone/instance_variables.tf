@@ -60,7 +60,6 @@ variable "db_profile" {
   default     = "cx2-2x4"
 }
 
-
 /**
 * Name: tiered_profiles
 * Desc: Tiered profiles for Input/Output per seconds in GBs
@@ -76,6 +75,15 @@ variable "tiered_profiles" {
   }
 }
 
+/**
+* Name: db_name
+* Type: string
+* Description: Database will be created with the specified name
+**/
+variable "db_name" {
+  description = "Database will be created with the specified name"
+  type        = string
+}
 
 /**
 #################################################################################################################

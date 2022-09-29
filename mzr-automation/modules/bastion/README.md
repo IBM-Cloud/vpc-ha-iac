@@ -27,6 +27,7 @@ No modules.
 | [null_resource.delete_dynamic_ssh_key_windows](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [time_sleep.wait_240_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [ibm_iam_auth_token.auth_token](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/iam_auth_token) | data source |
+| [ibm_is_image.bastion_os](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs/data-sources/is_image) | data source |
 
 ## Inputs
 

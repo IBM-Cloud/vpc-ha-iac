@@ -36,6 +36,16 @@ variable "region" {
 }
 
 /**
+ * Name: enable_floating_ip
+ * Type: bool
+ * Description: Determines whether to enable floating IP for Bastion server or not. Give true or false.
+**/
+variable "enable_floating_ip" {
+  description = "Determines whether to enable floating IP for Bastion server or not. Give true or false."
+  type        = bool
+}
+
+/**
   * IP Count for the Bastion subnet
   * Value of bastion_ip_count will be from following 
   * 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 and 16384

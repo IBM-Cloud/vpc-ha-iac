@@ -49,13 +49,28 @@ variable "app_profile" {
 }
 
 /**
+* Name: db_vsi_count
+* Type: number
+* Desc: Total Database instances that will be created in the user specified region.
+**/
+variable "db_vsi_count" {
+  description = "Total Database instances that will be created in the user specified region."
+  type        = number
+  default     = 2
+}
+
+/**
 * Name: db_image
-* Desc: This variable will hold the image name for db instance
 * Type: String
+* Description: This is the image id used for DB VSI.
 **/
 variable "db_image" {
-  description = "This variable will hold the image name for db instance"
+  description = "Custom image id for the Database VSI"
   type        = string
+  validation {
+    condition     = length(var.db_image) == 41
+    error_message = "Length of Custom image id for the Database VSI should be 41 characters."
+  }
 }
 
 /**
@@ -67,6 +82,16 @@ variable "db_profile" {
   description = "This variable will hold the image profile name for db instance"
   type        = string
   default     = "cx2-2x4"
+}
+
+/**
+* Name: db_name
+* Type: string
+* Description: Database will be created with the specified name
+**/
+variable "db_name" {
+  description = "Database will be created with the specified name"
+  type        = string
 }
 
 /**

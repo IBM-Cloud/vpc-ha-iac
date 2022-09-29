@@ -13,7 +13,7 @@
 **/
 
 output "bastion_ip" {
-  value       = ibm_is_floating_ip.bastion_floating_ip.address
+  value       = ibm_is_floating_ip.bastion_floating_ip.*.address
   description = "Bastion Server Floating IP Address"
   depends_on  = [ibm_is_instance.bastion, ibm_is_floating_ip.bastion_floating_ip]
 }

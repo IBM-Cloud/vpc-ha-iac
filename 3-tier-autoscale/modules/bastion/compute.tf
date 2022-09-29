@@ -7,6 +7,10 @@
 # Using the datasource to get the tokens object 
 data "ibm_iam_auth_token" "auth_token" {}
 
+data "ibm_is_image" "bastion_os" {
+  identifier = var.bastion_image
+}
+
 /**
 * This local block is used to declare the local variables for linux and windows Bastion server userdata.
 * In these Bastion server userdata, we are creating the bastion ssh keys on IBM cloud. This ssh key will then be attached 
@@ -46,6 +50,12 @@ locals {
 
   lin_userdata = <<-EOUD
         #!/bin/bash
+        if echo "${data.ibm_is_image.bastion_os.os}" | grep -i "ubuntu"
+        then
+        sudo apt update -y
+        else
+        sudo yum update -y
+        fi
         ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa  2>&1 >/dev/null
         cur_date=$(date "+%Y-%m-%d")
         pub_key=`cat ~/.ssh/id_rsa.pub`
@@ -106,6 +116,7 @@ resource "ibm_is_instance" "bastion" {
 * This resource will be used to attach a floating IP address.
 **/
 resource "ibm_is_floating_ip" "bastion_floating_ip" {
+  count          = var.enable_floating_ip ? 1 : 0
   name           = "${var.prefix}bastion-fip"
   resource_group = var.resource_group_id
   target         = ibm_is_instance.bastion.primary_network_interface.0.id
@@ -118,7 +129,7 @@ resource "ibm_is_floating_ip" "bastion_floating_ip" {
 **/
 
 resource "time_sleep" "wait_240_seconds" {
-  depends_on      = [ibm_is_floating_ip.bastion_floating_ip]
+  depends_on      = [ibm_is_instance.bastion, ibm_is_floating_ip.bastion_floating_ip]
   create_duration = "240s"
 }
 

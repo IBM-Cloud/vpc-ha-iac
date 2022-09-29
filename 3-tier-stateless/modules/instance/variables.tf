@@ -46,16 +46,6 @@ variable "web_subnet" {
 }
 
 /**
-* Name: db_subnet
-* Type: any
-* Desc: This variable will return the objects for the db subnets of all zones.
-**/
-variable "db_subnet" {
-  description = "DB subnets Ids. This is required parameter"
-  type        = any
-}
-
-/**
 * Name: app_subnet
 * Type: any
 * Desc: This variable will return the objects for the app subnets of all zones.
@@ -72,16 +62,6 @@ variable "app_subnet" {
 **/
 variable "web_sg" {
   description = "Web Security Group"
-  type        = any
-}
-
-/**
-* Name: db_sg
-* Type: any
-* Desc: This variable will return the DB Security Group ID.
-**/
-variable "db_sg" {
-  description = "DB Security Group"
   type        = any
 }
 
@@ -147,16 +127,6 @@ variable "app_image" {
 }
 
 /**
-* Name: db_image
-* Desc: This variable will hold the image name for db instance
-* Type: String
-**/
-variable "db_image" {
-  description = "This variable will hold the image name for db instance"
-  type        = string
-}
-
-/**
 * Name: web_profile
 * Desc: This variable will hold the image profile name for web instance
 * Type: String
@@ -173,16 +143,6 @@ variable "web_profile" {
 **/
 variable "app_profile" {
   description = "This variable will hold the image profile name for app instance"
-  type        = string
-}
-
-/**
-* Name: db_profile
-* Desc: This variable will hold the image profile name for db instance
-* Type: String
-**/
-variable "db_profile" {
-  description = "This variable will hold the image profile name for db instance"
   type        = string
 }
 
@@ -217,6 +177,16 @@ variable "bastion_sg" {
 }
 
 /**
+* Name: db_sg
+* Type: any
+* Desc: This variable will return the DB Security Group ID.
+**/
+variable "db_sg" {
+  description = "DB Security Group"
+  type        = any
+}
+
+/**
 * Name: db_vsi_count
 * Type: number
 * Desc: Total Database instances that will be created in the user specified region.
@@ -224,6 +194,70 @@ variable "bastion_sg" {
 variable "db_vsi_count" {
   description = "Total Database instances that will be created in the user specified region."
   type        = number
+}
+
+/**
+* Name: db_profile
+* Desc: This variable will hold the image profile name for db instance
+* Type: String
+**/
+variable "db_profile" {
+  description = "This variable will hold the image profile name for db instance"
+  type        = string
+}
+
+/**
+* Name: db_subnet
+* Type: any
+* Desc: This variable will return the objects for the db subnets of all zones.
+**/
+variable "db_subnet" {
+  description = "DB subnets Ids. This is required parameter"
+  type        = any
+}
+
+/**
+* Name: db_image
+* Type: String
+* Description: This is the image id used for DB VSI.
+**/
+variable "db_image" {
+  description = "Custom image id for the Database VSI"
+  type        = string
+  validation {
+    condition     = length(var.db_image) == 41
+    error_message = "Length of Custom image id for the Database VSI should be 41 characters."
+  }
+}
+
+/**
+* Name: db_name
+* Type: string
+* Description: Database will be created with the specified name
+**/
+variable "db_name" {
+  description = "Database will be created with the specified name"
+  type        = string
+}
+
+/**
+* Name: db_password
+* Type: string
+* Description: Database user will be created with the specified password
+**/
+variable "db_password" {
+  description = "Database user will be created with the specified password"
+  type        = string
+}
+
+/**
+* Name: enable_dbaas
+* Type: Bool
+* Description: For enabling Database as a Service which is a managed DB service.
+**/
+variable "enable_dbaas" {
+  type        = bool
+  description = "For enabling Database as a Service which is a managed DB service."
 }
 
 /**
