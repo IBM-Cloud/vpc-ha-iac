@@ -18,8 +18,8 @@ locals {
   lin_userdata_db_ubuntu = <<-EOUD
       #!/bin/bash
       db_name=${var.db_name}
-      db_user=${var.db_user}
-      db_pwd=${var.db_pwd}
+      db_admin_user=admin
+      db_password=${var.db_password}
       sudo apt update -y
       sudo apt install -y mariadb-server mariadb-client
       sudo systemctl enable mariadb
@@ -29,8 +29,8 @@ locals {
       mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
       mysql -u root -e "FLUSH PRIVILEGES;"    
       mysql -u root -e "CREATE DATABASE $db_name;"
-      mysql -u root -e "CREATE USER '$db_user'@'%' IDENTIFIED BY '$db_pwd';"
-      mysql -u root -e "GRANT ALL PRIVILEGES ON $db_name.* TO '$db_user'@'%';"
+      mysql -u root -e "CREATE USER '$db_admin_user'@'%' IDENTIFIED BY '$db_password';"
+      mysql -u root -e "GRANT ALL PRIVILEGES ON $db_name.* TO '$db_admin_user'@'%';"
       mysql -u root -e "FLUSH PRIVILEGES;"
       sed -i s/'bind-address'/'#bind-address'/g /etc/mysql/mariadb.conf.d/50-server.cnf
       systemctl restart mariadb
@@ -40,8 +40,8 @@ locals {
   lin_userdata_db_rhel = <<-EOUD
       #!/bin/bash
       db_name=${var.db_name}
-      db_user=${var.db_user}
-      db_pwd=${var.db_pwd}
+      db_admin_user=admin
+      db_password=${var.db_password}
       yum update -y 
       sudo yum install -y mariadb-server
       systemctl start mariadb
@@ -51,7 +51,7 @@ locals {
       mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
       mysql -u root -e "FLUSH PRIVILEGES;"      
       /usr/bin/mysql -u root -e "CREATE DATABASE $db_name;"
-      mysql -u root -e "CREATE USER '$db_user'@'%' IDENTIFIED BY '$db_pwd';"
+      mysql -u root -e "CREATE USER '$db_user'@'%' IDENTIFIED BY '$db_password';"
       mysql -u root -e "GRANT ALL PRIVILEGES ON $db_name.* TO '$db_user'@'%';"
       mysql -u root -e "FLUSH PRIVILEGES;"
       if cat /etc/redhat-release |grep -i "release 7"

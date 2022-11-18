@@ -76,7 +76,7 @@
 | <a name="input_lb_type_private"></a> [lb\_type\_private](#input\_lb\_type\_private) | This variable will hold the Load Balancer type as private | `string` | `"private"` | no |
 | <a name="input_lb_type_public"></a> [lb\_type\_public](#input\_lb\_type\_public) | This variable will hold the Load Balancer type as public | `string` | `"public"` | no |
 | <a name="input_local_machine_os_type"></a> [local\_machine\_os\_type](#input\_local\_machine\_os\_type) | Operating System to be used [windows \| mac \| linux] for your local machine which is running terraform apply | `string` | n/a | yes |
-| <a name="input_peer_cidrs"></a> [peer\_cidrs](#input\_peer\_cidrs) | List of peer CIDRs for the creation of VPN connection. | `list(string)` | n/a | yes |
+| <a name="input_peer_cidrs"></a> [peer\_cidrs](#input\_peer\_cidrs) | Enter the list of remote peer CIDRs you want to connect through the VPN tunnel in the format as [\"x.x.x.x/x\",\"x.x.x.x/x\",...] For example:<br>1. Single peer_cidrs  = ["10.0.0.0/28"]<br>2. List of peer_cidrs = ["10.0.0.0/28","10.0.0.1/32"] | `list(string)` | n/a | yes |
 | <a name="input_peer_gateway_ip"></a> [peer\_gateway\_ip](#input\_peer\_gateway\_ip) | The IP address of the peer VPN gateway. | `string` | n/a | yes |
 | <a name="input_perfect_forward_secrecy"></a> [perfect\_forward\_secrecy](#input\_perfect\_forward\_secrecy) | Enter the Perfect Forward Secrecy protocol that you want to use during a session. Available options are disabled, group\_2, group\_5, and group\_14 | `string` | `"disabled"` | no |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | This is the prefix text that will be prepended in every resource name created by this script. | `string` | n/a | yes |

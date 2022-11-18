@@ -1,7 +1,7 @@
 /**
 #################################################################################################################
 *                           Variable Section for the DB Instance Module.
-*                                 Start Here of the Variable Section 
+*                                 Start Here for the Variable Section 
 #################################################################################################################
 */
 
@@ -85,6 +85,15 @@ variable "db_profile" {
   type        = string
 }
 
+/**
+* Name: db_vsi_count
+* Type: number
+* Desc: Total Database instances that will be created in the user specified region.
+**/
+variable "db_vsi_count" {
+  description = "Total Database instances that will be created in the user specified region."
+  type        = number
+}
 
 /**
 * Name: bandwidth
@@ -136,13 +145,23 @@ variable "zones" {
 }
 
 /**
-* Name: db_vsi_count
-* Type: any
-* Description: Total instances that will be created per zones per tier.
+* Name: db_name
+* Type: string
+* Description: Database will be created with the specified name
 **/
-variable "db_vsi_count" {
-  description = "Please enter the total number of instances you want to create in each zones."
-  type        = any
+variable "db_name" {
+  description = "Database will be created with the specified name"
+  type        = string
+}
+
+/**
+* Name: db_password
+* Type: string
+* Description: Admin user will be created with the specified password
+**/
+variable "db_password" {
+  description = "Admin user will be created with the specified password"
+  type        = string
 }
 
 /**

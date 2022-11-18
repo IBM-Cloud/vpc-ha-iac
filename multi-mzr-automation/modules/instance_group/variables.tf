@@ -85,8 +85,6 @@ variable "objects" {
   })
 }
 
-
-
 /**
 * Name: ssh_key
 * Type: list
@@ -290,21 +288,11 @@ variable "db_name" {
 }
 
 /**
-* Name: db_user
-* Type: string
-* Description: Database user will be created with the specified name
-**/
-variable "db_user" {
-  description = "Database user will be created with the specified name"
-  type        = string
-}
-
-/**
-* Name: db_pwd
+* Name: db_password
 * Type: string
 * Description: Database user will be created with the specified password
 **/
-variable "db_pwd" {
+variable "db_password" {
   description = "Database user will be created with the specified password"
   type        = string
 }
@@ -364,3 +352,43 @@ variable "wp_admin_email" {
 *                               End of the Variable Section 
 #################################################################################################################
 **/
+
+/**
+* Name: enable_dbaas
+* Type: Bool
+* Description: For enabling Database as a Service which is a managed DB service.
+**/
+variable "enable_dbaas" {
+  type        = bool
+  description = "For enabling Database as a Service which is a managed DB service."
+}
+
+/**
+* Name: db_hostname
+* Desc: Hostname of the DB service created to access.
+* Type: string
+**/
+variable "db_hostname" {
+  description = "Hostname of the DB service created to access."
+  type        = string
+}
+
+/**
+* Name: db_port
+* Desc: Port at which the DB service is accessible.
+* Type: string
+**/
+variable "db_port" {
+  description = "Port at which the DB service is accessible."
+  type        = string
+}
+
+/**
+* Name: db_certificate
+* Desc: The variable contains the db SSL certificate which could be used for connecting to the DB
+* Type: string
+**/
+variable "db_certificate" {
+  description = "The variable contains the db SSL certificate which could be used for connecting to the DB"
+  type        = string
+}

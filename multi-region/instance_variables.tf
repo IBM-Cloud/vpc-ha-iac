@@ -81,3 +81,13 @@ variable "tiered_profiles" {
     "10" = "10iops-tier"
   }
 }
+
+/**
+* Name: db_name
+* Type: string
+* Description: Database will be created with the specified name
+**/
+variable "db_name" {
+  description = "Database will be created with the specified name"
+  type        = string
+}

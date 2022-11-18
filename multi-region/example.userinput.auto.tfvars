@@ -314,3 +314,20 @@
 # *   Here we have  enable_floating_ip = true
 # **/
 # enable_floating_ip = true
+# /**
+# *   For enabling Database as a Service which is a managed DB service.
+# *   here default value is false        
+# **/
+# enable_dbaas = false
+
+# /**
+# *   The admin user password for the Database service instance. No special characters; minimum 10 characters, A-Z, a-z, 0-9
+# *   Here db_admin_password is "Admin12345678"
+# **/
+# db_admin_password = "Admin12345678"
+
+#  /**
+# *   Enter db_name value. It is the Database name.
+# *   Here we have  db_name = "wpdb"
+# **/
+# db_name = "wpdb"

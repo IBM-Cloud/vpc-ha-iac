@@ -36,7 +36,7 @@ No modules.
 | <a name="input_interval"></a> [interval](#input\_interval) | Dead peer detection interval in seconds. How often to test that the peer gateway is responsive. | `number` | n/a | yes |
 | <a name="input_key_lifetime"></a> [key\_lifetime](#input\_key\_lifetime) | The key lifetime in seconds. Maximum: 86400, Minimum: 1800. Length of time that a secret key is valid for the tunnel in the phase before it must be renegotiated. | `map(number)` | n/a | yes |
 | <a name="input_local_cidrs"></a> [local\_cidrs](#input\_local\_cidrs) | List of local CIDRs for the creation of VPN connection. | `list(any)` | n/a | yes |
-| <a name="input_peer_cidrs"></a> [peer\_cidrs](#input\_peer\_cidrs) | List of peer CIDRs for the creation of VPN connection. | `list(any)` | n/a | yes |
+| <a name="input_peer_cidrs"></a> [peer\_cidrs](#input\_peer\_cidrs) | Enter the list of remote peer CIDRs you want to connect through the VPN tunnel in the format as [\"x.x.x.x/x\",\"x.x.x.x/x\",...] For example:<br>1. Single peer_cidrs  = ["10.0.0.0/28"]<br>2. List of peer_cidrs = ["10.0.0.0/28","10.0.0.1/32"] | `list(any)` | n/a | yes |
 | <a name="input_peer_gateway_ip"></a> [peer\_gateway\_ip](#input\_peer\_gateway\_ip) | The IP address of the peer VPN gateway. | `string` | n/a | yes |
 | <a name="input_perfect_forward_secrecy"></a> [perfect\_forward\_secrecy](#input\_perfect\_forward\_secrecy) | Enter the Perfect Forward Secrecy protocol that you want to use during a session. Available options are disabled, group\_2, group\_5, and group\_14 | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | Prefix for all the resources. | `string` | n/a | yes |

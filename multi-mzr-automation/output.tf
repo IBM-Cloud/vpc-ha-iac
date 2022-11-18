@@ -57,20 +57,18 @@ output "IG_WEB_APP_VSI" {
 
 /**
 * Output Variable
-* Element : Virtual Server Instance
-* This variable will output the Private IP address DB servers
+* Element : DB_Host
+* This variable will output the host or IP address of the database server.
 **/
-output "DB_VSI" {
-  description = "This variable will display the private IP address of DB servers"
-  value = merge(
-    {
-      "PRIVATE_IP" = merge(
-        { "DB_REGION1" = module.instance_region1.db_target },
-        { "DB_REGION2" = module.instance_region2.db_target }
-      )
-    },
-  )
+output "DB_Host_region1" {
+  description = "This variable will output the host or IP address of the database server"
+  value       = var.enable_dbaas ? module.db_region1[0].db_hostname : module.instance_region1[0].db_target[0]
 }
+output "DB_Host_region2" {
+  description = "This variable will output the host or IP address of the database server"
+  value       = var.enable_dbaas ? module.db_region2[0].db_hostname : module.instance_region2[0].db_target[0]
+}
+
 
 /**
 * Output Variable
@@ -79,7 +77,9 @@ output "DB_VSI" {
 **/
 output "db_connection_command_region_1" {
   description = "This ouput variable will output the Database connection command which is useful for the server to connect to the database."
-  value       = module.db_region1.db_connection_command
+  #value       = module.db_region1.db_connection_command
+  value       = var.enable_dbaas ? module.db_region1[0].db_connection_command : "mysql -h ${module.instance_region1[0].db_target[0]} -u admin -p"
+
 }
 
 /**
@@ -89,7 +89,7 @@ output "db_connection_command_region_1" {
 **/
 output "db_connection_command_region_2" {
   description = "This ouput variable will output the Database connection command which is useful for the server to connect to the database."
-  value       = module.db_region2.db_connection_command
+  value       = var.enable_dbaas ? module.db_region2[0].db_connection_command : "mysql -h ${module.instance_region2[0].db_target[0]} -u admin -p"
 }
 
 /**
@@ -114,6 +114,6 @@ output "BASTION_VSI" {
 * Element : COS Public and Private endpoint
 * This variable will return the public and private end points for the COS bucket.
 **/
-# output "COS_BUCKET" {
-#   value = module.cos.object_endpoint
-# }
+output "COS_BUCKET" {
+  value = module.cos.object_endpoint
+}

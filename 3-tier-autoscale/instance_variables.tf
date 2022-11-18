@@ -87,3 +87,13 @@ variable "db_vsi_count" {
     error_message = "Database VSI count should be less than or equals to 3."
   }
 }
+
+/**
+* Name: db_name
+* Type: string
+* Description: Database will be created with the specified name
+**/
+variable "db_name" {
+  description = "Database will be created with the specified name"
+  type        = string
+}
