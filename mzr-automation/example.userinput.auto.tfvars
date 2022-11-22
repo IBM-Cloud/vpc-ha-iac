@@ -185,13 +185,16 @@
 #
 # /** 
 #     Mode used in VPN gateway. Supported values are route or policy.
-#     User should make the configuration updations on their onprem side VPN accordingly on the basis of IBM side VPN.
+#     User should make the configuration update on their on-prem side VPN accordingly on the basis of IBM side VPN.
 # **/
 # vpn_mode  = "policy"
 
 # /**
-# *   List of peer CIDRs for the creation of VPN connection.
+# *   Enter the list of remote peer CIDRs you want to connect through the VPN tunnel in the format as ["x.x.x.x/x","x.x.x.x/x",...]
 # *   IBM VPC CIDR and User’s on-prem subnet CIDR should NOT overlap if VPN is being used.
+# *   Example:
+# *   Single peer_cidrs  = ["10.0.0.0/28"]
+# *   List of peer_cidrs = ["10.0.0.0/28","10.0.0.1/32"]
 # **/
 # peer_cidrs  = ["x.x.x.x/x"]
 

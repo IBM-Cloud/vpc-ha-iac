@@ -7,7 +7,7 @@
 
 /**
 * Name: vpn_mode
-* Desc: Mode in VPN gateway. Supported values are route or policy. User should make the configuration updations on their onprem side VPN accordingly on the basis of IBM side VPN.
+* Desc: Mode in VPN gateway. Supported values are route or policy. User should make the configuration update on their on-prem side VPN accordingly on the basis of IBM side VPN.
 * Type: string
 **/
 variable "vpn_mode" {
@@ -25,7 +25,7 @@ variable "vpn_mode" {
 * Type: list(any)
 **/
 variable "peer_cidrs" {
-  description = "List of peer CIDRs for the creation of VPN connection."
+  description = "Enter the list of remote peer CIDRs you want to connect through the VPN tunnel in the format as [\"x.x.x.x/x\",\"x.x.x.x/x\",...]\nFor example:\n1. Single peer_cidrs  = [\"10.0.0.0/28\"]\n2. List of peer_cidrs = [\"10.0.0.0/28\",\"10.0.0.1/32\"]"
   type        = list(string)
   validation {
     condition     = can([for ip in var.peer_cidrs : regex("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/([9]|1[0-9]|2[0-9]|3[0-2])$", ip)])
@@ -67,6 +67,10 @@ variable "action" {
   description = "Dead peer detection actions, action to take when a peer gateway stops responding. Supported values are restart, clear, hold, or none. Default value is none"
   type        = string
   default     = "none"
+  validation {
+    condition     = contains(["restart", "clear", "hold", "none"], var.action)
+    error_message = "Error: Incorrect value for action. Allowed values are restart, clear, hold, or none."
+  }
 }
 
 /**
@@ -112,31 +116,31 @@ variable "timeout" {
 
 /**
 * Name: authentication_algorithm
-* Desc: Enter the algorithm that you want to use to authenticate IPSec peers. Available options are md5, sha1, or sha256
+* Desc: Enter the algorithm that you want to use to authenticate IPSec peers. Available options are sha256, sha384 or sha512
 * Type: string
 **/
 variable "authentication_algorithm" {
-  description = "Enter the algorithm that you want to use to authenticate IPSec peers. Available options are md5, sha1, sha256, or sha512"
+  description = "Enter the algorithm that you want to use to authenticate IPSec peers. Available options are sha256, sha384 or sha512."
   type        = string
-  default     = "md5"
+  default     = "sha256"
   validation {
-    condition     = contains(["md5", "sha1", "sha256", "sha512"], var.authentication_algorithm)
-    error_message = "Error: Incorrect value for authentication_algorithm. Allowed values are md5, sha1, sha256, or sha512."
+    condition     = contains(["sha256", "sha384", "sha512"], var.authentication_algorithm)
+    error_message = "Error: Incorrect value for authentication_algorithm. Allowed values are sha256, sha384 or sha512."
   }
 }
 
 /**
 * Name: encryption_algorithm
-* Desc: Enter the algorithm that you want to use to encrypt data. Available options are: triple_des, aes128, or aes256
+* Desc: Enter the algorithm that you want to use to encrypt data. Available options are: aes128, aes192 or aes256
 * Type: string
 **/
 variable "encryption_algorithm" {
-  description = "Enter the algorithm that you want to use to encrypt data. Available options are: triple_des, aes128, or aes256"
+  description = "Enter the algorithm that you want to use to encrypt data. Available options are: aes128, aes192 or aes256."
   type        = string
-  default     = "triple_des"
+  default     = "aes256"
   validation {
-    condition     = contains(["triple_des", "aes128", "aes256"], var.encryption_algorithm)
-    error_message = "Error: Incorrect value for encryption_algorithm. Allowed values are triple_des, aes128, or aes256."
+    condition     = contains(["aes128", "aes192", "aes256"], var.encryption_algorithm)
+    error_message = "Error: Incorrect value for encryption_algorithm. Allowed values are aes128, aes192 or aes256."
   }
 }
 
@@ -160,12 +164,12 @@ variable "key_lifetime" {
 * Type: number
 **/
 variable "dh_group" {
-  description = "Enter the Diffie-Hellman group that you want to use for the encryption key. Available enumeration type are 2, 5, 14, or 19"
+  description = "Enter the Diffie-Hellman group that you want to use for the encryption key. Available enumeration type are 14,15,16,17,18,19,20,21,22,23,24 or 31"
   type        = number
-  default     = 2
+  default     = 14
   validation {
-    condition     = contains([2, 5, 14, 19], var.dh_group)
-    error_message = "Error: Incorrect value for dh_group. Allowed values are 2, 5, 14, or 19."
+    condition     = contains([14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 31], var.dh_group)
+    error_message = "Error: Incorrect value for dh_group. Allowed values are 14,15,16,17,18,19,20,21,22,23,24 or 31."
   }
 }
 

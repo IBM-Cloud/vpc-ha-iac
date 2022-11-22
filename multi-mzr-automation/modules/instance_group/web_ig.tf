@@ -9,91 +9,72 @@ data "ibm_is_image" "web_os" {
   identifier = var.web_image
 }
 
-locals {
-  lin_userdata_web_ubuntu = <<-EOUD
-  #!/bin/bash 
-  db_name=${var.db_name}
-  db_user=${var.db_user}
-  db_pwd=${var.db_pwd} 
-  sudo apt-get -y update
-  sudo apt-get install -y php php-dev libapache2-mod-php php-curl apache2
-  sudo apt-get install -y php-json php-gd php-mysql mariadb-client
-  rm /var/www/html/index.html
-  systemctl start apache2 && systemctl enable apache2
-  sed -i '0,/AllowOverride\ None/! {0,/AllowOverride\ None/ s/AllowOverride\ None/AllowOverride\ All/}' /etc/apache2/apache2.conf
-  install_dir="/var/www/html"
-  wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-  chmod 755 wp-cli.phar
-  sudo mv wp-cli.phar /usr/local/bin/wp
-  chmod -R 775 /var/www/
-  chown www-data: $install_dir -R
-  sudo -u www-data /usr/local/bin/wp core download --path=$install_dir
-  sudo -u www-data /usr/local/bin/wp config create --dbname='${var.db_name}' --skip-salts --dbuser='${var.db_user}' --dbpass='${var.db_pwd}' --dbhost='${var.db_private_ip}' --dbprefix='wp_' --path=$install_dir
-  sudo -u www-data /usr/local/bin/wp core install --url='${var.web_lb_hostname}' --title='${var.wp_blog_title}' --admin_user='${var.wp_admin_user}' --admin_password='${var.wp_admin_password}' --admin_email='${var.wp_admin_email}' --path=$install_dir
-  rm /var/www/html/index.html
-  yum remove mariadb-client -y
-  systemctl restart apache2
-  chmod 0755 /usr/bin/pkexec   
-  EOUD
-
-  lin_userdata_web_rhel = <<-EOUD
-  #!/bin/bash 
-  db_name=${var.db_name}
-  db_user=${var.db_user}
-  db_pwd=${var.db_pwd} 
-  yum update -y 
-  install_dir="/var/www/html"
-
-  if cat /etc/redhat-release |grep -i "release 8"
-  then
-    yum install -y httpd php git 
-    yum install -y php-devel
-    yum install -y php-pear php-json php-gd php-mysqlnd mariadb
-    yum install -y wget 
-    systemctl start httpd && systemctl enable httpd 
-    chown -R apache $install_dir -R
-    chmod -R 775 /var/www/
-    wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-    chmod 755 wp-cli.phar
-    sudo mv wp-cli.phar /usr/local/bin/wp
-    sudo -u apache /usr/local/bin/wp core download --path=$install_dir
-    sudo -u apache /usr/local/bin/wp config create --dbname='${var.db_name}' --skip-salts --dbuser='${var.db_user}' --dbpass='${var.db_pwd}' --dbhost='${var.db_private_ip}' --dbprefix='wp_' --path=$install_dir
-    sudo -u apache /usr/local/bin/wp core install --url='${var.web_lb_hostname}' --title='${var.wp_blog_title}' --admin_user='${var.wp_admin_user}' --admin_password='${var.wp_admin_password}' --admin_email='${var.wp_admin_email}' --path=$install_dir
-    systemctl start httpd && systemctl enable httpd
-    yum remove mariadb -y
-  fi 
-
-  if cat /etc/redhat-release |grep -i "release 7"
-  then
-    yum install -y httpd git
-    yum install -y wget
-    rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    sudo yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm 
-    sudo yum-config-manager --enable remi-php72
-    sudo yum -y update 
-    sudo yum -y install php php-devel php-pear php-json php-gd php-mysql mariadb
-    chown -R apache $install_dir -R
-    chmod -R 775 /var/www/
-    wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-    chmod 755 wp-cli.phar
-    sudo mv wp-cli.phar /usr/local/bin/wp
-    sudo -u apache /usr/local/bin/wp core download --path=$install_dir
-    sudo -u apache /usr/local/bin/wp config create --dbname='${var.db_name}' --skip-salts --dbuser='${var.db_user}' --dbpass='${var.db_pwd}' --dbhost='${var.db_private_ip}' --dbprefix='wp_' --path=$install_dir
-    sudo -u apache /usr/local/bin/wp core install --url='${var.web_lb_hostname}' --title='${var.wp_blog_title}' --admin_user='${var.wp_admin_user}' --admin_password='${var.wp_admin_password}' --admin_email='${var.wp_admin_email}' --path=$install_dir
-    systemctl start httpd && systemctl enable httpd
-    yum remove mariadb -y
-    setenforce Permissive
-    firewall-cmd --permanent --zone=public --add-port=3306/tcp
-    firewall-cmd --reload
-    firewall-cmd --permanent --zone=public --add-port=80/tcp
-    firewall-cmd --reload
-    setenforce Enforcing
-    sudo setsebool -P httpd_can_network_connect 1
-  fi
-  systemctl restart httpd
-  chmod 0755 /usr/bin/pkexec
-  EOUD
+data "template_file" "lin_userdata_web_ubuntu_dbaas" {
+  template = file("${path.cwd}/modules/instance_group/lin_userdata_web_ubuntu_dbaas.tpl")
+  vars = {
+    db_name           = "${var.db_name}"
+    db_password       = "${var.db_password}"
+    db_hostname       = "${var.db_hostname}"
+    db_port           = "${var.db_port}"
+    wp_admin_email    = "${var.wp_admin_email}"
+    web_lb_hostname   = "${var.web_lb_hostname}"
+    wp_blog_title     = "${var.wp_blog_title}"
+    wp_admin_user     = "${var.wp_admin_user}"
+    wp_admin_password = "${var.wp_admin_password}"
+    db_certificate    = "${var.db_certificate}"
+  }
 }
+
+data "template_file" "lin_userdata_web_rhel_dbaas" {
+  template = file("${path.cwd}/modules/instance_group/lin_userdata_web_rhel_dbaas.tpl")
+  vars = {
+    db_name           = "${var.db_name}"
+    db_password       = "${var.db_password}"
+    db_hostname       = "${var.db_hostname}"
+    db_port           = "${var.db_port}"
+    wp_admin_email    = "${var.wp_admin_email}"
+    web_lb_hostname   = "${var.web_lb_hostname}"
+    wp_blog_title     = "${var.wp_blog_title}"
+    wp_admin_user     = "${var.wp_admin_user}"
+    wp_admin_password = "${var.wp_admin_password}"
+    db_certificate    = "${var.db_certificate}"
+  }
+}
+
+data "template_file" "lin_userdata_web_rhel_db_vsi" {
+  template = file("${path.cwd}/modules/instance_group/lin_userdata_web_rhel_db_vsi.tpl")
+  vars = {
+    db_name           = "${var.db_name}"
+    db_password       = "${var.db_password}"
+    db_private_ip     = "${var.db_private_ip}"
+    wp_admin_email    = "${var.wp_admin_email}"
+    web_lb_hostname   = "${var.web_lb_hostname}"
+    wp_blog_title     = "${var.wp_blog_title}"
+    wp_admin_user     = "${var.wp_admin_user}"
+    wp_admin_password = "${var.wp_admin_password}"
+  }
+}
+
+data "template_file" "lin_userdata_web_ubuntu_db_vsi" {
+  template = file("${path.cwd}/modules/instance_group/lin_userdata_web_ubuntu_db_vsi.tpl")
+  vars = {
+    db_name           = "${var.db_name}"
+    db_password       = "${var.db_password}"
+    db_private_ip     = "${var.db_private_ip}"
+    wp_admin_email    = "${var.wp_admin_email}"
+    web_lb_hostname   = "${var.web_lb_hostname}"
+    wp_blog_title     = "${var.wp_blog_title}"
+    wp_admin_user     = "${var.wp_admin_user}"
+    wp_admin_password = "${var.wp_admin_password}"
+  }
+}
+
+
+locals {
+  lin_userdata_web_ubuntu = var.enable_dbaas ? data.template_file.lin_userdata_web_ubuntu_dbaas.rendered : data.template_file.lin_userdata_web_ubuntu_db_vsi.rendered
+  lin_userdata_web_rhel   = var.enable_dbaas ? data.template_file.lin_userdata_web_rhel_dbaas.rendered : data.template_file.lin_userdata_web_rhel_db_vsi.rendered
+}
+
 
 /**
 * Web template for Web Instance Group
@@ -110,7 +91,8 @@ resource "ibm_is_instance_template" "web_template" {
   resource_group = var.resource_group_id
   image          = var.web_image
   profile        = var.web_config["instance_profile"]
-  user_data      = split("-", data.ibm_is_image.web_os.os)[0] == "ubuntu" ? local.lin_userdata_web_ubuntu : local.lin_userdata_web_rhel
+  user_data     = split("-", data.ibm_is_image.web_os.os)[0] == "ubuntu" ? local.lin_userdata_web_ubuntu : local.lin_userdata_web_rhel
+
   primary_network_interface {
     subnet          = element(var.subnets["web"].*.id, 0)
     security_groups = [var.sg_objects["web"].id]

@@ -19,7 +19,7 @@ variable "prefix" {
 * Type: String
 */
 variable "resource_group_id" {
-  description = "Resource Group ID is used to seperate the resources in a group."
+  description = "Resource Group ID is used to separate the resources in a group."
   type        = string
 }
 
@@ -79,7 +79,7 @@ variable "local_cidrs" {
 * Type: list(any)
 **/
 variable "peer_cidrs" {
-  description = "List of peer CIDRs for the creation of VPN connection."
+  description = "Enter the list of remote peer CIDRs you want to connect through the VPN tunnel in the format as [\"x.x.x.x/x\",\"x.x.x.x/x\",...]\nFor example:\n1. Single peer_cidrs  = [\"10.0.0.0/28\"]\n2. List of peer_cidrs = [\"10.0.0.0/28\",\"10.0.0.1/32\"]"
   type        = list(any)
 }
 

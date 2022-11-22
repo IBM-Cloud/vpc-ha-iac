@@ -42,8 +42,8 @@ RESOURCE NAME                   REGION1  |  REGION2  |   TOTAL        |
 */
 
 locals {
-  region1 = "jp-tok"
-  region2 = "us-east"
+  region1 = "us-east"
+  region2 = "jp-tok"
 }
 
 /**
@@ -63,17 +63,17 @@ locals {
 * obj_content: Literal string value to use as an object content, which will be uploaded as UTF-8 encoded text. Conflicts with content_base64 and content_file. 
 **/
 
-# module "cos" {
-#   source                = "./modules/cos"
-#   prefix                = "${var.prefix}region-${local.region1}-"
-#   resource_group_id     = var.resource_group_id
-#   cos_bucket_plan       = var.cos_bucket_plan
-#   cross_region_location = var.cross_region_location
-#   storage_class         = var.storage_class
-#   bucket_location       = var.bucket_location
-#   obj_key               = var.obj_key
-#   obj_content           = var.obj_content
-# }
+module "cos" {
+  source                = "./modules/cos"
+  prefix                = "${var.prefix}region-${local.region1}-"
+  resource_group_id     = var.resource_group_id
+  cos_bucket_plan       = var.cos_bucket_plan
+  cross_region_location = var.cross_region_location
+  storage_class         = var.storage_class
+  bucket_location       = var.bucket_location
+  obj_key               = var.obj_key
+  obj_content           = var.obj_content
+}
 
 /**
 * Calling the VPC module for region1 with the following required parameters
@@ -89,7 +89,7 @@ module "vpc_region1" {
   prefix            = "${var.prefix}region-${local.region1}-"
   resource_group_id = var.resource_group_id
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -106,7 +106,7 @@ module "vpc_region2" {
   prefix            = "${var.prefix}region-${local.region2}-"
   resource_group_id = var.resource_group_id
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -131,6 +131,80 @@ module "transit_gateway" {
 }
 
 /**
+* Calling the db module with the following required parameters
+* source: Source Directory of the Module
+* prefix: This will be appended in resources created by this module
+* resource_group_id: The resource group id
+**/
+module "db_region1" {
+  count                       = var.enable_dbaas ? 1 : 0
+  source                      = "./modules/db"
+  prefix                      = "${var.prefix}${local.region1}-"
+  resource_group_id           = var.resource_group_id
+  region                      = local.region1
+  db_admin_password           = var.db_admin_password
+  service_endpoints           = var.db_access_endpoints_region_1
+  db_version                  = local.db_version_region_1
+  service                     = local.service_region_1
+  plan                        = local.plan_region_1
+  member_cpu_allocation_count = local.member_cpu_allocation_count_region_1
+  member_disk_allocation_mb   = local.member_disk_allocation_mb_region_1
+  member_memory_allocation_mb = local.member_memory_allocation_mb_region_1
+  tags                        = local.tags_region_1
+  users                       = local.users_region_1
+  create_timeout              = local.create_timeout_region_1
+  update_timeout              = local.update_timeout_region_1
+  delete_timeout              = local.delete_timeout_region_1
+  auto_scaling                = var.db_enable_autoscaling_region_1 == true ? local.auto_scaling_region_1 : []
+  key_protect_instance        = local.key_protect_instance_region_1
+  key_protect_key             = local.key_protect_key_region_1
+  whitelist                   = local.whitelist_region_1
+  backup_id                   = local.backup_id_region_1
+  backup_encryption_key_crn   = local.backup_encryption_key_crn_region_1
+  remote_leader_id            = local.remote_leader_id_region_1
+  providers = {
+    ibm = ibm.us-east
+  }
+}
+
+/**
+* Calling the db module with the following required parameters
+* source: Source Directory of the Module
+* prefix: This will be appended in resources created by this module
+* resource_group_id: The resource group id
+**/
+module "db_region2" {
+  count                       = var.enable_dbaas ? 1 : 0
+  source                      = "./modules/db"
+  prefix                      = "${var.prefix}${local.region1}-"
+  resource_group_id           = var.resource_group_id
+  region                      = local.region2
+  db_admin_password           = var.db_admin_password
+  service_endpoints           = var.db_access_endpoints_region_2
+  db_version                  = local.db_version_region_2
+  service                     = local.service_region_2
+  plan                        = local.plan_region_2
+  member_cpu_allocation_count = local.member_cpu_allocation_count_region_2
+  member_disk_allocation_mb   = local.member_disk_allocation_mb_region_2
+  member_memory_allocation_mb = local.member_memory_allocation_mb_region_2
+  tags                        = local.tags_region_2
+  users                       = local.users_region_2
+  create_timeout              = local.create_timeout_region_2
+  update_timeout              = local.update_timeout_region_2
+  delete_timeout              = local.delete_timeout_region_2
+  auto_scaling                = var.db_enable_autoscaling_region_2 == true ? local.auto_scaling_region_2 : []
+  key_protect_instance        = local.key_protect_instance_region_2
+  key_protect_key             = local.key_protect_key_region_2
+  whitelist                   = local.whitelist_region_2
+  backup_id                   = local.backup_id_region_2
+  backup_encryption_key_crn   = local.backup_encryption_key_crn_region_2
+  remote_leader_id            = local.remote_leader_id_region_2
+  providers = {
+    ibm = ibm.jp-tok
+  }
+}
+
+/**
  * Data Resource
  * Element : SSH Key
  * This will return the ssh key/keys id of the User-ssh-key. This is the existing ssh key of user which will be used to login to Bastion server.
@@ -138,7 +212,7 @@ module "transit_gateway" {
 data "ibm_is_ssh_key" "ssh_key_id_region1" {
   count    = length(local.user_ssh_key_list)
   name     = local.user_ssh_key_list[count.index]
-  provider = ibm.jp-tok
+  provider = ibm.us-east
 }
 
 /**
@@ -184,7 +258,7 @@ module "bastion_region1" {
   local_machine_os_type  = var.local_machine_os_type
   depends_on             = [module.vpc_region1]
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -196,7 +270,7 @@ module "bastion_region1" {
 data "ibm_is_ssh_key" "ssh_key_id_region2" {
   count    = length(local.user_ssh_key_list)
   name     = local.user_ssh_key_list[count.index]
-  provider = ibm.us-east
+  provider = ibm.jp-tok
 }
 
 /**
@@ -242,7 +316,7 @@ module "bastion_region2" {
   local_machine_os_type  = var.local_machine_os_type
   depends_on             = [module.vpc_region2]
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -268,7 +342,7 @@ module "ssh_key_data_sources_region1" {
   bastion2_key = "${var.prefix}bastion2-ssh-key"
   depends_on   = [module.bastion_region1, module.bastion_region2]
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -294,7 +368,7 @@ module "ssh_key_data_sources_region2" {
   bastion2_key = "${var.prefix}bastion2-ssh-key"
   depends_on   = [module.bastion_region1, module.bastion_region2]
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -318,7 +392,7 @@ module "pg_region1" {
   zones             = var.zones[local.region1]
   depends_on        = [module.vpc_region1]
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -342,7 +416,7 @@ module "pg_region2" {
   zones             = var.zones[local.region2]
   depends_on        = [module.vpc_region2]
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -390,7 +464,7 @@ module "subnet_region1" {
   db_vsi_count       = var.db_vsi_count
   depends_on         = [module.vpc_region1, module.pg_region1]
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -419,7 +493,7 @@ module "subnet_region2" {
   db_vsi_count       = var.db_vsi_count
   depends_on         = [module.vpc_region2, module.pg_region2]
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -459,7 +533,7 @@ module "sg_region1" {
   db_os_type         = var.db_os_type
   depends_on         = [module.vpc_region1, module.subnet_region1]
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -499,7 +573,7 @@ module "sg_region2" {
   db_os_type         = var.db_os_type
   depends_on         = [module.vpc_region2, module.subnet_region2]
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -538,7 +612,7 @@ module "load_balancer_region1" {
   lb_port_number    = var.lb_port_number
   depends_on        = [module.vpc_region1, module.subnet_region1, module.sg_region1]
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -577,7 +651,7 @@ module "load_balancer_region2" {
   lb_port_number    = var.lb_port_number
   depends_on        = [module.vpc_region2, module.subnet_region2, module.sg_region2]
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -602,6 +676,7 @@ module "load_balancer_region2" {
 **/
 
 module "instance_region1" {
+  count             = var.enable_dbaas ? 0 : 1
   source            = "./modules/instance"
   prefix            = "${var.prefix}region-${local.region1}-"
   vpc_id            = module.vpc_region1.id
@@ -616,9 +691,11 @@ module "instance_region1" {
   db_sg             = module.sg_region1.sg_objects["db"].id
   db_vsi_count      = var.db_vsi_count
   tiered_profiles   = var.tiered_profiles
+  db_name           = var.db_name
+  db_password       = var.db_admin_password
   depends_on        = [module.subnet_region1.ibm_is_subnet, module.sg_region1, module.bastion_region1, module.bastion_region2]
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -644,6 +721,7 @@ module "instance_region1" {
 **/
 
 module "instance_region2" {
+  count             = var.enable_dbaas ? 0 : 1
   source            = "./modules/instance"
   prefix            = "${var.prefix}region-${local.region2}-"
   vpc_id            = module.vpc_region2.id
@@ -658,9 +736,11 @@ module "instance_region2" {
   db_sg             = module.sg_region2.sg_objects["db"].id
   db_vsi_count      = var.db_vsi_count
   tiered_profiles   = var.tiered_profiles
+  db_name           = var.db_name
+  db_password       = var.db_admin_password
   depends_on        = [module.subnet_region2.ibm_is_subnet, module.sg_region2, module.bastion_region1, module.bastion_region2]
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -720,7 +800,7 @@ module "instance_group_region1" {
   app_cooldown_time      = var.app_cooldown_time
   depends_on             = [module.bastion_region1, module.bastion_region2, module.load_balancer_region1]
   providers = {
-    ibm = ibm.jp-tok
+    ibm = ibm.us-east
   }
 }
 
@@ -780,7 +860,7 @@ module "instance_group_region2" {
   app_cooldown_time      = var.app_cooldown_time
   depends_on             = [module.bastion_region1, module.bastion_region2, module.load_balancer_region2]
   providers = {
-    ibm = ibm.us-east
+    ibm = ibm.jp-tok
   }
 }
 
@@ -822,35 +902,35 @@ module "instance_group_region2" {
 * depends_on: This ensures that the loadbalancers will be created before the global loadbalancer
 **/
 
-# module "global_load_balancer" {
-#   source                  = "./modules/global_load_balancer"
-#   prefix                  = var.prefix
-#   resource_group_id       = var.resource_group_id
-#   region1                 = local.region1
-#   region2                 = local.region2
-#   glb_domain_name         = var.glb_domain_name
-#   glb_traffic_steering    = var.glb_traffic_steering
-#   glb_region1_code        = var.glb_region1_code
-#   glb_region2_code        = var.glb_region2_code
-#   cis_glb_plan            = var.cis_glb_plan
-#   cis_glb_location        = var.cis_glb_location
-#   glb_proxy_enabled       = var.glb_proxy_enabled
-#   expected_body           = var.expected_body
-#   expected_codes          = var.expected_codes
-#   glb_healthcheck_method  = var.glb_healthcheck_method
-#   glb_healthcheck_timeout = var.glb_healthcheck_timeout
-#   glb_healthcheck_path    = var.glb_healthcheck_path
-#   glb_protocol_type       = var.glb_protocol_type
-#   interval                = var.interval
-#   retries                 = var.retries
-#   follow_redirects        = var.follow_redirects
-#   glb_healthcheck_port    = var.glb_healthcheck_port
-#   allow_insecure          = var.allow_insecure
-#   minimum_origins         = var.minimum_origins
-#   region1_pool_weight     = var.region1_pool_weight
-#   region2_pool_weight     = var.region2_pool_weight
-#   notification_email      = var.notification_email
-#   web_lb_ip_region1       = module.load_balancer_region1.lb_public_ip["WEB_SERVER"][0]
-#   web_lb_ip_region2       = module.load_balancer_region2.lb_public_ip["WEB_SERVER"][0]
-#   depends_on              = [module.load_balancer_region1, module.load_balancer_region2]
-# }
+module "global_load_balancer" {
+  source                  = "./modules/global_load_balancer"
+  prefix                  = var.prefix
+  resource_group_id       = var.resource_group_id
+  region1                 = local.region1
+  region2                 = local.region2
+  glb_domain_name         = var.glb_domain_name
+  glb_traffic_steering    = var.glb_traffic_steering
+  glb_region1_code        = var.glb_region1_code
+  glb_region2_code        = var.glb_region2_code
+  cis_glb_plan            = var.cis_glb_plan
+  cis_glb_location        = var.cis_glb_location
+  glb_proxy_enabled       = var.glb_proxy_enabled
+  expected_body           = var.expected_body
+  expected_codes          = var.expected_codes
+  glb_healthcheck_method  = var.glb_healthcheck_method
+  glb_healthcheck_timeout = var.glb_healthcheck_timeout
+  glb_healthcheck_path    = var.glb_healthcheck_path
+  glb_protocol_type       = var.glb_protocol_type
+  interval                = var.interval
+  retries                 = var.retries
+  follow_redirects        = var.follow_redirects
+  glb_healthcheck_port    = var.glb_healthcheck_port
+  allow_insecure          = var.allow_insecure
+  minimum_origins         = var.minimum_origins
+  region1_pool_weight     = var.region1_pool_weight
+  region2_pool_weight     = var.region2_pool_weight
+  notification_email      = var.notification_email
+  web_lb_ip_region1       = module.load_balancer_region1.lb_public_ip["WEB_SERVER"][0]
+  web_lb_ip_region2       = module.load_balancer_region2.lb_public_ip["WEB_SERVER"][0]
+  depends_on              = [module.load_balancer_region1, module.load_balancer_region2]
+}

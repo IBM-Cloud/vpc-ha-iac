@@ -4,10 +4,22 @@
 # #################################################################################################################
 # **/
 
+data "ibm_is_image" "app_os" {
+  identifier = var.app_image
+}
+
 locals {
   lin_userdata_app = <<-EOUD
   #!/bin/bash
   chmod 0755 /usr/bin/pkexec
+  if echo "${data.ibm_is_image.app_os.os}" | grep -i "ubuntu"
+  then
+  sudo apt update -y
+  sudo apt install mysql-client -y
+  else
+  sudo yum update -y
+  sudo yum install mysql -y
+  fi
   EOUD
 }
 

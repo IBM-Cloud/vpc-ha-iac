@@ -41,6 +41,40 @@ resource "ibm_is_vpc" "vpc" {
   resource_group = var.resource_group_id
 }
 
+# /**
+# * Calling the db module with the following required parameters
+# * source: Source Directory of the Module
+# * prefix: This will be appended in resources created by this module
+# * resource_group_id: The resource group id
+# **/
+module "db" {
+  count                       = var.enable_dbaas ? 1 : 0
+  source                      = "./modules/db"
+  prefix                      = var.prefix
+  resource_group_id           = var.resource_group_id
+  region                      = var.region
+  db_admin_password           = var.db_admin_password
+  service_endpoints           = var.db_access_endpoints
+  db_version                  = local.db_version
+  service                     = local.service
+  plan                        = local.plan
+  member_cpu_allocation_count = local.member_cpu_allocation_count
+  member_disk_allocation_mb   = local.member_disk_allocation_mb
+  member_memory_allocation_mb = local.member_memory_allocation_mb
+  tags                        = local.tags
+  users                       = local.users
+  create_timeout              = local.create_timeout
+  update_timeout              = local.update_timeout
+  delete_timeout              = local.delete_timeout
+  auto_scaling                = var.db_enable_autoscaling == true ? local.auto_scaling : []
+  key_protect_instance        = local.key_protect_instance
+  key_protect_key             = local.key_protect_key
+  whitelist                   = local.whitelist
+  backup_id                   = local.backup_id
+  backup_encryption_key_crn   = local.backup_encryption_key_crn
+  remote_leader_id            = local.remote_leader_id
+}
+
 /**
 * Locals
 * This resource will be used to create and calculate local variables containing Subnet IP count.
@@ -258,6 +292,7 @@ module "load_balancer" {
 **/
 
 module "instance" {
+  count             = var.enable_dbaas ? 0 : 1
   source            = "./modules/instance"
   prefix            = var.prefix
   vpc_id            = ibm_is_vpc.vpc.id
@@ -268,10 +303,12 @@ module "instance" {
   data_vol_size     = var.data_vol_size
   db_image          = var.db_image
   db_profile        = var.db_profile
+  db_vsi_count      = var.db_vsi_count
   tiered_profiles   = var.tiered_profiles
   subnets           = module.subnet.sub_objects["db"].*.id
   db_sg             = module.security_group.sg_objects["db"].id
-  db_vsi_count      = var.db_vsi_count
+  db_password       = var.db_admin_password
+  db_name           = var.db_name
   depends_on        = [module.subnet.ibm_is_subnet, module.security_group, module.bastion]
 }
 

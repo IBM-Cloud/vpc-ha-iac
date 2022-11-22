@@ -99,3 +99,13 @@ variable "db_vsi_count" {
     error_message = "Database VSI count should be less than or equals to 3."
   }
 }
+
+/**
+* Name: enable_dbaas
+* Type: Bool
+* Description: For enabling Database as a Service which is a managed DB service.
+**/
+variable "enable_dbaas" {
+  type        = bool
+  description = "For enabling Database as a Service which is a managed DB service."
+}

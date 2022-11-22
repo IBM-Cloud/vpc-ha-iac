@@ -8,7 +8,7 @@
 ##################################################################################################
 ##################################################################################################
 
-  
+
 /**
 * Name: api_key
 * Type: String
@@ -94,7 +94,25 @@ variable "prefix" {
   }
 }
 
+/**
+* Name: enable_dbaas
+* Type: Bool
+* Description: For enabling Database as a Service which is a managed DB service.
+**/
+variable "enable_dbaas" {
+  type        = bool
+  description = "For enabling Database as a Service which is a managed DB service."
+}
 
+/**
+* Name: db_admin_password
+* Type: String
+* Description: The admin user password for the Database service instance. No special characters; minimum 10 characters, A-Z, a-z, 0-9
+*/
+variable "db_admin_password" {
+  type        = string
+  description = "The admin user password for the Database service instance. No special characters; minimum 10 characters, A-Z, a-z, 0-9"
+}
 
 
 

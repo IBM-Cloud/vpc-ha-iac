@@ -156,23 +156,18 @@ variable "db_name" {
 }
 
 /**
-* Name: db_user
-* Type: string
-* Description: Database user will be created with the specified name
-**/
-variable "db_user" {
-  description = "Database user will be created with the specified name"
-  type        = string
-}
-
-/**
-* Name: db_pwd
+* Name: db_password
 * Type: string
 * Description: Database user will be created with the specified password
 **/
-variable "db_pwd" {
+variable "db_password" {
   description = "Database user will be created with the specified password"
   type        = string
+}
+
+variable "enable_dbaas" {
+  type        = bool
+  description = "For enabling Database as a Service which is a managed DB service."
 }
 
 /**

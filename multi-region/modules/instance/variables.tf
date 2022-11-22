@@ -146,6 +146,26 @@ variable "db_vsi_count" {
 }
 
 /**
+* Name: db_name
+* Type: string
+* Description: Database will be created with the specified name
+**/
+variable "db_name" {
+  description = "Database will be created with the specified name"
+  type        = string
+}
+
+/**
+* Name: db_password
+* Type: string
+* Description: Database user will be created with the specified password
+**/
+variable "db_password" {
+  description = "Database user will be created with the specified password"
+  type        = string
+}
+
+/**
 #################################################################################################################
 *                               End of the Variable Section 
 #################################################################################################################

@@ -53,6 +53,10 @@ web and app tier.
 Note: It is recommended to build a golden image that autoscale can fork from. Otherwise, when
 using the base image, user-data or post-install scripts are required to build the VSI.
 
+User has a choice between self-managed DB (installing and managing DB of choice) or opt-in with
+[IBM Cloud DBaaS (MySQL)](https://cloud.ibm.com/docs/databases-for-mysql?topic=databases-for-mysql-getting-started).
+To opt-in for IBM Cloud DBaaS (MySQl) change the DBaaS flag to true in the `userinput.auto.tfvars`.
+
 ## Use 3: Multi-region
 
 <img src="./multi-region/images/multi-region-3-tier-autoscale-mzr.png" width="400" />
